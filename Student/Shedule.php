@@ -168,17 +168,17 @@ $con->close();
                             </svg>
                         </div>
                         <div class="dropdown-menu">
-                            <a href="Profile-modern.php" class="dropdown-item">
-                                <span class="dropdown-icon">👤</span>
+                            <a href="Profile.php" class="dropdown-item">
+                                <span class="dropdown-icon">??</span>
                                 <span>My Profile</span>
                             </a>
-                            <a href="EditProfile-modern.php?Id=<?php echo $_SESSION['ID']; ?>" class="dropdown-item">
-                                <span class="dropdown-icon">⚙️</span>
+                            <a href="EditProfile.php?Id=<?php echo $_SESSION['ID']; ?>" class="dropdown-item">
+                                <span class="dropdown-icon">??</span>
                                 <span>Account Settings</span>
                             </a>
                             <div class="dropdown-divider"></div>
                             <a href="Logout.php" class="dropdown-item logout">
-                                <span class="dropdown-icon">🚪</span>
+                                <span class="dropdown-icon">??</span>
                                 <span>Log Out</span>
                             </a>
                         </div>
@@ -190,10 +190,10 @@ $con->close();
             <div class="container">
                 <ul class="nav-menu">
                     <li><a href="index.php">Dashboard</a></li>
-                    <li><a href="StartExam-modern.php">Take Exam</a></li>
-                    <li><a href="Result-modern.php">Results</a></li>
-                    <li><a href="Shedule-modern.php" class="active">Schedule</a></li>
-                    <li><a href="Profile-modern.php">Profile</a></li>
+                    <li><a href="StartExam.php">Take Exam</a></li>
+                    <li><a href="Result.php">Results</a></li>
+                    <li><a href="Shedule.php" class="active">Schedule</a></li>
+                    <li><a href="Profile.php">Profile</a></li>
                 </ul>
             </div>
         </nav>
@@ -203,7 +203,7 @@ $con->close();
     <main class="main-content">
         <div class="container">
             <div class="content-wrapper">
-                <h1>📅 Examination Schedule</h1>
+                <h1>?? Examination Schedule</h1>
                 <p class="text-secondary">View your upcoming exams with countdown timers and is_active</p>
 
                 <?php if($scheduledExams && $scheduledExams->num_rows > 0): ?>
@@ -215,15 +215,15 @@ $con->close();
                         // Determine exam status
                         if($currentTime >= $examDateTime && $currentTime <= $examEndTime) {
                             $is_active = 'open';
-                            $statusText = '🟢 Open Now';
+                            $statusText = '?? Open Now';
                             $statusClass = 'status-open';
                         } elseif($currentTime > $examEndTime) {
                             $is_active = 'closed';
-                            $statusText = '🔴 Closed';
+                            $statusText = '?? Closed';
                             $statusClass = 'status-closed';
                         } else {
                             $is_active = 'upcoming';
-                            $statusText = '🟡 Upcoming';
+                            $statusText = '?? Upcoming';
                             $statusClass = 'status-upcoming';
                         }
                     ?>
@@ -244,7 +244,7 @@ $con->close();
 
                         <div class="exam-info-grid">
                             <div class="exam-info-item">
-                                <div class="exam-info-icon">📅</div>
+                                <div class="exam-info-icon">??</div>
                                 <div class="exam-info-content">
                                     <strong>Date</strong>
                                     <span><?php echo date('F j, Y', $examDateTime); ?></span>
@@ -252,7 +252,7 @@ $con->close();
                             </div>
                             
                             <div class="exam-info-item">
-                                <div class="exam-info-icon">⏰</div>
+                                <div class="exam-info-icon">?</div>
                                 <div class="exam-info-content">
                                     <strong>Time</strong>
                                     <span><?php echo date('g:i A', $examDateTime); ?></span>
@@ -260,7 +260,7 @@ $con->close();
                             </div>
                             
                             <div class="exam-info-item">
-                                <div class="exam-info-icon">⏱️</div>
+                                <div class="exam-info-icon">??</div>
                                 <div class="exam-info-content">
                                     <strong>Duration</strong>
                                     <span><?php echo $exam['duration']; ?> minutes</span>
@@ -268,7 +268,7 @@ $con->close();
                             </div>
                             
                             <div class="exam-info-item">
-                                <div class="exam-info-icon">📚</div>
+                                <div class="exam-info-icon">??</div>
                                 <div class="exam-info-content">
                                     <strong>Semester</strong>
                                     <span><?php echo $exam['semester']; ?></span>
@@ -283,7 +283,7 @@ $con->close();
                         </div>
                         <?php elseif($is_active == 'open'): ?>
                         <div class="countdown-timer" style="background: linear-gradient(135deg, rgba(40, 167, 69, 0.1) 0%, rgba(40, 167, 69, 0.2) 100%);">
-                            <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--success-color);">⚡ Exam is LIVE!</div>
+                            <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--success-color);">? Exam is LIVE!</div>
                             <div class="countdown-display" id="countdown-<?php echo $exam['schedule_id']; ?>">Time remaining...</div>
                         </div>
                         <?php endif; ?>
@@ -291,20 +291,20 @@ $con->close();
                         <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
                             <?php if($is_active == 'open'): ?>
                             <a href="exam-instructions.php?schedule_id=<?php echo $exam['schedule_id']; ?>" class="btn btn-success" style="flex: 1;">
-                                ▶️ Start Exam Now
+                                ?? Start Exam Now
                             </a>
                             <?php elseif($is_active == 'upcoming'): ?>
                             <button class="btn btn-secondary" style="flex: 1;" disabled>
-                                ⏳ Not Yet Available
+                                ? Not Yet Available
                             </button>
                             <?php else: ?>
                             <button class="btn btn-danger" style="flex: 1;" disabled>
-                                🔒 Exam Closed
+                                ?? Exam Closed
                             </button>
                             <?php endif; ?>
                             
                             <a href="exam-instructions.php?schedule_id=<?php echo $exam['schedule_id']; ?>" class="btn btn-primary">
-                                📋 View Instructions
+                                ?? View Instructions
                             </a>
                         </div>
                     </div>
@@ -312,11 +312,11 @@ $con->close();
                 <?php else: ?>
                     <div class="card">
                         <div style="text-align: center; padding: 4rem 2rem;">
-                            <div style="font-size: 4rem; margin-bottom: 1rem;">📅</div>
+                            <div style="font-size: 4rem; margin-bottom: 1rem;">??</div>
                             <h3 style="color: var(--text-secondary);">No Scheduled Exams</h3>
                             <p>There are no exams scheduled for your semester at this time.</p>
                             <a href="index.php" class="btn btn-primary" style="margin-top: 1rem;">
-                                ← Back to Dashboard
+                                ? Back to Dashboard
                             </a>
                         </div>
                     </div>
@@ -398,7 +398,7 @@ $con->close();
                     if(isExamLive) {
                         countdownElement.innerHTML = '<span class="countdown-expired">Time Expired!</span>';
                     } else {
-                        countdownElement.innerHTML = '<span style="color: var(--success-color); font-size: 1.5rem;">🟢 Exam is Open!</span>';
+                        countdownElement.innerHTML = '<span style="color: var(--success-color); font-size: 1.5rem;">?? Exam is Open!</span>';
                     }
                 }
             });

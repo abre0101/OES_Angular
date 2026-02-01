@@ -24,39 +24,39 @@ $current_page = basename($_SERVER['PHP_SELF']);
         <div class="nav-section">
             <div class="nav-section-title">Main Menu</div>
             <a href="index.php" class="nav-item <?php echo ($current_page == 'index.php') ? 'active' : ''; ?>">
-                <span class="nav-icon">🏠</span>
+                <span class="nav-icon">??</span>
                 <span class="nav-text">Dashboard</span>
             </a>
-            <a href="Profile-modern.php" class="nav-item <?php echo ($current_page == 'Profile-modern.php') ? 'active' : ''; ?>">
-                <span class="nav-icon">👤</span>
+            <a href="Profile.php" class="nav-item <?php echo ($current_page == 'Profile.php') ? 'active' : ''; ?>">
+                <span class="nav-icon">??</span>
                 <span class="nav-text">My Profile</span>
             </a>
         </div>
         
         <div class="nav-section">
             <div class="nav-section-title">Examinations</div>
-            <a href="StartExam-modern.php" class="nav-item <?php echo ($current_page == 'StartExam-modern.php') ? 'active' : ''; ?>">
-                <span class="nav-icon">📝</span>
+            <a href="StartExam.php" class="nav-item <?php echo ($current_page == 'StartExam.php') ? 'active' : ''; ?>">
+                <span class="nav-icon">??</span>
                 <span class="nav-text">Take Exam</span>
             </a>
-            <a href="Result-modern.php" class="nav-item <?php echo ($current_page == 'Result-modern.php') ? 'active' : ''; ?>">
-                <span class="nav-icon">📊</span>
+            <a href="Result.php" class="nav-item <?php echo ($current_page == 'Result.php') ? 'active' : ''; ?>">
+                <span class="nav-icon">??</span>
                 <span class="nav-text">My Results</span>
             </a>
-            <a href="practice-selection.php" class="nav-item <?php echo ($current_page == 'practice-selection.php' || $current_page == 'practice-modern.php') ? 'active' : ''; ?>">
-                <span class="nav-icon">✏️</span>
+            <a href="practice-selection.php" class="nav-item <?php echo ($current_page == 'practice-selection.php' || $current_page == 'practice.php') ? 'active' : ''; ?>">
+                <span class="nav-icon">??</span>
                 <span class="nav-text">Practice</span>
             </a>
         </div>
         
         <div class="nav-section">
             <div class="nav-section-title">Support</div>
-            <a href="../Help-modern.php" class="nav-item">
-                <span class="nav-icon">❓</span>
+            <a href="../Help.php" class="nav-item">
+                <span class="nav-icon">?</span>
                 <span class="nav-text">Help Center</span>
             </a>
-            <a href="../AboutUs-modern.php" class="nav-item">
-                <span class="nav-icon">ℹ️</span>
+            <a href="../AboutUs.php" class="nav-item">
+                <span class="nav-icon">??</span>
                 <span class="nav-text">About Us</span>
             </a>
         </div>
@@ -65,7 +65,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
     <!-- Sidebar Footer -->
     <div class="sidebar-footer">
         <a href="Logout.php" class="logout-btn">
-            <span class="nav-icon">🚪</span>
+            <span class="nav-icon">??</span>
             <span>Logout</span>
         </a>
     </div>

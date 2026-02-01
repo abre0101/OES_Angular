@@ -54,7 +54,7 @@ if (!isset($examName) && isset($_SESSION['last_exam_result'])) {
 // If still no data, redirect to results page
 if (!isset($examName)) {
     mysqli_close($con);
-    header("Location: Result-modern.php");
+    header("Location: Result.php");
     exit();
 }
 
@@ -219,7 +219,7 @@ $currentDate = date('d M Y');
     <div class="result-container">
         <div class="result-card">
             <div class="result-header">
-                <div class="result-icon">🎉</div>
+                <div class="result-icon">??</div>
                 <h1>Exam Completed!</h1>
                 <p>Your exam has been submitted successfully</p>
             </div>
@@ -271,8 +271,8 @@ $currentDate = date('d M Y');
                 </div>
                 
                 <div class="result-actions">
-                    <a href="index.php" class="btn btn-secondary">← Back to Dashboard</a>
-                    <a href="Result-modern.php" class="btn btn-success">📊 View All Results</a>
+                    <a href="index.php" class="btn btn-secondary">? Back to Dashboard</a>
+                    <a href="Result.php" class="btn btn-success">?? View All Results</a>
                 </div>
             </div>
         </div>

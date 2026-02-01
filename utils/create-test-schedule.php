@@ -87,14 +87,14 @@ foreach ($schedules as $schedule) {
                 break;
             }
         }
-        echo "✓ Schedule {$schedule['schedule_id']} created: <strong>{$exam_type}</strong> - {$schedule['course_name']} on {$schedule['exam_date']} ({$schedule['exam_time']} - {$schedule['end_time']}, {$schedule['duration_minutes']} min)<br>";
+        echo "? Schedule {$schedule['schedule_id']} created: <strong>{$exam_type}</strong> - {$schedule['course_name']} on {$schedule['exam_date']} ({$schedule['exam_time']} - {$schedule['end_time']}, {$schedule['duration_minutes']} min)<br>";
     } else {
-        echo "✗ Error creating schedule {$schedule['schedule_id']}: " . mysqli_error($con) . "<br>";
+        echo "? Error creating schedule {$schedule['schedule_id']}: " . mysqli_error($con) . "<br>";
     }
 }
 
 mysqli_close($con);
 
 echo "<br><strong>Summary: {$success_count} schedules created successfully!</strong><br><br>";
-echo "<a href='Student/StartExam-modern.php' style='padding: 10px 20px; background: #1a2b4a; color: white; text-decoration: none; border-radius: 5px; display: inline-block;'>View Exam Schedule</a>";
+echo "<a href='Student/StartExam.php' style='padding: 10px 20px; background: #1a2b4a; color: white; text-decoration: none; border-radius: 5px; display: inline-block;'>View Exam Schedule</a>";
 ?>

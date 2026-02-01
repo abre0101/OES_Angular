@@ -22,7 +22,7 @@ $stmt->close();
 mysqli_close($conn);
 // Check if modern version exists
 if (isset($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], 'modern') !== false) {
-    echo '<script type="text/javascript">alert("Profile Updated Successfully!");window.location=\'Profile-modern.php\';</script>';
+    echo '<script type="text/javascript">alert("Profile Updated Successfully!");window.location=\'Profile.php\';</script>';
 } else {
     echo '<script type="text/javascript">alert("Student Updated Successfully");window.location=\'Profile.php\';</script>';
 }

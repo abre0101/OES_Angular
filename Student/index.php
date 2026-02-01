@@ -103,25 +103,25 @@ $con->close();
                             </svg>
                         </div>
                         <div class="dropdown-menu">
-                            <a href="Profile-modern.php" class="dropdown-item">
-                                <span class="dropdown-icon">👤</span>
+                            <a href="Profile.php" class="dropdown-item">
+                                <span class="dropdown-icon">??</span>
                                 <span>My Profile</span>
                             </a>
-                            <a href="EditProfile-modern.php?Id=<?php echo $_SESSION['ID']; ?>" class="dropdown-item">
-                                <span class="dropdown-icon">⚙️</span>
+                            <a href="EditProfile.php?Id=<?php echo $_SESSION['ID']; ?>" class="dropdown-item">
+                                <span class="dropdown-icon">??</span>
                                 <span>Account Settings</span>
                             </a>
-                            <a href="../Help-modern.php" class="dropdown-item">
-                                <span class="dropdown-icon">❓</span>
+                            <a href="../Help.php" class="dropdown-item">
+                                <span class="dropdown-icon">?</span>
                                 <span>Help</span>
                             </a>
-                            <a href="../AboutUs-modern.php" class="dropdown-item">
-                                <span class="dropdown-icon">ℹ️</span>
+                            <a href="../AboutUs.php" class="dropdown-item">
+                                <span class="dropdown-icon">??</span>
                                 <span>About</span>
                             </a>
                             <div class="dropdown-divider"></div>
                             <a href="Logout.php" class="dropdown-item logout">
-                                <span class="dropdown-icon">🚪</span>
+                                <span class="dropdown-icon">??</span>
                                 <span>Log Out</span>
                             </a>
                         </div>
@@ -133,10 +133,10 @@ $con->close();
             <div class="container">
                 <ul class="nav-menu">
                     <li><a href="index.php" class="active">Dashboard</a></li>
-                    <li><a href="StartExam-modern.php">Take Exam</a></li>
-                    <li><a href="Result-modern.php">Results</a></li>
+                    <li><a href="StartExam.php">Take Exam</a></li>
+                    <li><a href="Result.php">Results</a></li>
                     <li><a href="practice-selection.php">Practice</a></li>
-                    <li><a href="Profile-modern.php">Profile</a></li>
+                    <li><a href="Profile.php">Profile</a></li>
                 </ul>
             </div>
         </nav>
@@ -148,7 +148,7 @@ $con->close();
             <!-- Welcome Banner -->
             <div class="welcome-banner">
                 <div class="welcome-content">
-                    <h1 style="color: #FFFFFF !important; text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 0, 0, 0.5) !important; font-weight: 800 !important;">👋 Welcome, <?php echo $_SESSION['Name']; ?>!</h1>
+                    <h1 style="color: #FFFFFF !important; text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 0, 0, 0.5) !important; font-weight: 800 !important;">?? Welcome, <?php echo $_SESSION['Name']; ?>!</h1>
                     <p style="color: #FFFFFF !important; text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 0, 0, 0.5) !important; font-weight: 700 !important;">Ready to take your exams? Access your dashboard below.</p>
                 </div>
             </div>
@@ -156,7 +156,7 @@ $con->close();
             <!-- Quick Stats -->
             <div class="stats-grid">
                 <div class="stat-card stat-primary">
-                    <div class="stat-icon">📚</div>
+                    <div class="stat-icon">??</div>
                     <div class="stat-details">
                         <div class="stat-value"><?php echo $examCount; ?></div>
                         <div class="stat-label">Available Exams</div>
@@ -164,7 +164,7 @@ $con->close();
                 </div>
 
                 <div class="stat-card stat-success">
-                    <div class="stat-icon">✅</div>
+                    <div class="stat-icon">?</div>
                     <div class="stat-details">
                         <div class="stat-value"><?php echo $completedCount; ?></div>
                         <div class="stat-label">Completed Exams</div>
@@ -172,7 +172,7 @@ $con->close();
                 </div>
 
                 <div class="stat-card stat-warning">
-                    <div class="stat-icon">📊</div>
+                    <div class="stat-icon">??</div>
                     <div class="stat-details">
                         <div class="stat-value"><?php echo $avgScore; ?>%</div>
                         <div class="stat-label">Average Score</div>
@@ -180,7 +180,7 @@ $con->close();
                 </div>
 
                 <div class="stat-card stat-info">
-                    <div class="stat-icon">🎓</div>
+                    <div class="stat-icon">??</div>
                     <div class="stat-details">
                         <div class="stat-value"><?php echo $studentData['department_name'] ?? 'N/A'; ?></div>
                         <div class="stat-label">Department</div>
@@ -190,25 +190,25 @@ $con->close();
 
             <!-- Quick Actions -->
             <div class="content-wrapper mt-4">
-                <h2>⚡ Quick Actions</h2>
+                <h2>? Quick Actions</h2>
                 <div class="quick-actions-grid">
-                    <a href="StartExam-modern.php" class="action-card">
-                        <div class="action-icon">📝</div>
+                    <a href="StartExam.php" class="action-card">
+                        <div class="action-icon">??</div>
                         <div class="action-title">Take Exam</div>
                         <div class="action-desc">Start a new examination</div>
                     </a>
-                    <a href="Result-modern.php" class="action-card">
-                        <div class="action-icon">📊</div>
+                    <a href="Result.php" class="action-card">
+                        <div class="action-icon">??</div>
                         <div class="action-title">View Results</div>
                         <div class="action-desc">Check your exam scores</div>
                     </a>
-                    <a href="Profile-modern.php" class="action-card">
-                        <div class="action-icon">👤</div>
+                    <a href="Profile.php" class="action-card">
+                        <div class="action-icon">??</div>
                         <div class="action-title">My Profile</div>
                         <div class="action-desc">Update your information</div>
                     </a>
                     <a href="practice-selection.php" class="action-card">
-                        <div class="action-icon">✏️</div>
+                        <div class="action-icon">??</div>
                         <div class="action-title">Practice</div>
                         <div class="action-desc">Practice with sample questions</div>
                     </a>
@@ -219,7 +219,7 @@ $con->close();
             <div class="grid grid-2 mt-4">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">📋 Student Information</h3>
+                        <h3 class="card-title">?? Student Information</h3>
                     </div>
                     <div class="info-list">
                         <div class="info-item">
@@ -247,18 +247,18 @@ $con->close();
 
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">📢 Announcements</h3>
+                        <h3 class="card-title">?? Announcements</h3>
                     </div>
                     <div class="announcement-list">
                         <div class="announcement-item">
-                            <div class="announcement-icon">📅</div>
+                            <div class="announcement-icon">??</div>
                             <div class="announcement-content">
                                 <div class="announcement-title">Exam Schedule Updated</div>
                                 <div class="announcement-time">Check the schedule page for new dates</div>
                             </div>
                         </div>
                         <div class="announcement-item">
-                            <div class="announcement-icon">✅</div>
+                            <div class="announcement-icon">?</div>
                             <div class="announcement-content">
                                 <div class="announcement-title">System Ready</div>
                                 <div class="announcement-time">All systems operational</div>

@@ -97,8 +97,8 @@ function performSearch(searchTerm) {
     const term = searchTerm.toLowerCase();
 
     const searchMap = {
-        'student': 'Student-modern.php',
-        'students': 'Student-modern.php',
+        'student': 'Student.php',
+        'students': 'Student.php',
         'instructor': 'Instructor.php',
         'instructors': 'Instructor.php',
         'teacher': 'Instructor.php',

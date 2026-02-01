@@ -207,25 +207,25 @@ $studentSemester = $_SESSION['Sem'];
                             </svg>
                         </div>
                         <div class="dropdown-menu">
-                            <a href="Profile-modern.php" class="dropdown-item">
-                                <span class="dropdown-icon">👤</span>
+                            <a href="Profile.php" class="dropdown-item">
+                                <span class="dropdown-icon">??</span>
                                 <span>My Profile</span>
                             </a>
-                            <a href="EditProfile-modern.php?Id=<?php echo $_SESSION['ID']; ?>" class="dropdown-item">
-                                <span class="dropdown-icon">⚙️</span>
+                            <a href="EditProfile.php?Id=<?php echo $_SESSION['ID']; ?>" class="dropdown-item">
+                                <span class="dropdown-icon">??</span>
                                 <span>Account Settings</span>
                             </a>
-                            <a href="../Help-modern.php" class="dropdown-item">
-                                <span class="dropdown-icon">❓</span>
+                            <a href="../Help.php" class="dropdown-item">
+                                <span class="dropdown-icon">?</span>
                                 <span>Help</span>
                             </a>
-                            <a href="../AboutUs-modern.php" class="dropdown-item">
-                                <span class="dropdown-icon">ℹ️</span>
+                            <a href="../AboutUs.php" class="dropdown-item">
+                                <span class="dropdown-icon">??</span>
                                 <span>About</span>
                             </a>
                             <div class="dropdown-divider"></div>
                             <a href="Logout.php" class="dropdown-item logout">
-                                <span class="dropdown-icon">🚪</span>
+                                <span class="dropdown-icon">??</span>
                                 <span>Log Out</span>
                             </a>
                         </div>
@@ -237,10 +237,10 @@ $studentSemester = $_SESSION['Sem'];
             <div class="container">
                 <ul class="nav-menu">
                     <li><a href="index.php">Dashboard</a></li>
-                    <li><a href="StartExam-modern.php" class="active">Take Exam</a></li>
-                    <li><a href="Result-modern.php">Results</a></li>
+                    <li><a href="StartExam.php" class="active">Take Exam</a></li>
+                    <li><a href="Result.php">Results</a></li>
                     <li><a href="practice-selection.php">Practice</a></li>
-                    <li><a href="Profile-modern.php">Profile</a></li>
+                    <li><a href="Profile.php">Profile</a></li>
                 </ul>
             </div>
         </nav>
@@ -250,11 +250,11 @@ $studentSemester = $_SESSION['Sem'];
     <main class="main-content">
         <div class="container">
             <div class="content-wrapper">
-                <h1>📝 Available Examinations</h1>
+                <h1>?? Available Examinations</h1>
                 <p class="text-secondary">Welcome <?php echo $_SESSION['Name']; ?>! Below are your scheduled exams.</p>
 
                 <div class="alert alert-info mt-4">
-                    <strong>⚠️ Important:</strong> You can only take exams during their scheduled time window. Once started, you must complete the exam within the allocated duration.
+                    <strong>?? Important:</strong> You can only take exams during their scheduled time window. Once started, you must complete the exam within the allocated duration.
                 </div>
 
                 <?php
@@ -341,13 +341,13 @@ $studentSemester = $_SESSION['Sem'];
                             <h3><?php echo htmlspecialchars($examType); ?></h3>
                             <div class="exam-meta">
                                 <div class="exam-meta-item">
-                                    📚 <strong><?php echo htmlspecialchars($course); ?></strong>
+                                    ?? <strong><?php echo htmlspecialchars($course); ?></strong>
                                 </div>
                                 <div class="exam-meta-item">
-                                    📅 <strong><?php echo date('M d, Y', strtotime($examDate)); ?></strong>
+                                    ?? <strong><?php echo date('M d, Y', strtotime($examDate)); ?></strong>
                                 </div>
                                 <div class="exam-meta-item">
-                                    ⏰ <strong><?php echo date('g:i A', strtotime($startTime)); ?> - <?php echo date('g:i A', strtotime($endTime)); ?></strong>
+                                    ? <strong><?php echo date('g:i A', strtotime($startTime)); ?> - <?php echo date('g:i A', strtotime($endTime)); ?></strong>
                                 </div>
                             </div>
                         </div>
@@ -373,7 +373,7 @@ $studentSemester = $_SESSION['Sem'];
                         <div class="exam-actions">
                             <?php if ($canTake): ?>
                                 <a href="exam-instructions.php?schedule_id=<?php echo $scheduleId; ?>" class="btn btn-success" style="font-size: 1.1rem;">
-                                    🚀 Start Exam
+                                    ?? Start Exam
                                 </a>
                                 <div class="countdown">
                                     <div class="countdown-label">Time Remaining</div>
@@ -390,7 +390,7 @@ $studentSemester = $_SESSION['Sem'];
                                 </div>
                             <?php else: ?>
                                 <button class="btn btn-secondary" disabled style="font-size: 1.1rem;">
-                                    <?php echo $hasCompleted ? '✓ Completed' : '🔒 Not Available'; ?>
+                                    <?php echo $hasCompleted ? '? Completed' : '?? Not Available'; ?>
                                 </button>
                                 <div style="text-align: center; color: var(--text-secondary); font-size: 0.9rem;">
                                     <?php echo $message; ?>
@@ -416,24 +416,24 @@ $studentSemester = $_SESSION['Sem'];
 
                 <div class="card mt-4">
                     <div class="card-header">
-                        <h3 class="card-title">📋 Exam Instructions</h3>
+                        <h3 class="card-title">?? Exam Instructions</h3>
                     </div>
                     <div style="padding: 1.5rem;">
                         <ul style="list-style: none; padding: 0;">
                             <li style="padding: 0.75rem 0; border-bottom: 1px solid var(--border-color);">
-                                ✓ Ensure you have a stable internet connection before starting
+                                ? Ensure you have a stable internet connection before starting
                             </li>
                             <li style="padding: 0.75rem 0; border-bottom: 1px solid var(--border-color);">
-                                ✓ You can only take the exam during the scheduled time window
+                                ? You can only take the exam during the scheduled time window
                             </li>
                             <li style="padding: 0.75rem 0; border-bottom: 1px solid var(--border-color);">
-                                ✓ Once started, you must complete the exam within the allocated duration
+                                ? Once started, you must complete the exam within the allocated duration
                             </li>
                             <li style="padding: 0.75rem 0; border-bottom: 1px solid var(--border-color);">
-                                ✓ Read all questions carefully before answering
+                                ? Read all questions carefully before answering
                             </li>
                             <li style="padding: 0.75rem 0;">
-                                ✓ The exam will auto-submit when time expires
+                                ? The exam will auto-submit when time expires
                             </li>
                         </ul>
                     </div>

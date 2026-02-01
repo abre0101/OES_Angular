@@ -45,25 +45,25 @@ if(!isset($_SESSION['Name'])){
                             </svg>
                         </div>
                         <div class="dropdown-menu">
-                            <a href="Profile-modern.php" class="dropdown-item">
-                                <span class="dropdown-icon">👤</span>
+                            <a href="Profile.php" class="dropdown-item">
+                                <span class="dropdown-icon">??</span>
                                 <span>My Profile</span>
                             </a>
                             <a href="EditProfile.php?Id=<?php echo $_SESSION['ID']; ?>" class="dropdown-item">
-                                <span class="dropdown-icon">⚙️</span>
+                                <span class="dropdown-icon">??</span>
                                 <span>Account Settings</span>
                             </a>
-                            <a href="../Help-modern.php" class="dropdown-item">
-                                <span class="dropdown-icon">❓</span>
+                            <a href="../Help.php" class="dropdown-item">
+                                <span class="dropdown-icon">?</span>
                                 <span>Help</span>
                             </a>
-                            <a href="../AboutUs-modern.php" class="dropdown-item">
-                                <span class="dropdown-icon">ℹ️</span>
+                            <a href="../AboutUs.php" class="dropdown-item">
+                                <span class="dropdown-icon">??</span>
                                 <span>About</span>
                             </a>
                             <div class="dropdown-divider"></div>
                             <a href="Logout.php" class="dropdown-item logout">
-                                <span class="dropdown-icon">🚪</span>
+                                <span class="dropdown-icon">??</span>
                                 <span>Log Out</span>
                             </a>
                         </div>
@@ -75,10 +75,10 @@ if(!isset($_SESSION['Name'])){
             <div class="container">
                 <ul class="nav-menu">
                     <li><a href="index.php">Dashboard</a></li>
-                    <li><a href="StartExam-modern.php">Take Exam</a></li>
-                    <li><a href="Result-modern.php" class="active">Results</a></li>
+                    <li><a href="StartExam.php">Take Exam</a></li>
+                    <li><a href="Result.php" class="active">Results</a></li>
                     <li><a href="practice-selection.php">Practice</a></li>
-                    <li><a href="Profile-modern.php">Profile</a></li>
+                    <li><a href="Profile.php">Profile</a></li>
                 </ul>
             </div>
         </nav>
@@ -88,7 +88,7 @@ if(!isset($_SESSION['Name'])){
     <main class="main-content">
         <div class="container">
             <div class="content-wrapper">
-                <h1>📊 My Exam Results</h1>
+                <h1>?? My Exam Results</h1>
                 <p class="text-secondary">Welcome <?php echo $_SESSION['Name']; ?>! View all your examination results below.</p>
 
                 <?php
@@ -159,16 +159,16 @@ if(!isset($_SESSION['Name'])){
                             <div>
                                 <?php if($isPassed): ?>
                                 <span class="status-badge status-active" style="font-size: 1rem; padding: 0.75rem 1.5rem;">
-                                    ✅ PASSED
+                                    ? PASSED
                                 </span>
                                 <?php else: ?>
                                 <span class="status-badge status-inactive" style="font-size: 1rem; padding: 0.75rem 1.5rem;">
-                                    ❌ FAILED
+                                    ? FAILED
                                 </span>
                                 <?php endif; ?>
                             </div>
                             <a href="review-answers.php?result_id=<?php echo $row['result_id']; ?>" class="btn btn-primary">
-                                📝 Review Answers
+                                ?? Review Answers
                             </a>
                         </div>
                     </div>
@@ -178,12 +178,12 @@ if(!isset($_SESSION['Name'])){
                 } else {
                 ?>
                 <div class="card mt-4" style="text-align: center; padding: 4rem 2rem;">
-                    <div style="font-size: 4rem; margin-bottom: 1rem;">📝</div>
+                    <div style="font-size: 4rem; margin-bottom: 1rem;">??</div>
                     <h3>No Results Yet</h3>
                     <p style="color: var(--text-secondary); margin: 1rem 0 2rem 0;">
                         You haven't taken any exams yet. Start your first exam to see results here.
                     </p>
-                    <a href="StartExam-modern.php" class="btn btn-primary">
+                    <a href="StartExam.php" class="btn btn-primary">
                         Take Your First Exam
                     </a>
                 </div>

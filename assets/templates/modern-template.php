@@ -42,9 +42,9 @@
             <div class="container">
                 <ul class="nav-menu">
                     <li><a href="index.php">Home</a></li>
-                    <li><a href="AboutUs-modern.php">About Us</a></li>
-                    <li><a href="Shedule-modern.php">Schedule</a></li>
-                    <li><a href="Help-modern.php">Help</a></li>
+                    <li><a href="AboutUs.php">About Us</a></li>
+                    <li><a href="Shedule.php">Schedule</a></li>
+                    <li><a href="Help.php">Help</a></li>
                 </ul>
             </div>
         </nav>

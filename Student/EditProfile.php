@@ -28,7 +28,7 @@ if($row = mysqli_fetch_array($result)) {
     $UserName = $row['username'];
     $is_active = $row['is_active'];
 } else {
-    header("Location: Profile-modern.php");
+    header("Location: Profile.php");
     exit();
 }
 
@@ -286,25 +286,25 @@ mysqli_close($con);
                             </svg>
                         </div>
                         <div class="dropdown-menu">
-                            <a href="Profile-modern.php" class="dropdown-item">
-                                <span class="dropdown-icon">👤</span>
+                            <a href="Profile.php" class="dropdown-item">
+                                <span class="dropdown-icon">??</span>
                                 <span>My Profile</span>
                             </a>
-                            <a href="EditProfile-modern.php?Id=<?php echo $_SESSION['ID']; ?>" class="dropdown-item">
-                                <span class="dropdown-icon">⚙️</span>
+                            <a href="EditProfile.php?Id=<?php echo $_SESSION['ID']; ?>" class="dropdown-item">
+                                <span class="dropdown-icon">??</span>
                                 <span>Account Settings</span>
                             </a>
-                            <a href="../Help-modern.php" class="dropdown-item">
-                                <span class="dropdown-icon">❓</span>
+                            <a href="../Help.php" class="dropdown-item">
+                                <span class="dropdown-icon">?</span>
                                 <span>Help</span>
                             </a>
-                            <a href="../AboutUs-modern.php" class="dropdown-item">
-                                <span class="dropdown-icon">ℹ️</span>
+                            <a href="../AboutUs.php" class="dropdown-item">
+                                <span class="dropdown-icon">??</span>
                                 <span>About</span>
                             </a>
                             <div class="dropdown-divider"></div>
                             <a href="Logout.php" class="dropdown-item logout">
-                                <span class="dropdown-icon">🚪</span>
+                                <span class="dropdown-icon">??</span>
                                 <span>Log Out</span>
                             </a>
                         </div>
@@ -316,10 +316,10 @@ mysqli_close($con);
             <div class="container">
                 <ul class="nav-menu">
                     <li><a href="index.php">Dashboard</a></li>
-                    <li><a href="StartExam-modern.php">Take Exam</a></li>
-                    <li><a href="Result-modern.php">Results</a></li>
+                    <li><a href="StartExam.php">Take Exam</a></li>
+                    <li><a href="Result.php">Results</a></li>
                     <li><a href="practice-selection.php">Practice</a></li>
-                    <li><a href="Profile-modern.php">Profile</a></li>
+                    <li><a href="Profile.php">Profile</a></li>
                 </ul>
             </div>
         </nav>
@@ -340,14 +340,14 @@ mysqli_close($con);
 
                     <div class="profile-card-body">
                         <div class="alert alert-info">
-                            <span class="alert-icon">ℹ️</span>
+                            <span class="alert-icon">??</span>
                             <span>You can only change your username and password. Other information is managed by the administration.</span>
                         </div>
 
                         <!-- Student Information (Read-only) -->
                         <div class="info-section">
                             <div class="info-section-title">
-                                <span>📋</span>
+                                <span>??</span>
                                 <span>Student Information</span>
                             </div>
                             <div class="info-grid">
@@ -381,7 +381,7 @@ mysqli_close($con);
                         <!-- Edit Form -->
                         <div class="info-section">
                             <div class="info-section-title">
-                                <span>🔐</span>
+                                <span>??</span>
                                 <span>Account Credentials</span>
                             </div>
                             <form method="post" action="UpdateProfile.php?Id=<?php echo $Id; ?>" id="editProfileForm">
@@ -434,11 +434,11 @@ mysqli_close($con);
                                 </div>
 
                                 <div class="form-actions">
-                                    <a href="Profile-modern.php" class="btn btn-secondary">
+                                    <a href="Profile.php" class="btn btn-secondary">
                                         Cancel
                                     </a>
                                     <button type="submit" class="btn btn-primary">
-                                        💾 Update Profile
+                                        ?? Update Profile
                                     </button>
                                 </div>
                             </form>

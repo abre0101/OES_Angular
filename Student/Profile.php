@@ -57,25 +57,25 @@ $row = mysqli_fetch_array($result);
                             </svg>
                         </div>
                         <div class="dropdown-menu">
-                            <a href="Profile-modern.php" class="dropdown-item">
-                                <span class="dropdown-icon">👤</span>
+                            <a href="Profile.php" class="dropdown-item">
+                                <span class="dropdown-icon">??</span>
                                 <span>My Profile</span>
                             </a>
-                            <a href="EditProfile-modern.php?Id=<?php echo $_SESSION['ID']; ?>" class="dropdown-item">
-                                <span class="dropdown-icon">⚙️</span>
+                            <a href="EditProfile.php?Id=<?php echo $_SESSION['ID']; ?>" class="dropdown-item">
+                                <span class="dropdown-icon">??</span>
                                 <span>Account Settings</span>
                             </a>
-                            <a href="../Help-modern.php" class="dropdown-item">
-                                <span class="dropdown-icon">❓</span>
+                            <a href="../Help.php" class="dropdown-item">
+                                <span class="dropdown-icon">?</span>
                                 <span>Help</span>
                             </a>
-                            <a href="../AboutUs-modern.php" class="dropdown-item">
-                                <span class="dropdown-icon">ℹ️</span>
+                            <a href="../AboutUs.php" class="dropdown-item">
+                                <span class="dropdown-icon">??</span>
                                 <span>About</span>
                             </a>
                             <div class="dropdown-divider"></div>
                             <a href="Logout.php" class="dropdown-item logout">
-                                <span class="dropdown-icon">🚪</span>
+                                <span class="dropdown-icon">??</span>
                                 <span>Log Out</span>
                             </a>
                         </div>
@@ -87,10 +87,10 @@ $row = mysqli_fetch_array($result);
             <div class="container">
                 <ul class="nav-menu">
                     <li><a href="index.php">Dashboard</a></li>
-                    <li><a href="StartExam-modern.php">Take Exam</a></li>
-                    <li><a href="Result-modern.php">Results</a></li>
+                    <li><a href="StartExam.php">Take Exam</a></li>
+                    <li><a href="Result.php">Results</a></li>
                     <li><a href="practice-selection.php">Practice</a></li>
-                    <li><a href="Profile-modern.php" class="active">Profile</a></li>
+                    <li><a href="Profile.php" class="active">Profile</a></li>
                 </ul>
             </div>
         </nav>
@@ -111,7 +111,7 @@ $row = mysqli_fetch_array($result);
                 <div class="grid grid-2">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">📋 Personal Information</h3>
+                            <h3 class="card-title">?? Personal Information</h3>
                         </div>
                         <div class="info-list">
                             <div class="info-item">
@@ -131,7 +131,7 @@ $row = mysqli_fetch_array($result);
 
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">🎓 Academic Information</h3>
+                            <h3 class="card-title">?? Academic Information</h3>
                         </div>
                         <div class="info-list">
                             <div class="info-item">
@@ -156,7 +156,7 @@ $row = mysqli_fetch_array($result);
 
                 <div class="card mt-4">
                     <div class="card-header">
-                        <h3 class="card-title">🔐 Account Information</h3>
+                        <h3 class="card-title">?? Account Information</h3>
                     </div>
                     <div class="info-list">
                         <div class="info-item">
@@ -165,7 +165,7 @@ $row = mysqli_fetch_array($result);
                         </div>
                         <div class="info-item">
                             <span class="info-label">Password</span>
-                            <span class="info-value">••••••••</span>
+                            <span class="info-value">��������</span>
                         </div>
                         <div class="info-item">
                             <span class="info-label">Account Status</span>
@@ -182,10 +182,10 @@ $row = mysqli_fetch_array($result);
 
                 <div style="text-align: center; margin-top: 3rem;">
                     <a href="index.php" class="btn btn-secondary">
-                        ← Back to Dashboard
+                        ? Back to Dashboard
                     </a>
-                    <a href="EditProfile-modern.php?Id=<?php echo $Id; ?>" class="btn btn-primary">
-                        ✏️ Edit Profile
+                    <a href="EditProfile.php?Id=<?php echo $Id; ?>" class="btn btn-primary">
+                        ?? Edit Profile
                     </a>
                 </div>
             </div>

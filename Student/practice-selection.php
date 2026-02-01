@@ -167,19 +167,19 @@ mysqli_close($con);
 <body>
     <div class="practice-selection-container">
         <a href="index.php" class="back-button btn btn-secondary">
-            ← Back to Dashboard
+            ? Back to Dashboard
         </a>
         
         <div class="selection-header">
-            <h1>📚 Select Practice Course</h1>
+            <h1>?? Select Practice Course</h1>
             <p>Choose a subject to start practicing</p>
         </div>
         
         <?php if (count($courses) > 0): ?>
             <div class="courses-grid">
                 <?php foreach ($courses as $course): ?>
-                    <a href="practice-modern.php?course=<?php echo urlencode($course['course_name']); ?>" class="course-card">
-                        <div class="course-icon">📖</div>
+                    <a href="practice.php?course=<?php echo urlencode($course['course_name']); ?>" class="course-card">
+                        <div class="course-icon">??</div>
                         <div class="course-name"><?php echo htmlspecialchars($course['course_name']); ?></div>
                         <div class="course-info">
                             <div class="course-stat">
@@ -187,7 +187,7 @@ mysqli_close($con);
                                 <div class="label">Questions</div>
                             </div>
                             <div class="course-stat">
-                                <div class="value">∞</div>
+                                <div class="value">8</div>
                                 <div class="label">No Time Limit</div>
                             </div>
                         </div>
@@ -196,7 +196,7 @@ mysqli_close($con);
             </div>
         <?php else: ?>
             <div class="empty-state">
-                <div class="empty-state-icon">📭</div>
+                <div class="empty-state-icon">??</div>
                 <h2>No Practice Questions Available</h2>
                 <p>There are currently no practice questions in the system. Please check back later or contact your instructor.</p>
                 <a href="index.php" class="btn btn-primary" style="margin-top: 2rem;">
