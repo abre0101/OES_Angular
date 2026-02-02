@@ -12,8 +12,9 @@ ini_set('display_errors', 1);
 
 session_start();
 
-// Include security logger
+// Include security logger and password helper
 require_once('../utils/security_logger.php');
+require_once('../utils/password_helper.php');
 
 $UserName=$_POST['txtUserName'] ?? '';
 $Password=$_POST['txtPassword'] ?? '';
@@ -28,15 +29,15 @@ if(empty($UserName) || empty($Password) || empty($UserType)) {
 if($UserType==="Administrator")
 {
  require_once('../Connections/OES.php');
-$stmt = $con->prepare("select * from administrators where username=? and password=?");
-$stmt->bind_param("ss", $UserName, $Password);
+$stmt = $con->prepare("select * from administrators where username=?");
+$stmt->bind_param("s", $UserName);
 $stmt->execute();
 $result = $stmt->get_result();
 $row = $result->fetch_array();
 $num_row = $result->num_rows;
 
 //echo $records;
-if ($num_row==0)
+if ($num_row==0 || !verifyPassword($Password, $row['password']))
 {
 logFailedLogin($UserName, 'admin', 'Invalid username or password');
 echo '<script type="text/javascript">alert("Wrong UserName or Password");window.location=\'index.php\';</script>';
@@ -57,13 +58,13 @@ $con->close();
 else if ($UserType=="Instructor")
 {
     require_once('../Connections/OES.php');
-$stmt = $con->prepare("select * from instructors where username=? and password=? and is_active=1");
-$stmt->bind_param("ss", $UserName, $Password);
+$stmt = $con->prepare("select * from instructors where username=? and is_active=1");
+$stmt->bind_param("s", $UserName);
 $stmt->execute();
 $result = $stmt->get_result();
 $row = $result->fetch_array();
 $records = $result->num_rows;
-if ($records==0)
+if ($records==0 || !verifyPassword($Password, $row['password']))
 {
 logFailedLogin($UserName, 'instructor', 'Invalid credentials or account inactive');
 echo '<script type="text/javascript">alert("Wrong UserName or Password Or You are Inactivated");window.location=\'index.php\';</script>';
@@ -84,13 +85,13 @@ $con->close();
 else if ($UserType=="ExamCommittee")
 {
 require_once('../Connections/OES.php');
-$stmt = $con->prepare("select * from exam_committee_members where username=? and password=? and is_active=1");
-$stmt->bind_param("ss", $UserName, $Password);
+$stmt = $con->prepare("select * from exam_committee_members where username=? and is_active=1");
+$stmt->bind_param("s", $UserName);
 $stmt->execute();
 $result = $stmt->get_result();
 $row = $result->fetch_array();
 $records = $result->num_rows;
-if ($records==0)
+if ($records==0 || !verifyPassword($Password, $row['password']))
 {
 logFailedLogin($UserName, 'exam_committee', 'Invalid credentials or account inactive');
 echo '<script type="text/javascript">alert("Wrong UserName or Password");window.location=\'index.php\';</script>';
@@ -117,19 +118,19 @@ else if ($UserType=="Student")
      die("Connection failed: " . $con->connect_error);
  }
  
-$stmt = $con->prepare("select * from students where username=? and password=? and is_active=1");
+$stmt = $con->prepare("select * from students where username=? and is_active=1");
 
 if (!$stmt) {
     die("Prepare failed: " . $con->error);
 }
 
-$stmt->bind_param("ss", $UserName, $Password);
+$stmt->bind_param("s", $UserName);
 $stmt->execute();
 $result = $stmt->get_result();
 $row = $result->fetch_array();
 $records = $result->num_rows;
 
-if ($records==0)
+if ($records==0 || !verifyPassword($Password, $row['password']))
 {
 logFailedLogin($UserName, 'student', 'Invalid credentials or account inactive');
 echo '<script type="text/javascript">alert("Wrong UserName or Password or Inactivated");window.location=\'student-login.php\';</script>';

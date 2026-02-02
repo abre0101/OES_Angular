@@ -8,6 +8,8 @@
 
 <body>
 <?php
+	require_once(__DIR__ . "/../utils/password_helper.php");
+
         $Id=$_POST['excID'];
          $Name=$_POST['excName']; 
          $Email=$_POST['excEmail'];
@@ -16,15 +18,19 @@
 	$Department=$_POST['cmbDep'];       
 	$is_active=$_POST['cmbStatus'];
 	
+	// Hash the password before storing
+	$hashedPassword = hashPassword($Password);
+	
 	// Establish Connection with MYSQL
 	$con = new mysqli("localhost","root");
 	// Select Database
 	$con->select_db("oes");
-	// Specify the query to Insert Record
-    $sql = "Insert INTO exam_committee_members	(committee_member_id,full_name,email,username,password,department_name,is_active) 
-             values('".$Id."','".$Name."','".$Email."','".$UserName."','".$Password."','".$Department."','".$Status."')";	
+	// Specify the query to Insert Record - Using prepared statement for security
+	$stmt = $con->prepare("Insert INTO exam_committee_members (committee_member_id,full_name,email,username,password,department_name,is_active) values(?,?,?,?,?,?,?)");
+	$stmt->bind_param("sssssss", $Id, $Name, $Email, $UserName, $hashedPassword, $Department, $is_active);
 	// execute query
-	$con->query ($sql);
+	$stmt->execute();
+	$stmt->close();
 	// Close The Connection
 	$con->close ();
 	echo '<script type="text/javascript">alert("User Inserted Succesfully");window.location=\'ECommittee.php\';</script>';

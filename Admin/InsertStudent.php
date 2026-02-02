@@ -7,6 +7,7 @@
 
 <body>
 <?php
+	require_once(__DIR__ . "/../utils/password_helper.php");
 
 	$ID=$_POST['txtRoll'];
 	$Name=$_POST['txtName'];
@@ -18,11 +19,14 @@
         $Sex=$_POST['gender'];
         $is_active=$_POST['cmbStatus'];
 
+	// Hash the password before storing
+	$hashedPassword = hashPassword($Password);
+
 	// Establish Connection with MYSQL
 	$con = require_once(__DIR__ . "/../Connections/OES.php"); // Auto-fixed connection;
 	// Specify the query to Insert Record
 	$stmt = $con->prepare("Insert INTO students(Id,Name,department_name,year,semester,Sex,username,password,is_active) values(?,?,?,?,?,?,?,?,?)");
-	$stmt->bind_param("ssssissss", $ID, $Name, $StudDept, $StudYear, $StudSem, $Sex, $UserName, $Password, $is_active);
+	$stmt->bind_param("ssssissss", $ID, $Name, $StudDept, $StudYear, $StudSem, $Sex, $UserName, $hashedPassword, $is_active);
 	// execute query
 	$stmt->execute();
 	$stmt->close();

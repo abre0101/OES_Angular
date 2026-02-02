@@ -8,7 +8,7 @@
 
 <body>
 <?php
-        
+	require_once(__DIR__ . "/../utils/password_helper.php");
 
 	  $Id=$_POST['instID'];
          $Name=$_POST['instName']; 
@@ -20,18 +20,20 @@
 	$is_active=$_POST['cmbStatus'];
 	 $Sex=$_POST['gender'];
 
-	
+	// Hash the password before storing
+	$hashedPassword = hashPassword($Password);
 
 	
 	// Establish Connection with MYSQL
 	$con = new mysqli("localhost","root");
 	// Select Database
 	$con->select_db("oes");
-	// Specify the query to Insert Record
-    $sql = "Insert INTO instructors (instructor_id,full_name,Stud_Sex,department_name,username,course_name,password,is_active)  
-             values('".$Id."','".$Name."','".$Sex."','".$Department."','".$UserName."','".$cmbCourse."',".$Password."','".$Status."')";
+	// Specify the query to Insert Record - Using prepared statement for security
+	$stmt = $con->prepare("Insert INTO instructors (instructor_id,full_name,Stud_Sex,department_name,username,course_name,password,is_active) values(?,?,?,?,?,?,?,?)");
+	$stmt->bind_param("ssssssss", $Id, $Name, $Sex, $Department, $UserName, $cmbCourse, $hashedPassword, $is_active);
 	// execute query
-	$con->query ($sql);
+	$stmt->execute();
+	$stmt->close();
 	// Close The Connection
 	$con->close ();
 	echo '<script type="text/javascript">alert("User Inserted Succesfully");window.location=\'Instructor.php\';</script>';

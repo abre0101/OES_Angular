@@ -36,24 +36,35 @@ if(isset($_POST['process_request'])) {
         // Get request details
         $request = $con->query("SELECT * FROM password_reset_requests WHERE request_id = $requestId")->fetch_assoc();
         
-        // Generate temporary password
+        // Generate temporary password and hash it
+        require_once(__DIR__ . "/../utils/password_helper.php");
         $tempPassword = 'Temp' . rand(1000, 9999);
+        $hashedTempPassword = hashPassword($tempPassword);
         
         // Reset password based on user type
         switch($request['user_type']) {
             case 'student':
-                $con->query("UPDATE students SET Password = '$tempPassword' WHERE Id = '{$request['user_id']}'");
+                $stmt = $con->prepare("UPDATE students SET Password = ? WHERE Id = ?");
+                $stmt->bind_param("ss", $hashedTempPassword, $request['user_id']);
+                $stmt->execute();
                 break;
             case 'instructor':
-                $con->query("UPDATE instructors SET Password = '$tempPassword' WHERE instructor_id = '{$request['user_id']}'");
+                $stmt = $con->prepare("UPDATE instructors SET Password = ? WHERE instructor_id = ?");
+                $stmt->bind_param("ss", $hashedTempPassword, $request['user_id']);
+                $stmt->execute();
                 break;
             case 'exam_committee':
-                $con->query("UPDATE exam_committee_members SET Password = '$tempPassword' WHERE committee_member_id = '{$request['user_id']}'");
+                $stmt = $con->prepare("UPDATE exam_committee_members SET Password = ? WHERE committee_member_id = ?");
+                $stmt->bind_param("ss", $hashedTempPassword, $request['user_id']);
+                $stmt->execute();
                 break;
         }
         
         // Update request status
-        $con->query("UPDATE password_reset_requests SET status = 'approved', processed_by = '$adminName', processed_date = '$processDate', notes = 'Temporary password: $tempPassword' WHERE request_id = $requestId");
+        $stmt = $con->prepare("UPDATE password_reset_requests SET status = 'approved', processed_by = ?, processed_date = ?, notes = ? WHERE request_id = ?");
+        $notes = 'Temporary password: ' . $tempPassword;
+        $stmt->bind_param("sssi", $adminName, $processDate, $notes, $requestId);
+        $stmt->execute();
         
         $message = "Request approved! Temporary password: <strong>$tempPassword</strong> - Please inform the user.";
         $messageType = 'success';
@@ -85,29 +96,30 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['reset_password'])) {
         $messageType = 'danger';
     } else {
         // Hash password for security
-        $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+        require_once(__DIR__ . "/../utils/password_helper.php");
+        $hashedPassword = hashPassword($newPassword);
         
         // Update password based on user type
         $updated = false;
         switch($userType) {
             case 'student':
                 $stmt = $con->prepare("UPDATE students SET Password = ? WHERE Id = ?");
-                $stmt->bind_param("ss", $newPassword, $userId);
+                $stmt->bind_param("ss", $hashedPassword, $userId);
                 $updated = $stmt->execute();
                 break;
             case 'instructor':
                 $stmt = $con->prepare("UPDATE instructors SET Password = ? WHERE instructor_id = ?");
-                $stmt->bind_param("ss", $newPassword, $userId);
+                $stmt->bind_param("ss", $hashedPassword, $userId);
                 $updated = $stmt->execute();
                 break;
             case 'exam_committee':
                 $stmt = $con->prepare("UPDATE exam_committee_members SET Password = ? WHERE committee_member_id = ?");
-                $stmt->bind_param("ss", $newPassword, $userId);
+                $stmt->bind_param("ss", $hashedPassword, $userId);
                 $updated = $stmt->execute();
                 break;
             case 'admin':
                 $stmt = $con->prepare("UPDATE administrators SET Password = ? WHERE username = ?");
-                $stmt->bind_param("ss", $newPassword, $userId);
+                $stmt->bind_param("ss", $hashedPassword, $userId);
                 $updated = $stmt->execute();
                 break;
         }

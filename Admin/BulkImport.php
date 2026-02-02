@@ -5,6 +5,8 @@ if(!isset($_SESSION['username'])){
     exit();
 }
 
+require_once(__DIR__ . "/../utils/password_helper.php");
+
 $con = require_once(__DIR__ . "/../Connections/OES.php");
 $message = '';
 $messageType = '';
@@ -34,8 +36,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['csv_file'])) {
                     case 'student':
                         // Expected: student_code, username, password, full_name, email, phone, department_id, semester, gender
                         if(count($data) >= 9) {
+                            // Hash the password before storing
+                            $hashedPassword = hashPassword($data[2]);
                             $stmt = $con->prepare("INSERT INTO students (student_code, username, password, full_name, email, phone, department_id, semester, gender, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)");
-                            $stmt->bind_param("ssssssiis", $data[0], $data[1], $data[2], $data[3], $data[4], $data[5], $data[6], $data[7], $data[8]);
+                            $stmt->bind_param("ssssssiis", $data[0], $data[1], $hashedPassword, $data[3], $data[4], $data[5], $data[6], $data[7], $data[8]);
                             if($stmt->execute()) {
                                 $successCount++;
                             } else {
@@ -51,8 +55,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['csv_file'])) {
                     case 'instructor':
                         // Expected: instructor_code, username, password, full_name, email, phone, department_id
                         if(count($data) >= 7) {
+                            // Hash the password before storing
+                            $hashedPassword = hashPassword($data[2]);
                             $stmt = $con->prepare("INSERT INTO instructors (instructor_code, username, password, full_name, email, phone, department_id, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, 1)");
-                            $stmt->bind_param("ssssssi", $data[0], $data[1], $data[2], $data[3], $data[4], $data[5], $data[6]);
+                            $stmt->bind_param("ssssssi", $data[0], $data[1], $hashedPassword, $data[3], $data[4], $data[5], $data[6]);
                             if($stmt->execute()) {
                                 $successCount++;
                             } else {
@@ -68,8 +74,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['csv_file'])) {
                     case 'exam_committee':
                         // Expected: member_code, username, password, full_name, email, phone, department_id
                         if(count($data) >= 7) {
+                            // Hash the password before storing
+                            $hashedPassword = hashPassword($data[2]);
                             $stmt = $con->prepare("INSERT INTO exam_committee_members (member_code, username, password, full_name, email, phone, department_id, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, 1)");
-                            $stmt->bind_param("ssssssi", $data[0], $data[1], $data[2], $data[3], $data[4], $data[5], $data[6]);
+                            $stmt->bind_param("ssssssi", $data[0], $data[1], $hashedPassword, $data[3], $data[4], $data[5], $data[6]);
                             if($stmt->execute()) {
                                 $successCount++;
                             } else {

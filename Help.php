@@ -24,40 +24,392 @@ if ($isLoggedIn) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Help - Debre Markos University Health Campus</title>
     <link href="assets/css/modern-v2.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
+        /* Match Home Page Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            position: relative;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('images/exam.webp') center/cover no-repeat;
+            opacity: 0.08;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Modern Header */
+        .modern-header {
+            background: linear-gradient(135deg, #1a2b4a 0%, #2c5364 100%);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 4px solid #d4af37;
+        }
+
+        .header-top {
+            padding: 1.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .header-top .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .university-info {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .university-logo {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
+        }
+
+        .university-name h1 {
+            font-size: 1.85rem;
+            font-weight: 900;
+            color: #ffffff;
+            margin: 0;
+            line-height: 1.2;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            letter-spacing: -0.5px;
+        }
+
+        .university-name p {
+            font-size: 1.15rem;
+            color: #ffd700;
+            font-weight: 700;
+            margin: 0.35rem 0 0 0;
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+            letter-spacing: 0.5px;
+        }
+
+        /* Navigation */
+        .main-nav {
+            background: #1a2b4a;
+        }
+
+        .nav-menu {
+            list-style: none;
+            display: flex;
+            gap: 0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-menu li a {
+            display: block;
+            padding: 1rem 2rem;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-menu li a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 3px;
+            background: #d4af37;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-menu li a:hover,
+        .nav-menu li a.active {
+            background: rgba(212, 175, 55, 0.1);
+            color: #d4af37;
+        }
+
+        .nav-menu li a:hover::after,
+        .nav-menu li a.active::after {
+            width: 80%;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            position: relative;
+            z-index: 100;
+            padding: 3rem 0;
+        }
+
+        .content-wrapper {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 3rem 2.5rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            border: 2px solid rgba(212, 175, 55, 0.4);
+            animation: fadeInUp 0.8s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .content-wrapper > h1 {
+            font-size: 2.75rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #1a2b4a 0%, #2c5364 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .text-secondary {
+            color: #6c757d;
+            text-align: center;
+            font-size: 1.15rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Cards */
+        .card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 2px solid rgba(212, 175, 55, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            border-color: #d4af37;
+        }
+
+        .card-header {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a2b4a;
+            margin: 0;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        /* Grid */
+        .grid {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+
+        .mt-3 {
+            margin-top: 1.5rem;
+        }
+
+        .mt-4 {
+            margin-top: 2rem;
+        }
+
+        /* FAQ Items */
         .faq-item {
-            background: var(--bg-secondary);
-            border-radius: var(--radius-md);
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            border-radius: 15px;
             padding: 1.5rem;
             margin-bottom: 1rem;
             cursor: pointer;
             transition: all 0.3s ease;
+            border: 2px solid transparent;
         }
+
         .faq-item:hover {
             background: white;
-            box-shadow: var(--shadow-md);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-color: #d4af37;
+            transform: translateX(5px);
         }
+
         .faq-question {
-            font-weight: 600;
-            color: var(--text-primary);
+            font-weight: 700;
+            color: #1a2b4a;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            font-size: 1.1rem;
         }
+
         .faq-answer {
             margin-top: 1rem;
-            color: var(--text-secondary);
+            color: #6c757d;
             display: none;
+            line-height: 1.8;
         }
+
+        .faq-item.active {
+            background: white;
+            border-color: #d4af37;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
         .faq-item.active .faq-answer {
             display: block;
+            animation: slideDown 0.3s ease;
         }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .faq-icon {
             transition: transform 0.3s ease;
+            color: #d4af37;
+            font-weight: bold;
+            font-size: 1.2rem;
         }
+
         .faq-item.active .faq-icon {
             transform: rotate(180deg);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 700;
+            text-decoration: none;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #1a2b4a 0%, #2c5364 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(26, 43, 74, 0.4);
+        }
+
+        .btn-sm {
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+        }
+
+        /* Footer */
+        .modern-footer {
+            background: rgba(26, 43, 74, 0.98);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 1.5rem 0;
+            margin-top: auto;
+            border-top: 3px solid #d4af37;
+            position: relative;
+            z-index: 1000;
+        }
+
+        .footer-content {
+            text-align: center;
+        }
+
+        .footer-content p {
+            margin: 0;
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .university-name h1 {
+                font-size: 1.25rem;
+            }
+
+            .nav-menu {
+                flex-direction: column;
+            }
+
+            .nav-menu li a {
+                padding: 0.75rem 1.5rem;
+            }
+
+            .content-wrapper > h1 {
+                font-size: 2rem;
+            }
+
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
