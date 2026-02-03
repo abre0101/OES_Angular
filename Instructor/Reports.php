@@ -1,11 +1,18 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+require_once(__DIR__ . "/../utils/session_manager.php");
 
-session_start();
+// Start Instructor session
+SessionManager::startSession('Instructor');
 
 // Check if user is logged in
-if(!isset($_SESSION['ID']) || !isset($_SESSION['UserType']) || $_SESSION['UserType'] !== 'Instructor'){
+if(!isset($_SESSION['ID'])){
+    header("Location: ../auth/institute-login.php");
+    exit();
+}
+
+// Validate instructor role
+if(!isset($_SESSION['UserType']) || $_SESSION['UserType'] !== 'Instructor'){
+    SessionManager::destroySession();
     header("Location: ../auth/institute-login.php");
     exit();
 }

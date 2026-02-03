@@ -1,7 +1,19 @@
 <?php
-session_start();
-if(!isset($_SESSION['Name'])){
-    header("Location:../auth/institute-login.php");
+require_once(__DIR__ . "/../utils/session_manager.php");
+
+// Start Instructor session
+SessionManager::startSession('Instructor');
+
+// Check if user is logged in
+if(!isset($_SESSION['ID'])){
+    header("Location: ../auth/institute-login.php");
+    exit();
+}
+
+// Validate instructor role
+if(!isset($_SESSION['UserType']) || $_SESSION['UserType'] !== 'Instructor'){
+    SessionManager::destroySession();
+    header("Location: ../auth/institute-login.php");
     exit();
 }
 
@@ -28,15 +40,15 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     $category_id = $_POST['category_id'];
     $exam_name = trim($_POST['exam_name']);
     $duration = intval($_POST['duration_minutes']);
-    $total_marks = intval($_POST['total_marks']);
-    $pass_marks = intval($_POST['pass_marks']);
     $instructions = trim($_POST['instructions']);
     
+    // Set initial marks to 0 - will be calculated when questions are added
+    $total_marks = 0;
+    $pass_marks = 0;
+    
     // Validate
-    if(empty($exam_name) || $duration <= 0 || $total_marks <= 0 || $pass_marks <= 0) {
+    if(empty($exam_name) || $duration <= 0) {
         $error = "Please fill all required fields with valid values.";
-    } elseif($pass_marks > $total_marks) {
-        $error = "Pass marks cannot exceed total marks.";
     } else {
         // Insert exam as draft
         $insertQuery = $con->prepare("INSERT INTO exams 
@@ -116,11 +128,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
             <div class="alert alert-success">✅ <?php echo htmlspecialchars($success); ?></div>
             <?php endif; ?>
 
-            <div class="info-box">
-                <h3>📋 Exam Creation Workflow</h3>
-                <p><strong>Step 1:</strong> Create exam (saved as draft) → <strong>Step 2:</strong> Add questions → <strong>Step 3:</strong> Submit for approval → <strong>Step 4:</strong> Department Head reviews and approves → <strong>Step 5:</strong> Department Head schedules the exam</p>
-            </div>
-
             <div class="form-card">
                 <h2 style="margin: 0 0 1.5rem 0; color: #003366; font-size: 1.5rem;">Exam Details</h2>
                 
@@ -128,10 +135,15 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <div class="form-row">
                         <div class="form-group">
                             <label>Course <span style="color: red;">*</span></label>
-                            <select name="course_id" required>
+                            <select name="course_id" id="course_id" required onchange="generateExamName()">
                                 <option value="">Select Course</option>
-                                <?php while($course = $courses->fetch_assoc()): ?>
-                                <option value="<?php echo $course['course_id']; ?>">
+                                <?php 
+                                $courses->data_seek(0);
+                                while($course = $courses->fetch_assoc()): 
+                                ?>
+                                <option value="<?php echo $course['course_id']; ?>" 
+                                        data-course-name="<?php echo htmlspecialchars($course['course_name']); ?>"
+                                        data-course-code="<?php echo htmlspecialchars($course['course_code']); ?>">
                                     <?php echo htmlspecialchars($course['course_code'] . ' - ' . $course['course_name']); ?>
                                 </option>
                                 <?php endwhile; ?>
@@ -140,10 +152,14 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                         <div class="form-group">
                             <label>Exam Category <span style="color: red;">*</span></label>
-                            <select name="category_id" required>
+                            <select name="category_id" id="category_id" required onchange="generateExamName()">
                                 <option value="">Select Category</option>
-                                <?php while($category = $categories->fetch_assoc()): ?>
-                                <option value="<?php echo $category['exam_category_id']; ?>">
+                                <?php 
+                                $categories->data_seek(0);
+                                while($category = $categories->fetch_assoc()): 
+                                ?>
+                                <option value="<?php echo $category['exam_category_id']; ?>"
+                                        data-category-name="<?php echo htmlspecialchars($category['category_name']); ?>">
                                     <?php echo htmlspecialchars($category['category_name']); ?>
                                 </option>
                                 <?php endwhile; ?>
@@ -153,29 +169,36 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                     <div class="form-group">
                         <label>Exam Name <span style="color: red;">*</span></label>
-                        <input type="text" name="exam_name" placeholder="e.g., Midterm Exam - Fall 2024" required>
+                        <input type="text" name="exam_name" id="exam_name" readonly 
+                               style="background-color: #f8f9fa; cursor: not-allowed;" 
+                               placeholder="Auto-generated from Course + Category" required>
+                        <small style="color: #6c757d; display: block; margin-top: 0.25rem;">
+                            Exam name will be generated automatically based on your course and category selection
+                        </small>
                     </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Duration (Minutes) <span style="color: red;">*</span></label>
-                            <input type="number" name="duration_minutes" min="1" placeholder="e.g., 90" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Total Marks <span style="color: red;">*</span></label>
-                            <input type="number" name="total_marks" min="1" value="100" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Pass Marks <span style="color: red;">*</span></label>
-                            <input type="number" name="pass_marks" min="1" value="50" required>
-                        </div>
+                    <div class="form-group">
+                        <label>Duration (Minutes) <span style="color: red;">*</span></label>
+                        <input type="number" name="duration_minutes" min="1" placeholder="e.g., 90" required>
                     </div>
 
                     <div class="form-group">
                         <label>Instructions</label>
                         <textarea name="instructions" placeholder="Enter exam instructions for students..."></textarea>
+                    </div>
+
+                    <div style="background: #e7f3ff; border-left: 4px solid #0066cc; padding: 1rem 1.25rem; border-radius: 8px; margin-top: 1.5rem;">
+                        <div style="display: flex; align-items: start; gap: 0.75rem;">
+                            <span style="font-size: 1.5rem;">💡</span>
+                            <div>
+                                <strong style="color: #003366; display: block; margin-bottom: 0.5rem;">About Total Marks & Pass Marks</strong>
+                                <p style="margin: 0; color: #555; line-height: 1.6;">
+                                    <strong>Total Marks</strong> will be calculated automatically based on the sum of all question points you add to this exam. 
+                                    <strong>Pass Marks</strong> will be set to 50% of the Total Marks. 
+                                    Both values update dynamically as you add or remove questions from your exam.
+                                </p>
+                            </div>
+                        </div>
                     </div>
 
                     <div style="display: flex; gap: 1rem; margin-top: 2rem;">
@@ -192,6 +215,26 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     </div>
 
     <script src="../assets/js/admin-sidebar.js"></script>
+    <script>
+        function generateExamName() {
+            const courseSelect = document.getElementById('course_id');
+            const categorySelect = document.getElementById('category_id');
+            const examNameInput = document.getElementById('exam_name');
+            
+            const selectedCourse = courseSelect.options[courseSelect.selectedIndex];
+            const selectedCategory = categorySelect.options[categorySelect.selectedIndex];
+            
+            if (courseSelect.value && categorySelect.value) {
+                const courseName = selectedCourse.getAttribute('data-course-name');
+                const categoryName = selectedCategory.getAttribute('data-category-name');
+                
+                // Generate exam name: Course Name + Category
+                examNameInput.value = courseName + ' - ' + categoryName;
+            } else {
+                examNameInput.value = '';
+            }
+        }
+    </script>
 </body>
 </html>
 <?php $con->close(); ?>

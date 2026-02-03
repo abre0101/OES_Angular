@@ -1,7 +1,19 @@
 <?php
-session_start();
-if(!isset($_SESSION['Name'])){
-    header("Location:../auth/institute-login.php");
+require_once(__DIR__ . "/../utils/session_manager.php");
+
+// Start Instructor session
+SessionManager::startSession('Instructor');
+
+// Check if user is logged in
+if(!isset($_SESSION['ID'])){
+    header("Location: ../auth/institute-login.php");
+    exit();
+}
+
+// Validate instructor role
+if(!isset($_SESSION['UserType']) || $_SESSION['UserType'] !== 'Instructor'){
+    SessionManager::destroySession();
+    header("Location: ../auth/institute-login.php");
     exit();
 }
 
@@ -11,7 +23,7 @@ $instructor_id = $_SESSION['ID'];
 $exam_id = $_GET['exam_id'] ?? 0;
 $is_new = $_GET['new'] ?? 0;
 
-// Get exam details
+// Get exam details with calculated marks
 $examQuery = $con->prepare("SELECT es.*, c.course_name, c.course_code, ec.category_name
     FROM exams es
     INNER JOIN courses c ON es.course_id = c.course_id
@@ -24,6 +36,16 @@ $exam = $examQuery->get_result()->fetch_assoc();
 if(!$exam) {
     die("Exam not found or you don't have permission to edit it.");
 }
+
+// Calculate actual total marks from questions
+$actualMarksQuery = $con->prepare("SELECT SUM(q.point_value) as actual_total
+    FROM exam_questions eq
+    INNER JOIN questions q ON eq.question_id = q.question_id
+    WHERE eq.exam_id = ?");
+$actualMarksQuery->bind_param("i", $exam_id);
+$actualMarksQuery->execute();
+$actualTotal = $actualMarksQuery->get_result()->fetch_assoc()['actual_total'] ?? 0;
+$actualPassMarks = round($actualTotal / 2);
 
 // Get questions already in this exam
 $examQuestionsQuery = $con->prepare("SELECT eq.*, q.question_text, q.option_a, q.option_b, q.option_c, q.option_d, q.correct_answer, q.point_value
@@ -46,6 +68,30 @@ $availableQuestionsQuery->bind_param("ii", $exam['course_id'], $exam_id);
 $availableQuestionsQuery->execute();
 $availableQuestions = $availableQuestionsQuery->get_result();
 
+// Function to update exam total marks and pass marks
+function updateExamMarks($con, $exam_id) {
+    // Calculate total marks from all questions in this exam
+    $query = $con->prepare("SELECT SUM(q.point_value) as total_marks
+        FROM exam_questions eq
+        INNER JOIN questions q ON eq.question_id = q.question_id
+        WHERE eq.exam_id = ?");
+    $query->bind_param("i", $exam_id);
+    $query->execute();
+    $result = $query->get_result()->fetch_assoc();
+    
+    $total_marks = $result['total_marks'] ?? 0;
+    $pass_marks = round($total_marks / 2); // Pass marks is 50% of total marks
+    
+    // Update the exam with calculated marks
+    $updateQuery = $con->prepare("UPDATE exams 
+        SET total_marks = ?, pass_marks = ? 
+        WHERE exam_id = ?");
+    $updateQuery->bind_param("iii", $total_marks, $pass_marks, $exam_id);
+    $updateQuery->execute();
+    
+    return ['total_marks' => $total_marks, 'pass_marks' => $pass_marks];
+}
+
 // Handle adding question to exam
 if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_question'])) {
     $question_id = intval($_POST['question_id']);
@@ -60,6 +106,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_question'])) {
     $insertQuery->bind_param("iii", $exam_id, $question_id, $next_order);
     
     if($insertQuery->execute()) {
+        // Update total marks and pass marks
+        updateExamMarks($con, $exam_id);
         header("Location: ManageExamQuestions.php?exam_id=" . $exam_id . "&success=added");
         exit();
     }
@@ -70,7 +118,10 @@ if(isset($_GET['remove'])) {
     $eq_id = intval($_GET['remove']);
     $deleteQuery = $con->prepare("DELETE FROM exam_questions WHERE exam_question_id = ? AND exam_id = ?");
     $deleteQuery->bind_param("ii", $eq_id, $exam_id);
-    $deleteQuery->execute();
+    if($deleteQuery->execute()) {
+        // Update total marks and pass marks
+        updateExamMarks($con, $exam_id);
+    }
     header("Location: ManageExamQuestions.php?exam_id=" . $exam_id . "&success=removed");
     exit();
 }
@@ -164,7 +215,11 @@ $question_count = $examQuestions->num_rows;
                     </div>
                     <div class="info-item">
                         <div class="info-label">Total Marks</div>
-                        <div class="info-value"><?php echo $exam['total_marks']; ?></div>
+                        <div class="info-value"><?php echo $actualTotal; ?></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Pass Marks (50%)</div>
+                        <div class="info-value"><?php echo $actualPassMarks; ?></div>
                     </div>
                     <div class="info-item">
                         <div class="info-label">Questions Added</div>
@@ -178,9 +233,9 @@ $question_count = $examQuestions->num_rows;
                         ✅ Submit for Approval
                     </a>
                     <?php endif; ?>
-                    <a href="ManageSchedules.php" class="btn btn-secondary">
+                    <button onclick="window.history.back()" class="btn btn-secondary" style="cursor: pointer;">
                         ← Back to Exams
-                    </a>
+                    </button>
                 </div>
             </div>
 

@@ -1,4 +1,4 @@
-<!-- Compact Modern Instructor Sidebar -->
+﻿<!-- Compact Modern Instructor Sidebar -->
 <aside class="admin-sidebar" id="adminSidebar">
     <div class="sidebar-header">
         <div class="sidebar-brand-wrapper">
@@ -36,7 +36,7 @@
             <span>My Exams</span>
         </a>
         <a href="ViewStudents.php" class="sidebar-nav-item <?php echo (basename($_SERVER['PHP_SELF']) == 'ViewStudents.php') ? 'active' : ''; ?>" data-tooltip="Students">
-            <span class="sidebar-nav-icon">👨‍🎓</span>
+            <span class="sidebar-nav-icon">👥</span>
             <span>Students</span>
         </a>
         

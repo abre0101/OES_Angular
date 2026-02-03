@@ -1,19 +1,31 @@
 <?php
-if (!isset($_SESSION)) {
-    session_start();
+require_once(__DIR__ . "/../utils/session_manager.php");
+
+// Start Instructor session
+SessionManager::startSession('Instructor');
+
+// Check if user is logged in
+if(!isset($_SESSION['ID'])){
+    header("Location: ../auth/institute-login.php");
+    exit();
 }
 
-if(!isset($_SESSION['Name'])){
-    header("Location:../auth/institute-login.php");
+// Validate instructor role
+if(!isset($_SESSION['UserType']) || $_SESSION['UserType'] !== 'Instructor'){
+    SessionManager::destroySession();
+    header("Location: ../auth/institute-login.php");
     exit();
 }
 
 $Id = $_GET['InstId'] ?? $_SESSION['ID'];
-$con = require_once(__DIR__ . "/../Connections/OES.php"); // Auto-fixed connection;
+$con = require_once(__DIR__ . "/../Connections/OES.php");
 $pageTitle = "Edit Profile";
 
-// Get instructor details
-$sql = "SELECT * FROM instructors WHERE instructor_id='".$con->real_escape_string($Id)."'";
+// Get instructor details with department name
+$sql = "SELECT i.*, d.department_name 
+        FROM instructors i 
+        LEFT JOIN departments d ON i.department_id = d.department_id 
+        WHERE i.instructor_id='".$con->real_escape_string($Id)."'";
 $result = $con->query($sql);
 $instructor = $result->fetch_assoc();
 
@@ -68,7 +80,7 @@ if(!$instructor) {
                             </div>
                             <div>
                                 <strong style="color: var(--text-secondary); display: block; margin-bottom: 0.5rem;">Department:</strong>
-                                <p style="margin: 0; font-size: 1.1rem; font-weight: 600;"><?php echo htmlspecialchars($instructor['department_name']); ?></p>
+                                <p style="margin: 0; font-size: 1.1rem; font-weight: 600;"><?php echo htmlspecialchars($instructor['department_name'] ?? 'Not Assigned'); ?></p>
                             </div>
                             <div>
                                 <strong style="color: var(--text-secondary); display: block; margin-bottom: 0.5rem;">Status:</strong>

@@ -1,10 +1,19 @@
 <?php
-if (!isset($_SESSION)) {
-    session_start();
+require_once(__DIR__ . "/../utils/session_manager.php");
+
+// Start Instructor session
+SessionManager::startSession('Instructor');
+
+// Check if user is logged in
+if(!isset($_SESSION['ID'])){
+    header("Location: ../auth/institute-login.php");
+    exit();
 }
 
-if(!isset($_SESSION['Name'])){
-    header("Location:../auth/institute-login.php");
+// Validate instructor role
+if(!isset($_SESSION['UserType']) || $_SESSION['UserType'] !== 'Instructor'){
+    SessionManager::destroySession();
+    header("Location: ../auth/institute-login.php");
     exit();
 }
 
@@ -59,14 +68,14 @@ $con->begin_transaction();
 try {
     // Insert question into questions table
     $insertQuestion = $con->prepare("INSERT INTO questions 
-        (course_id, instructor_id, topic_id, question_text, option_a, option_b, option_c, option_d, 
-         correct_answer, difficulty_level, point_value, created_at) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+        (course_id, created_by, topic_id, question_text, option_a, option_b, option_c, option_d, 
+         correct_answer, point_value, created_at) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
     
-    $insertQuestion->bind_param("iiisssssssi", 
+    $insertQuestion->bind_param("iiissssssi", 
         $course_id, $instructor_id, $topic_id, $question_text, 
         $option_a, $option_b, $option_c, $option_d, 
-        $correct_answer, $difficulty_level, $point_value
+        $correct_answer, $point_value
     );
     
     if(!$insertQuestion->execute()) {

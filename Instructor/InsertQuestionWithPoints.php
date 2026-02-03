@@ -1,11 +1,23 @@
 <?php
-session_start();
-if(!isset($_SESSION['Name'])){
-    header("Location:../auth/institute-login.php");
+require_once(__DIR__ . "/../utils/session_manager.php");
+
+// Start Instructor session
+SessionManager::startSession('Instructor');
+
+// Check if user is logged in
+if(!isset($_SESSION['ID'])){
+    header("Location: ../auth/institute-login.php");
     exit();
 }
 
-$con = require_once(__DIR__ . "/../Connections/OES.php"); // Auto-fixed connection;
+// Validate instructor role
+if(!isset($_SESSION['UserType']) || $_SESSION['UserType'] !== 'Instructor'){
+    SessionManager::destroySession();
+    header("Location: ../auth/institute-login.php");
+    exit();
+}
+
+$con = require_once(__DIR__ . "/../Connections/OES.php");
 
 // Add point_value column if it doesn't exist
 $con->query("ALTER TABLE question_page ADD COLUMN IF NOT EXISTS point_value INT DEFAULT 1 AFTER Answer");

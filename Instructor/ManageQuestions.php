@@ -1,7 +1,19 @@
 <?php
-session_start();
-if(!isset($_SESSION['Name'])){
-    header("Location:../auth/institute-login.php");
+require_once(__DIR__ . "/../utils/session_manager.php");
+
+// Start Instructor session
+SessionManager::startSession('Instructor');
+
+// Check if user is logged in
+if(!isset($_SESSION['ID'])){
+    header("Location: ../auth/institute-login.php");
+    exit();
+}
+
+// Validate instructor role
+if(!isset($_SESSION['UserType']) || $_SESSION['UserType'] !== 'Instructor'){
+    SessionManager::destroySession();
+    header("Location: ../auth/institute-login.php");
     exit();
 }
 
@@ -367,9 +379,14 @@ $stats = $statsQuery->get_result()->fetch_assoc();
                     <h1>📝 Question Bank</h1>
                     <p>Create and manage questions for your courses</p>
                 </div>
-                <a href="AddQuestion.php" class="btn btn-primary" style="background: white; color: #003366;">
-                    <span>➕</span> Create New Question
-                </a>
+                <div style="display: flex; gap: 1rem;">
+                    <a href="ManagePracticeQuestions.php" class="btn btn-secondary" style="background: rgba(255, 255, 255, 0.2); color: white; border: 2px solid white;">
+                        <span>🎯</span> Practice Questions
+                    </a>
+                    <a href="AddQuestion.php" class="btn btn-primary" style="background: white; color: #003366;">
+                        <span>➕</span> Create New Question
+                    </a>
+                </div>
             </div>
 
             <?php if(isset($_GET['success'])): ?>
