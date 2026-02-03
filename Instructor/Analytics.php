@@ -145,58 +145,321 @@ if($questionsExists && $studentAnswersExists) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analytics - Instructor</title>
+    <title>Analytics & Insights - Instructor Dashboard</title>
     <link href="../assets/css/modern-v2.css?v=<?php echo time(); ?>" rel="stylesheet">
     <link href="../assets/css/admin-modern-v2.css?v=<?php echo time(); ?>" rel="stylesheet">
     <link href="../assets/css/admin-sidebar.css?v=<?php echo time(); ?>" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body.admin-layout { background: #f5f7fa; font-family: 'Poppins', sans-serif; }
-        .page-header-modern { background: linear-gradient(135deg, #003366 0%, #0055aa 100%); color: white; padding: 2.5rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 51, 102, 0.2); margin-bottom: 2rem; }
-        .page-header-modern h1 { margin: 0 0 0.5rem 0; font-size: 2.2rem; font-weight: 800; display: flex; align-items: center; gap: 1rem; color: white; }
-        .page-header-modern h1 span { color: white; }
-        .page-header-modern p { margin: 0; opacity: 0.95; font-size: 1.05rem; color: white; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
-        .stat-card { background: white; border-radius: 12px; padding: 1.75rem; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08); border-left: 5px solid; transition: transform 0.3s ease; }
-        .stat-card:hover { transform: translateY(-5px); }
-        .stat-card.primary { border-left-color: #007bff; }
-        .stat-card.success { border-left-color: #28a745; }
-        .stat-card.warning { border-left-color: #ffc107; }
-        .stat-card.danger { border-left-color: #dc3545; }
-        .stat-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
-        .stat-value { font-size: 2.5rem; font-weight: 900; color: #003366; margin-bottom: 0.5rem; }
-        .stat-label { font-size: 0.95rem; color: #6c757d; font-weight: 500; }
-        .report-section { background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08); margin-bottom: 2rem; }
-        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 3px solid #f0f0f0; }
-        .section-title { font-size: 1.4rem; font-weight: 700; color: #003366; display: flex; align-items: center; gap: 0.75rem; }
-        .data-table { width: 100%; border-collapse: collapse; }
-        .data-table thead { background: linear-gradient(135deg, #003366 0%, #0055aa 100%); }
-        .data-table th { padding: 1rem; text-align: left; color: white; font-weight: 600; font-size: 0.9rem; white-space: nowrap; }
-        .data-table td { padding: 0.85rem 1rem; border-bottom: 1px solid #e8eef3; font-size: 0.9rem; }
-        .data-table tbody tr:hover { background: #f8f9fa; }
-        .score-badge { padding: 0.35rem 0.75rem; border-radius: 6px; font-weight: 600; font-size: 0.85rem; display: inline-block; }
-        .badge-excellent { background: #d4edda; color: #155724; }
-        .badge-good { background: #d1ecf1; color: #0c5460; }
-        .badge-average { background: #fff3cd; color: #856404; }
-        .badge-poor { background: #f8d7da; color: #721c24; }
-        .chart-container { margin: 1.5rem 0; padding: 1.5rem; background: #f8f9fa; border-radius: 8px; }
-        .difficulty-badge { padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
-        .difficulty-easy { background: rgba(40, 167, 69, 0.1); color: #28a745; }
-        .difficulty-medium { background: rgba(255, 193, 7, 0.1); color: #ffc107; }
-        .difficulty-hard { background: rgba(220, 53, 69, 0.1); color: #dc3545; }
+        :root {
+            --primary-color: #003366;
+            --primary-light: #0055aa;
+            --secondary-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+        }
+        
+        body.admin-layout { 
+            background: #f5f7fa; 
+            font-family: 'Poppins', sans-serif; 
+        }
+        
+        .page-header {
+            background: linear-gradient(135deg, #003366 0%, #0055aa 100%);
+            color: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 51, 102, 0.15);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .header-content h1 {
+            margin: 0 0 0.5rem 0;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .header-content p {
+            margin: 0;
+            opacity: 0.95;
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .stats-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); 
+            gap: 1.5rem; 
+            margin-bottom: 2rem; 
+        }
+        
+        .stat-card { 
+            background: white; 
+            border-radius: 16px; 
+            padding: 1.75rem; 
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); 
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            border-top: 5px solid;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, rgba(0, 51, 102, 0.05), transparent);
+            border-radius: 0 0 0 100%;
+        }
+        
+        .stat-card:hover { 
+            transform: translateY(-8px); 
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .stat-card.primary { border-top-color: #007bff; }
+        .stat-card.success { border-top-color: #28a745; }
+        .stat-card.warning { border-top-color: #ffc107; }
+        .stat-card.danger { border-top-color: #dc3545; }
+        
+        .stat-icon { 
+            font-size: 2.5rem; 
+            margin-bottom: 0.75rem; 
+        }
+        
+        .stat-value { 
+            font-size: 2.8rem; 
+            font-weight: 900; 
+            color: #003366; 
+            margin-bottom: 0.5rem; 
+            line-height: 1;
+        }
+        
+        .stat-label { 
+            font-size: 0.95rem; 
+            color: #6c757d; 
+            font-weight: 500; 
+        }
+        
+        .data-section { 
+            background: white; 
+            border-radius: 16px; 
+            padding: 2rem; 
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); 
+            margin-bottom: 2rem; 
+        }
+        
+        .section-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 1.5rem; 
+            padding-bottom: 1rem; 
+            border-bottom: 3px solid #f0f0f0; 
+        }
+        
+        .section-title { 
+            font-size: 1.4rem; 
+            font-weight: 700; 
+            color: #003366; 
+            display: flex; 
+            align-items: center; 
+            gap: 0.75rem; 
+        }
+        
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        @media (max-width: 1200px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .chart-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+        
+        .question-item {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            border-left: 4px solid;
+            transition: all 0.3s ease;
+        }
+        
+        .question-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question-item.hard { border-left-color: #dc3545; }
+        .question-item.medium { border-left-color: #ffc107; }
+        .question-item.easy { border-left-color: #28a745; }
+        
+        .course-card {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .course-card h4 {
+            margin: 0 0 1rem 0;
+            color: #003366;
+            font-size: 1.1rem;
+        }
+        
+        .course-score {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+        
+        .course-score.excellent { color: #28a745; }
+        .course-score.good { color: #17a2b8; }
+        .course-score.average { color: #ffc107; }
+        .course-score.poor { color: #dc3545; }
+        
+        .badge {
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
+        .badge-success {
+            background: rgba(40, 167, 69, 0.15);
+            color: #155724;
+        }
+        
+        .badge-warning {
+            background: rgba(255, 193, 7, 0.15);
+            color: #856404;
+        }
+        
+        .badge-danger {
+            background: rgba(220, 53, 69, 0.15);
+            color: #721c24;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #6c757d;
+        }
+        
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+        
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #003366;
+        }
+        
+        .empty-state p {
+            font-size: 1rem;
+            margin: 0;
+        }
+        
+        .insight-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 1rem;
+        }
+        
+        .insight-card h4 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .insight-card p, .insight-card ul {
+            margin: 0.5rem 0 0 0;
+            opacity: 1;
+            color: white;
+        }
+        
+        .insight-card ul li {
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .charts-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body class="admin-layout">
     <?php include 'sidebar-component.php'; ?>
 
     <div class="admin-main-content">
-        <?php $pageTitle = 'Analytics & Insights'; include 'header-component.php'; ?>
+        <?php include 'header-component.php'; ?>
 
         <div class="admin-content">
-            <div class="page-header-modern">
-                <h1><span>📊</span> Analytics & Insights</h1>
-                <p>Question difficulty analysis and student performance trends</p>
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="header-content">
+                    <h1>📊 Analytics & Insights</h1>
+                    <p>Question difficulty analysis and student performance trends</p>
+                </div>
             </div>
 
             <!-- Key Metrics -->
@@ -219,40 +482,39 @@ if($questionsExists && $studentAnswersExists) {
                 <div class="stat-card danger">
                     <div class="stat-icon">⚠️</div>
                     <div class="stat-value"><?php echo number_format($stats['hardest_questions'] ?? 0); ?></div>
-                    </div>
-                    <div style="font-size: 0.9rem; color: var(--text-secondary);">Hard Questions (<50%)</div>
+                    <div class="stat-label">Hard Questions (<50%)</div>
                 </div>
             </div>
 
-            <div class="grid grid-2">
+            <!-- Charts Grid -->
+            <div class="charts-grid">
                 <!-- Question Difficulty Analysis -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">🎯 Most Difficult Questions</h3>
+                <div class="chart-card">
+                    <div class="section-header">
+                        <h3 class="section-title">🎯 Most Difficult Questions</h3>
                     </div>
-                    <div style="padding: 2rem; max-height: 600px; overflow-y: auto;">
+                    <div style="max-height: 600px; overflow-y: auto;">
                         <?php if($questionDifficulty && $questionDifficulty->num_rows > 0): ?>
-                        <?php while($q = $questionDifficulty->fetch_assoc()): ?>
-                        <div style="background: var(--bg-light); padding: 1.5rem; border-radius: var(--radius-md); margin-bottom: 1rem; border-left: 4px solid <?php 
-                            echo $q['success_rate'] < 40 ? '#dc3545' : ($q['success_rate'] < 70 ? 'var(--warning-color)' : 'var(--success-color)'); 
-                        ?>;">
+                        <?php while($q = $questionDifficulty->fetch_assoc()): 
+                            $difficultyClass = $q['success_rate'] < 40 ? 'hard' : ($q['success_rate'] < 70 ? 'medium' : 'easy');
+                            $badgeColor = $q['success_rate'] < 40 ? '#dc3545' : ($q['success_rate'] < 70 ? '#ffc107' : '#28a745');
+                        ?>
+                        <div class="question-item <?php echo $difficultyClass; ?>">
                             <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.75rem;">
                                 <div style="flex: 1;">
-                                    <strong style="color: var(--primary-color);">Question #<?php echo $q['question_id']; ?></strong>
-                                    <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.25rem;">
-                                        <?php echo $q['course_name']; ?>
+                                    <strong style="color: #003366;">Question #<?php echo $q['question_id']; ?></strong>
+                                    <div style="font-size: 0.85rem; color: #6c757d; margin-top: 0.25rem;">
+                                        <?php echo htmlspecialchars($q['course_name']); ?>
                                     </div>
                                 </div>
-                                <span style="padding: 0.25rem 0.75rem; background: <?php 
-                                    echo $q['success_rate'] < 40 ? '#dc3545' : ($q['success_rate'] < 70 ? 'var(--warning-color)' : 'var(--success-color)'); 
-                                ?>; color: white; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">
+                                <span class="badge" style="background: <?php echo $badgeColor; ?>; color: white;">
                                     <?php echo $q['success_rate']; ?>% Success
                                 </span>
                             </div>
-                            <p style="margin: 0 0 0.75rem 0; color: var(--text-secondary); font-size: 0.9rem;">
-                                <?php echo substr($q['question_text'], 0, 150); ?><?php echo strlen($q['question_text']) > 150 ? '...' : ''; ?>
+                            <p style="margin: 0 0 0.75rem 0; color: #6c757d; font-size: 0.9rem;">
+                                <?php echo htmlspecialchars(substr($q['question_text'], 0, 150)); ?><?php echo strlen($q['question_text']) > 150 ? '...' : ''; ?>
                             </p>
-                            <div style="display: flex; gap: 2rem; font-size: 0.85rem; color: var(--text-secondary);">
+                            <div style="display: flex; gap: 2rem; font-size: 0.85rem; color: #6c757d;">
                                 <div>
                                     <strong><?php echo $q['attempt_count']; ?></strong> attempts
                                 </div>
@@ -263,8 +525,9 @@ if($questionsExists && $studentAnswersExists) {
                         </div>
                         <?php endwhile; ?>
                         <?php else: ?>
-                        <div style="text-align: center; padding: 3rem; color: var(--text-secondary);">
-                            <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📊</div>
+                            <h3>No Data Available</h3>
                             <p>No question attempt data available yet.</p>
                         </div>
                         <?php endif; ?>
@@ -272,50 +535,52 @@ if($questionsExists && $studentAnswersExists) {
                 </div>
 
                 <!-- Performance Trends Chart -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">📈 Performance Trends</h3>
+                <div class="chart-card">
+                    <div class="section-header">
+                        <h3 class="section-title">📈 Performance Trends</h3>
                     </div>
-                    <div style="padding: 2rem;">
-                        <canvas id="performanceChart" height="300"></canvas>
+                    <div class="chart-container">
+                        <canvas id="performanceChart"></canvas>
                     </div>
                 </div>
             </div>
 
             <!-- Course Performance Comparison -->
-            <div class="card mt-4">
-                <div class="card-header">
-                    <h3 class="card-title">📚 Course Performance Comparison</h3>
+            <div class="data-section">
+                <div class="section-header">
+                    <h3 class="section-title">📚 Course Performance Comparison</h3>
                 </div>
-                <div style="padding: 2rem;">
+                <div>
                     <?php if($coursePerformance && $coursePerformance->num_rows > 0): ?>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem;">
-                        <?php while($course = $coursePerformance->fetch_assoc()): ?>
-                        <div style="background: var(--bg-light); padding: 1.5rem; border-radius: var(--radius-md); text-align: center;">
-                            <h4 style="margin: 0 0 1rem 0; color: var(--primary-color);">
-                                <?php echo $course['course_name']; ?>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem;">
+                        <?php while($course = $coursePerformance->fetch_assoc()): 
+                            $scoreClass = $course['avg_score'] < 50 ? 'poor' : ($course['avg_score'] < 75 ? 'average' : ($course['avg_score'] < 85 ? 'good' : 'excellent'));
+                        ?>
+                        <div class="course-card">
+                            <h4 style="margin: 0 0 1rem 0;">
+                                <?php echo htmlspecialchars($course['course_name']); ?>
                             </h4>
-                            <div style="font-size: 2.5rem; font-weight: 800; color: <?php 
-                                echo $course['avg_score'] < 50 ? '#dc3545' : ($course['avg_score'] < 75 ? 'var(--warning-color)' : 'var(--success-color)'); 
-                            ?>; margin-bottom: 0.5rem;">
+                            <div class="course-score <?php echo $scoreClass; ?>">
                                 <?php echo $course['avg_score']; ?>%
                             </div>
-                            <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+                            <div style="font-size: 0.85rem; color: #6c757d; margin-bottom: 0.75rem;">
                                 <?php echo $course['exam_count']; ?> exams • 
                                 <?php echo $course['student_count']; ?> students
                             </div>
-                            <div style="padding-top: 0.75rem; border-top: 1px solid var(--border-color); font-size: 0.85rem;">
-                                <span style="color: var(--success-color); font-weight: 600;">
+                            <div style="padding-top: 0.75rem; border-top: 1px solid #e0e0e0; font-size: 0.85rem;">
+                                <span style="color: #28a745; font-weight: 600;">
                                     <?php echo $course['pass_rate']; ?>%
                                 </span>
-                                <span style="color: var(--text-secondary);"> pass rate</span>
+                                <span style="color: #6c757d;"> pass rate</span>
                             </div>
                         </div>
                         <?php endwhile; ?>
                     </div>
                     <?php else: ?>
-                    <div style="text-align: center; padding: 3rem; color: var(--text-secondary);">
-                        No course performance data available
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📚</div>
+                        <h3>No Data Available</h3>
+                        <p>No course performance data available</p>
                     </div>
                     <?php endif; ?>
                 </div>
@@ -323,26 +588,27 @@ if($questionsExists && $studentAnswersExists) {
 
             <!-- Topic Performance (if available) -->
             <?php if($topicPerformance && $topicPerformance->num_rows > 0): ?>
-            <div class="card mt-4">
-                <div class="card-header">
-                    <h3 class="card-title">📖 Weakest Topics (Need Attention)</h3>
+            <div class="data-section">
+                <div class="section-header">
+                    <h3 class="section-title">📖 Weakest Topics (Need Attention)</h3>
                 </div>
-                <div style="padding: 2rem;">
-                    <?php while($topic = $topicPerformance->fetch_assoc()): ?>
-                    <div style="background: var(--bg-light); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <?php while($topic = $topicPerformance->fetch_assoc()): 
+                        $topicScoreClass = $topic['avg_accuracy'] < 50 ? 'poor' : ($topic['avg_accuracy'] < 70 ? 'average' : 'good');
+                        $topicColor = $topic['avg_accuracy'] < 50 ? '#dc3545' : ($topic['avg_accuracy'] < 70 ? '#ffc107' : '#28a745');
+                    ?>
+                    <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 12px; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
                         <div>
-                            <strong style="color: var(--primary-color);"><?php echo $topic['topic_name']; ?></strong>
-                            <div style="font-size: 0.85rem; color: var(--text-secondary);">
-                                <?php echo $topic['course_name']; ?> • <?php echo $topic['question_count']; ?> questions
+                            <strong style="color: #003366;"><?php echo htmlspecialchars($topic['topic_name']); ?></strong>
+                            <div style="font-size: 0.85rem; color: #6c757d;">
+                                <?php echo htmlspecialchars($topic['course_name']); ?> • <?php echo $topic['question_count']; ?> questions
                             </div>
                         </div>
                         <div style="text-align: right;">
-                            <div style="font-size: 1.5rem; font-weight: 800; color: <?php 
-                                echo $topic['avg_accuracy'] < 50 ? '#dc3545' : ($topic['avg_accuracy'] < 70 ? 'var(--warning-color)' : 'var(--success-color)'); 
-                            ?>;">
+                            <div style="font-size: 1.5rem; font-weight: 800; color: <?php echo $topicColor; ?>;">
                                 <?php echo $topic['avg_accuracy']; ?>%
                             </div>
-                            <div style="font-size: 0.75rem; color: var(--text-secondary);">Success Rate</div>
+                            <div style="font-size: 0.75rem; color: #6c757d;">Success Rate</div>
                         </div>
                     </div>
                     <?php endwhile; ?>
@@ -351,33 +617,26 @@ if($questionsExists && $studentAnswersExists) {
             <?php endif; ?>
 
             <!-- Insights & Recommendations -->
-            <div class="card mt-4">
-                <div class="card-header">
-                    <h3 class="card-title">💡 Insights & Recommendations</h3>
+            <div class="charts-grid">
+                <div class="insight-card">
+                    <h4>📊 Question Quality</h4>
+                    <p>
+                        <?php 
+                        if($stats['hardest_questions'] > 10) {
+                            echo "You have {$stats['hardest_questions']} questions with <50% success rate. Consider reviewing these for clarity or difficulty.";
+                        } else {
+                            echo "Your questions have good difficulty balance. Keep monitoring student performance.";
+                        }
+                        ?>
+                    </p>
                 </div>
-                <div style="padding: 2rem;">
-                    <div class="grid grid-2">
-                        <div style="background: rgba(0, 123, 255, 0.1); padding: 1.5rem; border-radius: var(--radius-md); border-left: 4px solid var(--primary-color);">
-                            <h4 style="margin: 0 0 0.5rem 0; color: var(--primary-color);">📊 Question Quality</h4>
-                            <p style="margin: 0; color: var(--text-secondary);">
-                                <?php 
-                                if($stats['hardest_questions'] > 10) {
-                                    echo "You have {$stats['hardest_questions']} questions with <50% success rate. Consider reviewing these for clarity or difficulty.";
-                                } else {
-                                    echo "Your questions have good difficulty balance. Keep monitoring student performance.";
-                                }
-                                ?>
-                            </p>
-                        </div>
-                        <div style="background: rgba(40, 167, 69, 0.1); padding: 1.5rem; border-radius: var(--radius-md); border-left: 4px solid var(--success-color);">
-                            <h4 style="margin: 0 0 0.5rem 0; color: var(--success-color);">✅ Best Practices</h4>
-                            <ul style="margin: 0.5rem 0 0 1.5rem; color: var(--text-secondary);">
-                                <li>Review questions with <40% success rate</li>
-                                <li>Balance easy, medium, and hard questions</li>
-                                <li>Use topics to organize questions</li>
-                            </ul>
-                        </div>
-                    </div>
+                <div class="insight-card" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                    <h4>✅ Best Practices</h4>
+                    <ul>
+                        <li>Review questions with <40% success rate</li>
+                        <li>Balance easy, medium, and hard questions</li>
+                        <li>Use topics to organize questions</li>
+                    </ul>
                 </div>
             </div>
         </div>

@@ -63,10 +63,6 @@
             <span class="sidebar-nav-icon">⚙️</span>
             <span>Settings</span>
         </a>
-        <a href="Help.php" class="sidebar-nav-item <?php echo (basename($_SERVER['PHP_SELF']) == 'Help.php') ? 'active' : ''; ?>" data-tooltip="Help">
-            <span class="sidebar-nav-icon">❓</span>
-            <span>Help</span>
-        </a>
     </nav>
 
     <div class="sidebar-footer">
