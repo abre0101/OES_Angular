@@ -17,13 +17,18 @@ if(!isset($_SESSION['UserType']) || $_SESSION['UserType'] !== 'Instructor'){
     exit();
 }
 
-$con = require_once(__DIR__ . "/../Connections/OES.php"); // Auto-fixed connection;
+$con = require_once(__DIR__ . "/../Connections/OES.php");
 $pageTitle = "Edit Question";
 
 $question_id = $_GET['id'] ?? 0;
+$return_to_exam = $_GET['return'] ?? '';
+$exam_id = $_GET['exam_id'] ?? 0;
 
-// Get question details
-$question = $con->query("SELECT * FROM question_page WHERE question_id = '$question_id'")->fetch_assoc();
+// Get question details from questions table
+$question = $con->query("SELECT q.*, c.course_code, c.course_name 
+                         FROM questions q
+                         LEFT JOIN courses c ON q.course_id = c.course_id
+                         WHERE q.question_id = '$question_id'")->fetch_assoc();
 
 if(!$question) {
     header("Location: ManageQuestions.php");
@@ -32,48 +37,53 @@ if(!$question) {
 
 // Handle form submission
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $exam_id = $_POST['exam_id'];
-    $semester = $_POST['semester'];
-    $course_name = $_POST['course_name'];
-    $question_text = $_POST['question'];
-    $option1 = $_POST['option1'];
-    $option2 = $_POST['option2'];
-    $option3 = $_POST['option3'];
-    $option4 = $_POST['option4'];
-    $answer = $_POST['answer'];
+    $course_id = $_POST['course_id'];
+    $question_text = mysqli_real_escape_string($con, $_POST['question']);
+    $option_a = mysqli_real_escape_string($con, $_POST['option1']);
+    $option_b = mysqli_real_escape_string($con, $_POST['option2']);
+    $option_c = mysqli_real_escape_string($con, $_POST['option3']);
+    $option_d = mysqli_real_escape_string($con, $_POST['option4']);
+    $correct_answer = $_POST['answer'];
     
-    $update = $con->prepare("UPDATE question_page SET exam_id=?, semester=?, course_name=?, question=?, Option1=?, Option2=?, Option3=?, Option4=?, Answer=? WHERE question_id=?");
-    $update->bind_param("iisssssssi", $exam_id, $semester, $course_name, $question_text, $option1, $option2, $option3, $option4, $answer, $question_id);
+    $update = $con->prepare("UPDATE questions 
+                             SET course_id = ?, 
+                                 question_text = ?, 
+                                 option_a = ?, 
+                                 option_b = ?, 
+                                 option_c = ?, 
+                                 option_d = ?, 
+                                 correct_answer = ?,
+                                 updated_at = NOW()
+                             WHERE question_id = ?");
+    $update->bind_param("issssssi", $course_id, $question_text, $option_a, $option_b, $option_c, $option_d, $correct_answer, $question_id);
     
     if($update->execute()) {
+        // Redirect back to exam management if coming from there
+        if($return_to_exam == 'exam' && $exam_id > 0) {
+            header("Location: ManageExamQuestions.php?exam_id=" . $exam_id . "&success=updated");
+            exit();
+        }
         header("Location: ManageQuestions.php?success=1");
         exit();
     }
     $update->close();
 }
 
-// Get exam categories
-$exams = null;
-$tableCheck = $con->query("SHOW TABLES LIKE 'exam_category'");
-if($tableCheck && $tableCheck->num_rows > 0) {
-    $exams = $con->query("SELECT * FROM exam_category");
-}
-
-// Get only courses assigned to this instructor
+// Get exams for this instructor
 $instructor_id = $_SESSION['ID'];
-$courses = null;
-$tableCheck = $con->query("SHOW TABLES LIKE 'course'");
-if($tableCheck && $tableCheck->num_rows > 0) {
-    $icTableCheck = $con->query("SHOW TABLES LIKE 'instructor_courses'");
-    if($icTableCheck && $icTableCheck->num_rows > 0) {
-        $courses = $con->query("SELECT c.* FROM course c 
-            INNER JOIN instructor_courses ic ON c.course_id = ic.course_id 
-            WHERE ic.instructor_id = $instructor_id 
-            ORDER BY c.course_name");
-    } else {
-        $courses = $con->query("SELECT * FROM course ORDER BY course_name");
-    }
-}
+$exams = $con->query("SELECT DISTINCT e.exam_id, e.exam_name, c.course_code
+                      FROM exams e
+                      INNER JOIN courses c ON e.course_id = c.course_id
+                      INNER JOIN instructor_courses ic ON c.course_id = ic.course_id
+                      WHERE ic.instructor_id = $instructor_id AND e.created_by = $instructor_id
+                      ORDER BY e.exam_name");
+
+// Get courses assigned to this instructor
+$courses = $con->query("SELECT DISTINCT c.course_id, c.course_code, c.course_name
+                        FROM courses c
+                        INNER JOIN instructor_courses ic ON c.course_id = ic.course_id
+                        WHERE ic.instructor_id = $instructor_id
+                        ORDER BY c.course_code");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -110,53 +120,26 @@ if($tableCheck && $tableCheck->num_rows > 0) {
                         
                         <div class="form-row">
                             <div class="form-group">
-                                <label>Exam Type *</label>
-                                <select name="exam_id" class="form-control" required>
-                                    <option value="">Select Exam</option>
-                                    <?php 
-                                    if($exams && $exams->num_rows > 0) {
-                                        while($exam = $exams->fetch_assoc()): 
-                                    ?>
-                                    <option value="<?php echo $exam['exam_id']; ?>" <?php echo ($question['exam_id'] == $exam['exam_id']) ? 'selected' : ''; ?>>
-                                        <?php echo $exam['exam_name']; ?>
-                                    </option>
-                                    <?php 
-                                        endwhile;
-                                    }
-                                    ?>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>Course Code *</label>
-                                <select name="course_name" class="form-control" required>
-                                    <option value="">Select Course</option>
+                                <label>Course *</label>
+                                <select name="course_id" class="form-control" required>
                                     <?php 
                                     if($courses && $courses->num_rows > 0) {
                                         while($course = $courses->fetch_assoc()): 
                                     ?>
-                                    <option value="<?php echo $course['course_name']; ?>" <?php echo ($question['course_name'] == $course['course_name']) ? 'selected' : ''; ?>>
-                                        <?php echo $course['course_name']; ?> - <?php echo $course['course_id']; ?>
+                                    <option value="<?php echo $course['course_id']; ?>" <?php echo (isset($question['course_id']) && $question['course_id'] == $course['course_id']) ? 'selected' : ''; ?>>
+                                        <?php echo htmlspecialchars($course['course_code'] . ' - ' . $course['course_name']); ?>
                                     </option>
                                     <?php 
                                         endwhile;
                                     }
                                     ?>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>Semester *</label>
-                                <select name="semester" class="form-control" required>
-                                    <option value="1" <?php echo ($question['semester'] == 1) ? 'selected' : ''; ?>>Semester 1</option>
-                                    <option value="2" <?php echo ($question['semester'] == 2) ? 'selected' : ''; ?>>Semester 2</option>
                                 </select>
                             </div>
                         </div>
                         
                         <div class="form-group">
                             <label>Question Text *</label>
-                            <textarea name="question" class="form-control" rows="4" required><?php echo htmlspecialchars($question['question']); ?></textarea>
+                            <textarea name="question" class="form-control" rows="4" required><?php echo htmlspecialchars($question['question_text'] ?? ''); ?></textarea>
                         </div>
                     </div>
 
@@ -165,32 +148,32 @@ if($tableCheck && $tableCheck->num_rows > 0) {
                         
                         <div class="form-group">
                             <label>Option A *</label>
-                            <input type="text" name="option1" class="form-control" value="<?php echo htmlspecialchars($question['Option1']); ?>" required>
+                            <input type="text" name="option1" class="form-control" value="<?php echo htmlspecialchars($question['option_a'] ?? ''); ?>" required>
                         </div>
                         
                         <div class="form-group">
                             <label>Option B *</label>
-                            <input type="text" name="option2" class="form-control" value="<?php echo htmlspecialchars($question['Option2']); ?>" required>
+                            <input type="text" name="option2" class="form-control" value="<?php echo htmlspecialchars($question['option_b'] ?? ''); ?>" required>
                         </div>
                         
                         <div class="form-group">
                             <label>Option C *</label>
-                            <input type="text" name="option3" class="form-control" value="<?php echo htmlspecialchars($question['Option3']); ?>" required>
+                            <input type="text" name="option3" class="form-control" value="<?php echo htmlspecialchars($question['option_c'] ?? ''); ?>" required>
                         </div>
                         
                         <div class="form-group">
                             <label>Option D *</label>
-                            <input type="text" name="option4" class="form-control" value="<?php echo htmlspecialchars($question['Option4']); ?>" required>
+                            <input type="text" name="option4" class="form-control" value="<?php echo htmlspecialchars($question['option_d'] ?? ''); ?>" required>
                         </div>
                         
                         <div class="form-group">
                             <label>Correct Answer *</label>
                             <select name="answer" class="form-control" required>
                                 <option value="">Select Correct Answer</option>
-                                <option value="A" <?php echo ($question['Answer'] == 'A') ? 'selected' : ''; ?>>Option A</option>
-                                <option value="B" <?php echo ($question['Answer'] == 'B') ? 'selected' : ''; ?>>Option B</option>
-                                <option value="C" <?php echo ($question['Answer'] == 'C') ? 'selected' : ''; ?>>Option C</option>
-                                <option value="D" <?php echo ($question['Answer'] == 'D') ? 'selected' : ''; ?>>Option D</option>
+                                <option value="A" <?php echo (($question['correct_answer'] ?? '') == 'A') ? 'selected' : ''; ?>>Option A</option>
+                                <option value="B" <?php echo (($question['correct_answer'] ?? '') == 'B') ? 'selected' : ''; ?>>Option B</option>
+                                <option value="C" <?php echo (($question['correct_answer'] ?? '') == 'C') ? 'selected' : ''; ?>>Option C</option>
+                                <option value="D" <?php echo (($question['correct_answer'] ?? '') == 'D') ? 'selected' : ''; ?>>Option D</option>
                             </select>
                         </div>
                     </div>
@@ -199,9 +182,15 @@ if($tableCheck && $tableCheck->num_rows > 0) {
                         <button type="submit" class="btn btn-primary">
                             💾 Save Changes
                         </button>
+                        <?php if($return_to_exam == 'exam' && $exam_id > 0): ?>
+                        <a href="ManageExamQuestions.php?exam_id=<?php echo $exam_id; ?>" class="btn btn-secondary">
+                            Cancel
+                        </a>
+                        <?php else: ?>
                         <a href="ManageQuestions.php" class="btn btn-secondary">
                             Cancel
                         </a>
+                        <?php endif; ?>
                         <button type="button" class="btn btn-danger" onclick="deleteQuestion()" style="margin-left: auto;">
                             🗑️ Delete Question
                         </button>
@@ -217,13 +206,13 @@ if($tableCheck && $tableCheck->num_rows > 0) {
                 <div style="padding: 2rem;">
                     <div style="background: var(--bg-light); padding: 1.5rem; border-radius: var(--radius-md);">
                         <p style="font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; color: var(--primary-color);">
-                            <?php echo htmlspecialchars($question['question']); ?>
+                            <?php echo htmlspecialchars($question['question_text'] ?? ''); ?>
                         </p>
                         <div style="margin-left: 1rem;">
-                            <p style="margin: 0.5rem 0;"><strong>A.</strong> <?php echo htmlspecialchars($question['Option1']); ?> <?php if($question['Answer'] == 'A') echo '<span style="color: var(--success-color); font-weight: 700;">✓</span>'; ?></p>
-                            <p style="margin: 0.5rem 0;"><strong>B.</strong> <?php echo htmlspecialchars($question['Option2']); ?> <?php if($question['Answer'] == 'B') echo '<span style="color: var(--success-color); font-weight: 700;">✓</span>'; ?></p>
-                            <p style="margin: 0.5rem 0;"><strong>C.</strong> <?php echo htmlspecialchars($question['Option3']); ?> <?php if($question['Answer'] == 'C') echo '<span style="color: var(--success-color); font-weight: 700;">✓</span>'; ?></p>
-                            <p style="margin: 0.5rem 0;"><strong>D.</strong> <?php echo htmlspecialchars($question['Option4']); ?> <?php if($question['Answer'] == 'D') echo '<span style="color: var(--success-color); font-weight: 700;">✓</span>'; ?></p>
+                            <p style="margin: 0.5rem 0;"><strong>A.</strong> <?php echo htmlspecialchars($question['option_a'] ?? ''); ?> <?php if(($question['correct_answer'] ?? '') == 'A') echo '<span style="color: var(--success-color); font-weight: 700;">✓</span>'; ?></p>
+                            <p style="margin: 0.5rem 0;"><strong>B.</strong> <?php echo htmlspecialchars($question['option_b'] ?? ''); ?> <?php if(($question['correct_answer'] ?? '') == 'B') echo '<span style="color: var(--success-color); font-weight: 700;">✓</span>'; ?></p>
+                            <p style="margin: 0.5rem 0;"><strong>C.</strong> <?php echo htmlspecialchars($question['option_c'] ?? ''); ?> <?php if(($question['correct_answer'] ?? '') == 'C') echo '<span style="color: var(--success-color); font-weight: 700;">✓</span>'; ?></p>
+                            <p style="margin: 0.5rem 0;"><strong>D.</strong> <?php echo htmlspecialchars($question['option_d'] ?? ''); ?> <?php if(($question['correct_answer'] ?? '') == 'D') echo '<span style="color: var(--success-color); font-weight: 700;">✓</span>'; ?></p>
                         </div>
                     </div>
                 </div>

@@ -188,7 +188,13 @@ $question_count = $examQuestions->num_rows;
 
             <?php if(isset($_GET['success'])): ?>
             <div class="alert alert-success">
-                ✅ Question <?php echo $_GET['success'] == 'added' ? 'added to' : 'removed from'; ?> exam successfully!
+                <?php if($_GET['success'] == 'added'): ?>
+                    ✅ Question added to exam successfully!
+                <?php elseif($_GET['success'] == 'removed'): ?>
+                    ✅ Question removed from exam successfully!
+                <?php elseif($_GET['success'] == 'updated'): ?>
+                    ✅ Question updated successfully!
+                <?php endif; ?>
             </div>
             <?php endif; ?>
 
@@ -258,13 +264,20 @@ $question_count = $examQuestions->num_rows;
                     <div class="question-item">
                         <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
                             <div class="question-text">Q<?php echo $qnum++; ?>. <?php echo htmlspecialchars($eq['question_text']); ?></div>
-                            <?php if($exam['approval_status'] == 'draft'): ?>
-                            <a href="?exam_id=<?php echo $exam_id; ?>&remove=<?php echo $eq['exam_question_id']; ?>" 
-                               class="btn btn-danger btn-sm"
-                               onclick="return confirm('Remove this question from exam?')">
-                                🗑️ Remove
-                            </a>
-                            <?php endif; ?>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <a href="EditQuestion.php?id=<?php echo $eq['question_id']; ?>&return=exam&exam_id=<?php echo $exam_id; ?>" 
+                                   class="btn btn-primary btn-sm"
+                                   title="Edit question content">
+                                    ✏️ Edit
+                                </a>
+                                <?php if($exam['approval_status'] == 'draft'): ?>
+                                <a href="?exam_id=<?php echo $exam_id; ?>&remove=<?php echo $eq['exam_question_id']; ?>" 
+                                   class="btn btn-danger btn-sm"
+                                   onclick="return confirm('Remove this question from exam?')">
+                                    🗑️ Remove
+                                </a>
+                                <?php endif; ?>
+                            </div>
                         </div>
                         <div class="options">
                             <div class="option <?php echo $eq['correct_answer'] == 'A' ? 'correct' : ''; ?>">

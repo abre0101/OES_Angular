@@ -71,10 +71,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     $category_id = $_POST['exam_category_id'];
     $duration = $_POST['duration_minutes'];
     $total_marks = $_POST['total_marks'];
-    $passing_marks = $_POST['passing_marks'];
+    $pass_marks = $_POST['pass_marks'];
     $instructions = mysqli_real_escape_string($con, $_POST['instructions']);
-    $randomize_questions = isset($_POST['randomize_questions']) ? 1 : 0;
-    $show_results_immediately = isset($_POST['show_results_immediately']) ? 1 : 0;
     
     // If exam was approved or pending, reset to pending for re-approval
     // If it was draft, keep it as draft
@@ -92,10 +90,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                         exam_category_id = ?,
                         duration_minutes = ?,
                         total_marks = ?,
-                        passing_marks = ?,
+                        pass_marks = ?,
                         instructions = ?,
-                        randomize_questions = ?,
-                        show_results_immediately = ?,
                         approval_status = ?,
                         updated_at = NOW()
                         $revision_increment
@@ -103,19 +99,11 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                     WHERE exam_id = ? AND created_by = ?";
     
     $stmt = $con->prepare($updateQuery);
-    $stmt->bind_param("siiiissiisii", 
+    $stmt->bind_param("siiiiissii", 
         $exam_name, $course_id, $category_id, $duration, $total_marks, 
-        $passing_marks, $instructions, $randomize_questions, 
-        $show_results_immediately, $new_status, $exam_id, $instructor_id);
+        $pass_marks, $instructions, $new_status, $exam_id, $instructor_id);
     
     if($stmt->execute()) {
-        // Log the edit in exam history
-        $action = ($exam['approval_status'] == 'approved') ? 'edited_after_approval' : 'edited';
-        $historyQuery = $con->prepare("INSERT INTO exam_history (exam_id, action, performed_by, performed_at, notes) 
-                                       VALUES (?, ?, ?, NOW(), 'Exam details updated')");
-        $historyQuery->bind_param("isi", $exam_id, $action, $instructor_id);
-        $historyQuery->execute();
-        
         if($exam['approval_status'] == 'approved') {
             header("Location: MyExams.php?success=edited_reapproval");
         } else {
@@ -263,31 +251,15 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                             
                             <div class="form-group">
                                 <label>Passing Marks *</label>
-                                <input type="number" name="passing_marks" class="form-control" 
-                                       value="<?php echo $exam['passing_marks']; ?>" required min="1">
+                                <input type="number" name="pass_marks" class="form-control" 
+                                       value="<?php echo $exam['pass_marks'] ?? 50; ?>" required min="1">
                             </div>
                         </div>
                         
                         <div class="form-group">
                             <label>Instructions</label>
                             <textarea name="instructions" class="form-control" rows="4" 
-                                      placeholder="Enter exam instructions..."><?php echo htmlspecialchars($exam['instructions']); ?></textarea>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label style="display: flex; align-items: center; gap: 0.5rem;">
-                                <input type="checkbox" name="randomize_questions" 
-                                       <?php echo $exam['randomize_questions'] ? 'checked' : ''; ?>>
-                                <span>Randomize question order for each student</span>
-                            </label>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label style="display: flex; align-items: center; gap: 0.5rem;">
-                                <input type="checkbox" name="show_results_immediately" 
-                                       <?php echo $exam['show_results_immediately'] ? 'checked' : ''; ?>>
-                                <span>Show results immediately after submission</span>
-                            </label>
+                                      placeholder="Enter exam instructions..."><?php echo htmlspecialchars($exam['instructions'] ?? ''); ?></textarea>
                         </div>
                     </div>
 
