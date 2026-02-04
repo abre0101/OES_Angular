@@ -1,8 +1,8 @@
 <?php
-require_once(__DIR__ . "/utils/session_manager.php");
-
-// Start default session for public pages
-SessionManager::startSession();
+// Simple session handling - don't destroy existing sessions
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 $isLoggedIn = isset($_SESSION['UserType']);
 $userRole = '';

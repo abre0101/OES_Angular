@@ -1,6 +1,9 @@
 <?php
-// Simple session handling
-session_start();
+// Simple session handling - don't destroy existing sessions
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 $isLoggedIn = isset($_SESSION['UserType']);
 ?>
 <!DOCTYPE html>
