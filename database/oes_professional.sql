@@ -363,18 +363,20 @@ CREATE TABLE `technical_issues` (
 CREATE TABLE `audit_logs` (
   `log_id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) DEFAULT NULL,
-  `user_type` enum('student','instructor','department_head','admin') DEFAULT NULL,
-  `action` varchar(100) NOT NULL,
+  `user_type` enum('student','instructor','department_head','admin','unknown') DEFAULT NULL,
+  `action` varchar(255) NOT NULL,
   `table_name` varchar(100) DEFAULT NULL,
   `record_id` int(11) DEFAULT NULL,
   `old_value` text DEFAULT NULL,
   `new_value` text DEFAULT NULL,
   `ip_address` varchar(45) DEFAULT NULL,
   `user_agent` text DEFAULT NULL,
+  `metadata` json DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`log_id`),
   KEY `user_id` (`user_id`),
-  KEY `created_at` (`created_at`)
+  KEY `created_at` (`created_at`),
+  KEY `table_name` (`table_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 21. PRACTICE QUESTIONS

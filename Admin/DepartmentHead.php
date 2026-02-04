@@ -1,7 +1,11 @@
 <?php
-session_start();
+require_once(__DIR__ . "/../utils/session_manager.php");
+
+// Start Administrator session
+SessionManager::startSession('Administrator');
+
 if(!isset($_SESSION['username'])){
-    header("Location:../index.php");
+    header("Location:../auth/institute-login.php");
     exit();
 }
 
@@ -10,6 +14,27 @@ $con = require_once(__DIR__ . "/../Connections/OES.php"); // Auto-fixed connecti
 if ($con->connect_error) {
     die("Connection failed: " . $con->connect_error);
 }
+
+// Function to generate next department head code
+function generateNextHeadCode($con) {
+    $query = "SELECT head_code FROM department_heads WHERE head_code LIKE 'DH%' ORDER BY head_code DESC LIMIT 1";
+    $result = $con->query($query);
+    
+    if($result && $result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $lastCode = $row['head_code'];
+        // Extract number from DH001 format
+        $number = intval(substr($lastCode, 2));
+        $nextNumber = $number + 1;
+        return 'DH' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+    } else {
+        // First department head
+        return 'DH001';
+    }
+}
+
+// Generate next department head code
+$nextHeadCode = generateNextHeadCode($con);
 
 $query_Recordsetd = "SELECT * FROM departments ORDER BY department_name ASC";
 $Recordsetd = $con->query($query_Recordsetd);
@@ -489,15 +514,15 @@ if($Recordsetd->num_rows > 0) {
             <!-- Officer Display Grid -->
             <div class="officer-grid">
                 <?php
-                $sql = "SELECT ecm.*, d.department_name 
-                        FROM exam_committee_members ecm 
-                        LEFT JOIN departments d ON ecm.department_id = d.department_id 
-                        ORDER BY ecm.full_name ASC";
+                $sql = "SELECT dh.*, d.department_name 
+                        FROM department_heads dh 
+                        LEFT JOIN departments d ON dh.department_id = d.department_id 
+                        ORDER BY dh.full_name ASC";
                 $result = $con->query($sql);
 
                 if($result && $result->num_rows > 0) {
                     while($row = $result->fetch_array()) {
-                        $Id = $row['committee_member_id'];
+                        $Id = $row['department_head_id'];
                         $Name = $row['full_name'];
                         $Email = $row['email'] ?? 'N/A';
                         $Department = $row['department_name'] ?? 'N/A';
@@ -533,10 +558,10 @@ if($Recordsetd->num_rows > 0) {
                         </div>
                     </div>
                     <div class="officer-actions">
-                        <a href="EditAcademicOfficer.php?Id=<?php echo $Id; ?>" class="action-btn edit">
+                        <a href="EditDepartmentHead.php?Id=<?php echo $Id; ?>" class="action-btn edit">
                             <span>✏️</span> Edit
                         </a>
-                        <a href="DeleteAcademicOfficer.php?Id=<?php echo $Id; ?>" class="action-btn delete" onclick="return confirm('Are you sure you want to delete this department head?')">
+                        <a href="DeleteDepartmentHead.php?Id=<?php echo $Id; ?>" class="action-btn delete" onclick="return confirm('Are you sure you want to delete this department head?')">
                             <span>🗑️</span> Delete
                         </a>
                     </div>
@@ -565,10 +590,11 @@ if($Recordsetd->num_rows > 0) {
                 <h2><span>➕</span> Create New Department Head</h2>
                 <button class="modal-close" onclick="closeCreateModal()">×</button>
             </div>
-            <form method="post" action="InsertAcademicOfficer.php">
+            <form method="post" action="InsertDepartmentHead.php">
                 <div class="form-group">
-                    <label for="txtID">Department Head ID:</label>
-                    <input type="text" name="txtID" id="txtID" required placeholder="Enter ID (e.g., DH001)">
+                    <label for="txtHeadCode">Department Head Code (Auto-generated):</label>
+                    <input type="text" name="txtHeadCode" id="txtHeadCode" value="<?php echo $nextHeadCode; ?>" readonly style="background-color: #f0f0f0; font-weight: 600; color: #6f42c1; cursor: not-allowed;">
+                    <small style="display: block; margin-top: 0.5rem; color: #6c757d; font-size: 0.9rem;">This code will be automatically assigned</small>
                 </div>
                 
                 <div class="form-group">
@@ -579,6 +605,11 @@ if($Recordsetd->num_rows > 0) {
                 <div class="form-group">
                     <label for="txtEmail">Email:</label>
                     <input type="email" name="txtEmail" id="txtEmail" required placeholder="Enter Email Address">
+                </div>
+                
+                <div class="form-group">
+                    <label for="txtPhone">Phone:</label>
+                    <input type="text" name="txtPhone" id="txtPhone" placeholder="Enter Phone Number (Optional)">
                 </div>
                 
                 <div class="form-group">

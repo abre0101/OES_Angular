@@ -1,7 +1,8 @@
 <?php
-if (!isset($_SESSION)) {
-    session_start();
-}
+require_once(__DIR__ . "/../utils/session_manager.php");
+
+// Start Instructor session
+SessionManager::startSession('Instructor');
 
 if(!isset($_SESSION['Name'])){
     http_response_code(403);

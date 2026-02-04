@@ -45,7 +45,7 @@
             <span class="sidebar-nav-icon">👨‍🏫</span>
             <span>Instructors</span>
         </a>
-        <a href="AcademicOfficer.php" class="sidebar-nav-item <?php echo (basename($_SERVER['PHP_SELF']) == 'AcademicOfficer.php' || basename($_SERVER['PHP_SELF']) == 'InsertAcademicOfficer.php' || basename($_SERVER['PHP_SELF']) == 'EditAcademicOfficer.php') ? 'active' : ''; ?>" data-tooltip="Department Heads">
+        <a href="DepartmentHead.php" class="sidebar-nav-item <?php echo (basename($_SERVER['PHP_SELF']) == 'DepartmentHead.php' || basename($_SERVER['PHP_SELF']) == 'InsertDepartmentHead.php' || basename($_SERVER['PHP_SELF']) == 'EditDepartmentHead.php') ? 'active' : ''; ?>" data-tooltip="Department Heads">
             <span class="sidebar-nav-icon">👔</span>
             <span>Department Heads</span>
         </a>

@@ -1,7 +1,19 @@
 <?php
-session_start();
+require_once(__DIR__ . "/../utils/session_manager.php");
+
+// Start Administrator session
+SessionManager::startSession('Administrator');
+
+// Check if user is logged in
 if(!isset($_SESSION['username'])){
-    header("Location:../index.php");
+    header("Location: ../auth/institute-login.php");
+    exit();
+}
+
+// Validate user role
+if(!isset($_SESSION['UserType']) || $_SESSION['UserType'] !== 'Administrator'){
+    SessionManager::destroySession();
+    header("Location: ../auth/institute-login.php");
     exit();
 }
 

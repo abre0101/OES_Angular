@@ -8,29 +8,43 @@
 
 <body>
 <?php
+require_once(__DIR__ . "/../utils/session_manager.php");
+
+// Start Administrator session
+SessionManager::startSession('Administrator');
+
+// Check if user is logged in
+if(!isset($_SESSION['username'])){
+    header("Location:../auth/institute-login.php");
+    exit();
+}
+
+// Validate user role
+if(!isset($_SESSION['UserType']) || $_SESSION['UserType'] !== 'Administrator'){
+    SessionManager::destroySession();
+    header("Location:../auth/institute-login.php");
+    exit();
+}
+
 	require_once(__DIR__ . "/../utils/password_helper.php");
 
-	  $Id=$_POST['instID'];
-         $Name=$_POST['instName']; 
-        // $Email=$_POST['excEmail'];
-         $UserName=$_POST['instUName'];
-         $Password=$_POST['instPassword'];
-	$Department=$_POST['cmbDept']; 
-	$cmbCourse=$_POST['cmbCourse'];      
-	$is_active=$_POST['cmbStatus'];
-	 $Sex=$_POST['gender'];
+	$InstructorCode = $_POST['instID'];
+	$Name = $_POST['instName'];
+	$Email = $_POST['instEmail'] ?? '';
+	$UserName = $_POST['instUName'];
+	$Password = $_POST['instPassword'];
+	$Department = $_POST['cmbDept'];
+	$is_active = $_POST['cmbStatus'];
 
 	// Hash the password before storing
 	$hashedPassword = hashPassword($Password);
 
-	
 	// Establish Connection with MYSQL
-	$con = new mysqli("localhost","root");
-	// Select Database
-	$con->select_db("oes");
+	$con = require_once(__DIR__ . "/../Connections/OES.php");
+	
 	// Specify the query to Insert Record - Using prepared statement for security
-	$stmt = $con->prepare("Insert INTO instructors (instructor_id,full_name,Stud_Sex,department_name,username,course_name,password,is_active) values(?,?,?,?,?,?,?,?)");
-	$stmt->bind_param("ssssssss", $Id, $Name, $Sex, $Department, $UserName, $cmbCourse, $hashedPassword, $is_active);
+	$stmt = $con->prepare("INSERT INTO instructors (instructor_code, full_name, email, department_id, username, password, is_active) VALUES (?, ?, ?, ?, ?, ?, ?)");
+	$stmt->bind_param("ssssssi", $InstructorCode, $Name, $Email, $Department, $UserName, $hashedPassword, $is_active);
 	// execute query
 	$stmt->execute();
 	$stmt->close();

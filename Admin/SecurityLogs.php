@@ -1,28 +1,15 @@
 <?php
-session_start();
+require_once(__DIR__ . "/../utils/session_manager.php");
+
+// Start Administrator session
+SessionManager::startSession('Administrator');
+
 if(!isset($_SESSION['username'])){
-    header("Location:../index.php");
+    header("Location:../auth/institute-login.php");
     exit();
 }
 
 $con = require_once(__DIR__ . "/../Connections/OES.php"); // Auto-fixed connection;
-
-// Create security_logs table if it doesn't exist
-$createTableSQL = "CREATE TABLE IF NOT EXISTS `security_logs` (
-    `log_id` INT AUTO_INCREMENT PRIMARY KEY,
-    `user_id` VARCHAR(50),
-    `user_type` VARCHAR(20),
-    `action` VARCHAR(100),
-    `ip_address` VARCHAR(45),
-    `user_agent` TEXT,
-    `is_active` VARCHAR(20),
-    `details` TEXT,
-    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    INDEX `idx_user` (`user_id`),
-    INDEX `idx_action` (`action`),
-    INDEX `idx_date` (`created_at`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
-$con->query($createTableSQL);
 
 // Get filter parameters
 $filterType = $_GET['type'] ?? 'all';
@@ -30,19 +17,16 @@ $filterStatus = $_GET['is_active'] ?? 'all';
 $filterDate = $_GET['date'] ?? '';
 $searchUser = $_GET['search'] ?? '';
 
-// Build query
+// Build query - using audit_logs table
 $whereConditions = array();
 if($filterType != 'all') {
     $whereConditions[] = "user_type = '" . $con->real_escape_string($filterType) . "'";
-}
-if($filterStatus != 'all') {
-    $whereConditions[] = "is_active = '" . $con->real_escape_string($filterStatus) . "'";
 }
 if($filterDate) {
     $whereConditions[] = "DATE(created_at) = '" . $con->real_escape_string($filterDate) . "'";
 }
 if($searchUser) {
-    $whereConditions[] = "user_id LIKE '%" . $con->real_escape_string($searchUser) . "%'";
+    $whereConditions[] = "(user_id LIKE '%" . $con->real_escape_string($searchUser) . "%' OR action LIKE '%" . $con->real_escape_string($searchUser) . "%')";
 }
 
 $whereClause = count($whereConditions) > 0 ? "WHERE " . implode(" AND ", $whereConditions) : "";
@@ -52,7 +36,7 @@ $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
 $perPage = 50;
 $offset = ($page - 1) * $perPage;
 
-$logsQuery = "SELECT * FROM security_logs $whereClause ORDER BY created_at DESC LIMIT $perPage OFFSET $offset";
+$logsQuery = "SELECT * FROM audit_logs $whereClause ORDER BY created_at DESC LIMIT $perPage OFFSET $offset";
 $logsResult = $con->query($logsQuery);
 $logsData = [];
 if($logsResult && $logsResult->num_rows > 0) {
@@ -62,7 +46,7 @@ if($logsResult && $logsResult->num_rows > 0) {
 }
 
 // Get total count
-$countQuery = "SELECT COUNT(*) as total FROM security_logs $whereClause";
+$countQuery = "SELECT COUNT(*) as total FROM audit_logs $whereClause";
 $totalResult = $con->query($countQuery);
 $totalLogs = $totalResult ? $totalResult->fetch_assoc()['total'] : 0;
 $totalPages = ceil($totalLogs / $perPage);
@@ -75,29 +59,29 @@ $stats = array(
     'success' => 0
 );
 
-$totalQuery = $con->query("SELECT COUNT(*) as count FROM security_logs");
+$totalQuery = $con->query("SELECT COUNT(*) as count FROM audit_logs");
 if($totalQuery) {
     $stats['total'] = $totalQuery->fetch_assoc()['count'];
 }
 
-$todayQuery = $con->query("SELECT COUNT(*) as count FROM security_logs WHERE DATE(created_at) = CURDATE()");
+$todayQuery = $con->query("SELECT COUNT(*) as count FROM audit_logs WHERE DATE(created_at) = CURDATE()");
 if($todayQuery) {
     $stats['today'] = $todayQuery->fetch_assoc()['count'];
 }
 
-$failedQuery = $con->query("SELECT COUNT(*) as count FROM security_logs WHERE is_active = 'failed'");
+$failedQuery = $con->query("SELECT COUNT(*) as count FROM audit_logs WHERE action LIKE '%failed%' OR action LIKE '%error%'");
 if($failedQuery) {
     $stats['failed'] = $failedQuery->fetch_assoc()['count'];
 }
 
-$successQuery = $con->query("SELECT COUNT(*) as count FROM security_logs WHERE is_active = 'success'");
+$successQuery = $con->query("SELECT COUNT(*) as count FROM audit_logs WHERE action LIKE '%success%' OR action LIKE '%login%' OR action LIKE '%created%' OR action LIKE '%updated%'");
 if($successQuery) {
     $stats['success'] = $successQuery->fetch_assoc()['count'];
 }
 
-// Get recent suspicious activities
-$suspiciousQuery = "SELECT * FROM security_logs 
-    WHERE is_active = 'failed' OR action LIKE '%failed%' 
+// Get recent suspicious activities (failed logins, errors, etc.)
+$suspiciousQuery = "SELECT * FROM audit_logs 
+    WHERE action LIKE '%failed%' OR action LIKE '%error%' OR action LIKE '%denied%'
     ORDER BY created_at DESC LIMIT 10";
 $suspiciousResult = $con->query($suspiciousQuery);
 $suspiciousData = [];
@@ -232,6 +216,11 @@ $con->close();
             background: #ffc107;
             color: var(--primary-dark);
         }
+        
+        .status-info {
+            background: #17a2b8;
+            color: white;
+        }
     </style>
 </head>
 <body class="admin-layout">
@@ -297,17 +286,19 @@ $con->close();
                                 <option value="admin" <?php echo $filterType == 'admin' ? 'selected' : ''; ?>>Admin</option>
                                 <option value="instructor" <?php echo $filterType == 'instructor' ? 'selected' : ''; ?>>Instructor</option>
                                 <option value="student" <?php echo $filterType == 'student' ? 'selected' : ''; ?>>Student</option>
-                                <option value="exam_committee" <?php echo $filterType == 'exam_committee' ? 'selected' : ''; ?>>Exam Committee</option>
+                                <option value="department_head" <?php echo $filterType == 'department_head' ? 'selected' : ''; ?>>Department Head</option>
                             </select>
                         </div>
                         
                         <div class="form-group" style="margin-bottom: 0;">
                             <label>Status</label>
                             <select name="is_active" class="form-control">
-                                <option value="all" <?php echo $filterStatus == 'all' ? 'selected' : ''; ?>>All Status</option>
-                                <option value="success" <?php echo $filterStatus == 'success' ? 'selected' : ''; ?>>Success</option>
-                                <option value="failed" <?php echo $filterStatus == 'failed' ? 'selected' : ''; ?>>Failed</option>
-                                <option value="warning" <?php echo $filterStatus == 'warning' ? 'selected' : ''; ?>>Warning</option>
+                                <option value="all" <?php echo $filterStatus == 'all' ? 'selected' : ''; ?>>All Actions</option>
+                                <option value="login" <?php echo $filterStatus == 'login' ? 'selected' : ''; ?>>Login</option>
+                                <option value="logout" <?php echo $filterStatus == 'logout' ? 'selected' : ''; ?>>Logout</option>
+                                <option value="create" <?php echo $filterStatus == 'create' ? 'selected' : ''; ?>>Create</option>
+                                <option value="update" <?php echo $filterStatus == 'update' ? 'selected' : ''; ?>>Update</option>
+                                <option value="delete" <?php echo $filterStatus == 'delete' ? 'selected' : ''; ?>>Delete</option>
                             </select>
                         </div>
                         
@@ -338,24 +329,42 @@ $con->close();
                     <div class="card-body">
                         <?php if(count($logsData) > 0): ?>
                             <?php foreach($logsData as $log): ?>
-                            <div class="log-entry <?php echo $log['is_active']; ?>">
+                            <?php 
+                                // Determine log type based on action
+                                $logClass = 'success';
+                                $statusBadge = 'info';
+                                if(stripos($log['action'], 'failed') !== false || stripos($log['action'], 'error') !== false) {
+                                    $logClass = 'failed';
+                                    $statusBadge = 'failed';
+                                } elseif(stripos($log['action'], 'delete') !== false) {
+                                    $logClass = 'warning';
+                                    $statusBadge = 'warning';
+                                } elseif(stripos($log['action'], 'login') !== false || stripos($log['action'], 'create') !== false) {
+                                    $statusBadge = 'success';
+                                }
+                            ?>
+                            <div class="log-entry <?php echo $logClass; ?>">
                                 <div style="display: flex; justify-content: space-between; align-items: start;">
                                     <div style="flex: 1;">
                                         <strong style="color: var(--primary-color);"><?php echo htmlspecialchars($log['action']); ?></strong>
                                         <div class="log-meta">
-                                            <span>👤 <?php echo htmlspecialchars($log['user_id'] ?? 'Unknown'); ?></span>
-                                            <span>🏷️ <?php echo htmlspecialchars($log['user_type']); ?></span>
-                                            <span>🌐 <?php echo htmlspecialchars($log['ip_address']); ?></span>
+                                            <span>👤 <?php echo htmlspecialchars($log['user_id'] ?? 'System'); ?></span>
+                                            <span>🏷️ <?php echo htmlspecialchars($log['user_type'] ?? 'N/A'); ?></span>
                                             <span>🕐 <?php echo date('M j, Y - g:i A', strtotime($log['created_at'])); ?></span>
                                         </div>
-                                        <?php if($log['details']): ?>
+                                        <?php if(!empty($log['old_value']) || !empty($log['new_value'])): ?>
                                         <div class="details-text">
-                                            <?php echo htmlspecialchars($log['details']); ?>
+                                            <?php if($log['table_name']): ?>
+                                                <strong>Table:</strong> <?php echo htmlspecialchars($log['table_name']); ?>
+                                                <?php if($log['record_id']): ?>
+                                                    (ID: <?php echo htmlspecialchars($log['record_id']); ?>)
+                                                <?php endif; ?>
+                                            <?php endif; ?>
                                         </div>
                                         <?php endif; ?>
                                     </div>
-                                    <span class="status-badge status-<?php echo $log['is_active']; ?>">
-                                        <?php echo $log['is_active']; ?>
+                                    <span class="status-badge status-<?php echo $statusBadge; ?>">
+                                        <?php echo ucfirst($log['action']); ?>
                                     </span>
                                 </div>
                             </div>

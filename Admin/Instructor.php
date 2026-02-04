@@ -1,11 +1,45 @@
 <?php
-session_start();
+require_once(__DIR__ . "/../utils/session_manager.php");
+
+// Start Administrator session
+SessionManager::startSession('Administrator');
+
+// Check if user is logged in
 if(!isset($_SESSION['username'])){
-    header("Location:../index.php");
+    header("Location: ../auth/institute-login.php");
+    exit();
+}
+
+// Validate user role
+if(!isset($_SESSION['UserType']) || $_SESSION['UserType'] !== 'Administrator'){
+    SessionManager::destroySession();
+    header("Location: ../auth/institute-login.php");
     exit();
 }
 
 $con = require_once(__DIR__ . "/../Connections/OES.php");
+
+// Function to generate next instructor code
+function generateNextInstructorCode($con) {
+    $query = "SELECT instructor_code FROM instructors WHERE instructor_code LIKE 'INST%' ORDER BY instructor_code DESC LIMIT 1";
+    $result = mysqli_query($con, $query);
+    
+    if($result && mysqli_num_rows($result) > 0) {
+        $row = mysqli_fetch_assoc($result);
+        $lastCode = $row['instructor_code'];
+        // Extract number from INST001 format
+        $number = intval(substr($lastCode, 4));
+        $nextNumber = $number + 1;
+        return 'INST' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+    } else {
+        // First instructor
+        return 'INST001';
+    }
+}
+
+// Generate next instructor code
+$nextInstructorCode = generateNextInstructorCode($con);
+
 $query_Recordsetd = "SELECT * FROM departments ORDER BY department_name ASC";
 $Recordsetd = mysqli_query($con,$query_Recordsetd) or die(mysqli_error($con));
 $departments = [];
@@ -561,8 +595,9 @@ if(mysqli_num_rows($Recordsetd) > 0) {
             </div>
             <form method="post" action="InsertInstructor.php">
                 <div class="form-group">
-                    <label for="instID">Instructor ID:</label>
-                    <input type="text" name="instID" id="instID" required placeholder="Enter Instructor ID (e.g., INST001)">
+                    <label for="instID">Instructor Code (Auto-generated):</label>
+                    <input type="text" name="instID" id="instID" value="<?php echo $nextInstructorCode; ?>" readonly style="background-color: #f0f0f0; font-weight: 600; color: #17a2b8; cursor: not-allowed;">
+                    <small style="display: block; margin-top: 0.5rem; color: #6c757d; font-size: 0.9rem;">This code will be automatically assigned</small>
                 </div>
                 
                 <div class="form-group">
@@ -602,8 +637,8 @@ if(mysqli_num_rows($Recordsetd) > 0) {
                 <div class="form-group">
                     <label for="cmbStatus">Status:</label>
                     <select name="cmbStatus" id="cmbStatus" required>
-                        <option value="Active">Active</option>
-                        <option value="Inactive">Inactive</option>
+                        <option value="1">Active</option>
+                        <option value="0">Inactive</option>
                     </select>
                 </div>
                 

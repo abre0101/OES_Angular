@@ -1,7 +1,19 @@
 <?php
-session_start();
+require_once(__DIR__ . "/../utils/session_manager.php");
+
+// Start Administrator session
+SessionManager::startSession('Administrator');
+
+// Check if user is logged in
 if(!isset($_SESSION['username'])){
-    header("Location:../index.php");
+    header("Location: ../auth/institute-login.php");
+    exit();
+}
+
+// Validate user role
+if(!isset($_SESSION['UserType']) || $_SESSION['UserType'] !== 'Administrator'){
+    SessionManager::destroySession();
+    header("Location: ../auth/institute-login.php");
     exit();
 }
 
@@ -71,12 +83,12 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['csv_file'])) {
                         }
                         break;
                         
-                    case 'exam_committee':
-                        // Expected: member_code, username, password, full_name, email, phone, department_id
+                    case 'department_head':
+                        // Expected: head_code, username, password, full_name, email, phone, department_id
                         if(count($data) >= 7) {
                             // Hash the password before storing
                             $hashedPassword = hashPassword($data[2]);
-                            $stmt = $con->prepare("INSERT INTO exam_committee_members (member_code, username, password, full_name, email, phone, department_id, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, 1)");
+                            $stmt = $con->prepare("INSERT INTO department_heads (head_code, username, password, full_name, email, phone, department_id, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, 1)");
                             $stmt->bind_param("ssssssi", $data[0], $data[1], $hashedPassword, $data[3], $data[4], $data[5], $data[6]);
                             if($stmt->execute()) {
                                 $successCount++;
@@ -319,7 +331,7 @@ while($dept = $departments->fetch_assoc()) {
                                     <option value="">-- Select User Type --</option>
                                     <option value="student">👨‍🎓 Students</option>
                                     <option value="instructor">👨‍🏫 Instructors</option>
-                                    <option value="exam_committee">👥 Exam Committee Members</option>
+                                    <option value="department_head">👔 Department Heads</option>
                                 </select>
                                 <small style="color: var(--text-secondary); margin-top: 0.5rem; display: block;">Choose the type of users you want to import</small>
                             </div>
@@ -386,11 +398,11 @@ while($dept = $departments->fetch_assoc()) {
                                 <button class="btn btn-primary btn-sm">⬇️ Download Template</button>
                             </div>
 
-                            <div id="committeeTemplate" class="template-card" style="display: none; margin-bottom: 1rem;" onclick="downloadTemplate('exam_committee')">
-                                <div class="template-icon">👥</div>
-                                <h4 style="margin: 0 0 0.5rem 0; font-weight: 700;">Exam Committee Template</h4>
+                            <div id="departmentHeadTemplate" class="template-card" style="display: none; margin-bottom: 1rem;" onclick="downloadTemplate('department_head')">
+                                <div class="template-icon">👔</div>
+                                <h4 style="margin: 0 0 0.5rem 0; font-weight: 700;">Department Head Template</h4>
                                 <p style="margin: 0 0 1rem 0; color: var(--text-secondary); font-size: 0.9rem;">
-                                    member_code, username, password, full_name, email, phone, department_id
+                                    head_code, username, password, full_name, email, phone, department_id
                                 </p>
                                 <button class="btn btn-primary btn-sm">⬇️ Download Template</button>
                             </div>
@@ -538,7 +550,7 @@ while($dept = $departments->fetch_assoc()) {
             // Hide all templates
             document.getElementById('studentTemplate').style.display = 'none';
             document.getElementById('instructorTemplate').style.display = 'none';
-            document.getElementById('committeeTemplate').style.display = 'none';
+            document.getElementById('departmentHeadTemplate').style.display = 'none';
             document.getElementById('noTemplate').style.display = 'none';
             
             // Show selected template
@@ -546,8 +558,8 @@ while($dept = $departments->fetch_assoc()) {
                 document.getElementById('studentTemplate').style.display = 'block';
             } else if(type === 'instructor') {
                 document.getElementById('instructorTemplate').style.display = 'block';
-            } else if(type === 'exam_committee') {
-                document.getElementById('committeeTemplate').style.display = 'block';
+            } else if(type === 'department_head') {
+                document.getElementById('departmentHeadTemplate').style.display = 'block';
             } else {
                 document.getElementById('noTemplate').style.display = 'block';
             }
@@ -575,11 +587,11 @@ while($dept = $departments->fetch_assoc()) {
                     csv += 'INS002,dr.jane,pass123,Dr. Jane Doe,dr.jane@example.com,+251911234568,2';
                     filename = 'instructor_import_template.csv';
                     break;
-                case 'exam_committee':
-                    csv = 'member_code,username,password,full_name,email,phone,department_id\n';
-                    csv += 'EC001,committee.member1,pass123,Committee Member 1,member1@example.com,+251911234567,1\n';
-                    csv += 'EC002,committee.member2,pass123,Committee Member 2,member2@example.com,+251911234568,2';
-                    filename = 'exam_committee_import_template.csv';
+                case 'department_head':
+                    csv = 'head_code,username,password,full_name,email,phone,department_id\n';
+                    csv += 'DH001,head.john,pass123,Dr. John Smith,head.john@example.com,+251911234567,1\n';
+                    csv += 'DH002,head.jane,pass123,Dr. Jane Doe,head.jane@example.com,+251911234568,2';
+                    filename = 'department_head_import_template.csv';
                     break;
             }
             

@@ -7,21 +7,35 @@
 
 <body>
 <?php
+require_once(__DIR__ . "/../utils/session_manager.php");
 
-	$ID=$_POST['txtID'];
+// Start Administrator session
+SessionManager::startSession('Administrator');
+
+// Check if user is logged in
+if(!isset($_SESSION['username'])){
+    header("Location:../auth/institute-login.php");
+    exit();
+}
+
+// Validate user role
+if(!isset($_SESSION['UserType']) || $_SESSION['UserType'] !== 'Administrator'){
+    SessionManager::destroySession();
+    header("Location:../auth/institute-login.php");
+    exit();
+}
+
+	$DeptCode = $_POST['txtDeptCode'];
 	$Name=$_POST['txtName'];
-    $DeptFaculty=$_POST['cmbFacult'];
-	
-
+	$DeptFacultyId=$_POST['cmbFacult'];
 	
 	// Establish Connection with MYSQL
-	$con = new mysqli("localhost","root");
-	// Select Database
-	$con->select_db("oes");
+	$con = require_once(__DIR__ . "/../Connections/OES.php");
+	
 	// Specify the query to Insert Record
-	$sql = "insert INTO departments 	(department_id,department_name,faculty_name) 	values('".$ID."','".$Name."','".$DeptFaculty."' )";
+	$sql = "INSERT INTO departments (department_code, department_name, faculty_id) VALUES('".$DeptCode."','".$Name."',".$DeptFacultyId.")";
 	// execute query
-	$con->query ($sql);
+	$con->query($sql);
 	// Close The Connection
 	$con->close ();
 	echo '<script type="text/javascript">alert("New Department Inserted Succesfully");window.location=\'Department.php\';</script>';

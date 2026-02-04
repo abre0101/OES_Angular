@@ -1,7 +1,11 @@
 <?php
-session_start();
+require_once(__DIR__ . "/../utils/session_manager.php");
+
+// Start Administrator session
+SessionManager::startSession('Administrator');
+
 if(!isset($_SESSION['username'])){
-    header("Location:../index.php");
+    header("Location:../auth/institute-login.php");
     exit();
 }
 
@@ -29,7 +33,7 @@ if($row = $result->fetch_array()) {
     $is_active = $row['is_active'];
     $Status = ($is_active == 1) ? 'Active' : 'Inactive';
 } else {
-    header("Location: AcademicOfficer.php");
+    header("Location: DepartmentHead.php");
     exit();
 }
 
@@ -194,7 +198,7 @@ $result_dept = $con->query($query_dept);
 
                 <div class="form-section">
                     <h3>🔄 Update Information</h3>
-                    <form method="post" action="UpdateAcademicOfficer.php?ID=<?php echo $AO_ID;?>">
+                    <form method="post" action="UpdateDepartmentHead.php?ID=<?php echo $AO_ID;?>">
                         <div class="form-group">
                             <label for="cmbDep">Change Department:</label>
                             <select name="cmbDep" id="cmbDep">
@@ -224,7 +228,7 @@ $result_dept = $con->query($query_dept);
                             <button type="submit" class="btn btn-primary">
                                 ✓ Update Officer
                             </button>
-                            <a href="AcademicOfficer.php" class="btn btn-secondary">
+                            <a href="DepartmentHead.php" class="btn btn-secondary">
                                 ← Back to Officers
                             </a>
                         </div>

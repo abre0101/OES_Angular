@@ -4,18 +4,24 @@ require_once(__DIR__ . "/utils/session_manager.php");
 // Start default session for public pages
 SessionManager::startSession();
 
-$isLoggedIn = isset($_SESSION['Name']);
+$isLoggedIn = isset($_SESSION['UserType']);
 $userRole = '';
 if ($isLoggedIn) {
-    // Determine user role based on session variables
-    if (isset($_SESSION['ID']) && !isset($_SESSION['instructor_id']) && !isset($_SESSION['committee_member_id'])) {
-        $userRole = 'student';
-    } elseif (isset($_SESSION['instructor_id'])) {
-        $userRole = 'instructor';
-    } elseif (isset($_SESSION['committee_member_id'])) {
-        $userRole = 'department_head';
-    } elseif (isset($_SESSION['Admin'])) {
-        $userRole = 'admin';
+    // Determine user role based on session UserType
+    $userType = $_SESSION['UserType'] ?? '';
+    switch($userType) {
+        case 'Student':
+            $userRole = 'student';
+            break;
+        case 'Instructor':
+            $userRole = 'instructor';
+            break;
+        case 'DepartmentHead':
+            $userRole = 'department_head';
+            break;
+        case 'Administrator':
+            $userRole = 'admin';
+            break;
     }
 }
 ?>

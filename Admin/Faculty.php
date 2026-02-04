@@ -1,6 +1,33 @@
 <?php
-session_start();
+require_once(__DIR__ . "/../utils/session_manager.php");
+
+// Start Administrator session
+SessionManager::startSession('Administrator');
+
 if(isset($_SESSION['username'])){
+
+// Database connection
+$con = require_once(__DIR__ . "/../Connections/OES.php");
+
+// Function to generate next faculty code
+function generateNextFacultyCode($con) {
+    $query = "SELECT faculty_code FROM faculties WHERE faculty_code LIKE 'FAC%' ORDER BY faculty_code DESC LIMIT 1";
+    $result = $con->query($query);
+    
+    if($result && $result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $lastCode = $row['faculty_code'];
+        $number = intval(substr($lastCode, 3));
+        $nextNumber = $number + 1;
+        return 'FAC' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+    } else {
+        return 'FAC001';
+    }
+}
+
+// Generate next faculty code
+$nextFacultyCode = generateNextFacultyCode($con);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -398,7 +425,6 @@ if(isset($_SESSION['username'])){
             <!-- Colleges Display Grid -->
             <div class="colleges-grid">
                 <?php
-                $con = require_once(__DIR__ . "/../Connections/OES.php"); // Auto-fixed connection;
                 $sql = "SELECT * FROM faculties ORDER BY faculty_name ASC";
                 $result = $con->query($sql);
 
@@ -446,8 +472,9 @@ if(isset($_SESSION['username'])){
             </div>
             <form method="post" action="InsertFaculty.php">
                 <div class="form-group">
-                    <label for="txtID">College ID:</label>
-                    <input type="text" name="txtID" id="txtID" required placeholder="Enter College ID (e.g., COL001)">
+                    <label for="txtFacultyCode">College Code (Auto-generated):</label>
+                    <input type="text" name="txtFacultyCode" id="txtFacultyCode" value="<?php echo $nextFacultyCode; ?>" readonly style="background-color: #f0f0f0; font-weight: 600; color: #28a745; cursor: not-allowed;">
+                    <small style="display: block; margin-top: 0.5rem; color: #6c757d; font-size: 0.9rem;">This code will be automatically assigned</small>
                 </div>
                 
                 <div class="form-group">

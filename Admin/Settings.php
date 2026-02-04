@@ -1,7 +1,19 @@
 <?php
-session_start();
+require_once(__DIR__ . "/../utils/session_manager.php");
+
+// Start Administrator session
+SessionManager::startSession('Administrator');
+
+// Check if user is logged in
 if(!isset($_SESSION['username'])){
-    header("Location:../index.php");
+    header("Location: ../auth/institute-login.php");
+    exit();
+}
+
+// Validate user role
+if(!isset($_SESSION['UserType']) || $_SESSION['UserType'] !== 'Administrator'){
+    SessionManager::destroySession();
+    header("Location: ../auth/institute-login.php");
     exit();
 }
 ?>
@@ -18,9 +30,21 @@ if(!isset($_SESSION['username'])){
     <style>
         .settings-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 2rem;
             margin-top: 2rem;
+        }
+        
+        @media (max-width: 1200px) {
+            .settings-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .settings-grid {
+                grid-template-columns: 1fr;
+            }
         }
         
         .setting-card {
@@ -97,27 +121,41 @@ if(!isset($_SESSION['username'])){
             transform: translateX(5px);
         }
         
-        .page-header-modern {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-            color: white;
-            padding: 2.5rem;
-            border-radius: var(--radius-lg);
+        .page-header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 2rem;
-            box-shadow: 0 4px 20px rgba(0, 51, 102, 0.2);
+            gap: 2rem;
+            background: linear-gradient(135deg, rgba(0, 51, 102, 0.05) 0%, rgba(0, 85, 170, 0.05) 100%);
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            border: 2px solid rgba(0, 51, 102, 0.1);
         }
         
-        .page-header-modern h1 {
+        .page-title-section h1 {
             margin: 0 0 0.5rem 0;
-            font-size: 2.2rem;
+            font-size: 2rem;
             font-weight: 800;
-            color: white;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
         }
         
-        .page-header-modern p {
+        .page-title-section h1 span {
+            -webkit-text-fill-color: initial;
+            background: none;
+        }
+        
+        .page-subtitle {
             margin: 0;
-            opacity: 0.95;
+            color: var(--text-secondary);
             font-size: 1.05rem;
-            color: white;
+            font-weight: 500;
         }
     </style>
 </head>
@@ -131,9 +169,11 @@ if(!isset($_SESSION['username'])){
         ?>
 
         <div class="admin-content">
-            <div class="page-header-modern">
-                <h1>⚙️ System Settings</h1>
-                <p>Manage system configuration, security, and maintenance</p>
+            <div class="page-header-actions">
+                <div class="page-title-section">
+                    <h1><span>⚙️</span> System Settings</h1>
+                    <p class="page-subtitle">Manage system configuration, security, and maintenance</p>
+                </div>
             </div>
 
             <div class="settings-grid">

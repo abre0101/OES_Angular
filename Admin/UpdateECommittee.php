@@ -1,7 +1,11 @@
 <?php
-session_start();
+require_once(__DIR__ . "/../utils/session_manager.php");
+
+// Start Administrator session
+SessionManager::startSession('Administrator');
+
 if(!isset($_SESSION['username'])){
-    header("Location:../index.php");
+    header("Location:../auth/institute-login.php");
     exit();
 }
 
@@ -25,6 +29,6 @@ $stmt->execute();
 $stmt->close();
 $con->close();
 
-header("Location: AcademicOfficer.php?msg=updated");
+header("Location: DepartmentHead.php?msg=updated");
 exit();
 ?>

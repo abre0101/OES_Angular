@@ -16,13 +16,17 @@ class SessionManager {
      * @param string $userType - 'Student', 'Instructor', 'Administrator', or 'DepartmentHead'
      */
     public static function startSession($userType = null) {
-        // If session is already started, close it first
-        if (session_status() === PHP_SESSION_ACTIVE) {
-            session_write_close();
-        }
-        
         // Determine session name based on user type
         $sessionName = self::getSessionName($userType);
+        
+        // If session is already started with the same name, don't restart
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            if (session_name() === $sessionName) {
+                return; // Already using the correct session
+            }
+            // Close the current session before starting a new one
+            session_write_close();
+        }
         
         // Set the session name and start
         session_name($sessionName);
@@ -35,10 +39,6 @@ class SessionManager {
      * @return string
      */
     private static function getSessionName($userType) {
-        if ($userType === null && isset($_SESSION['UserType'])) {
-            $userType = $_SESSION['UserType'];
-        }
-        
         switch ($userType) {
             case 'Student':
                 return self::SESSION_STUDENT;

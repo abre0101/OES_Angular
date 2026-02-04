@@ -1,7 +1,19 @@
 <?php
-session_start();
+require_once(__DIR__ . "/../utils/session_manager.php");
+
+// Start Administrator session
+SessionManager::startSession('Administrator');
+
+// Check if user is logged in
 if(!isset($_SESSION['username'])){
-    header("Location:../index.php");
+    header("Location: ../auth/institute-login.php");
+    exit();
+}
+
+// Validate user role
+if(!isset($_SESSION['UserType']) || $_SESSION['UserType'] !== 'Administrator'){
+    SessionManager::destroySession();
+    header("Location: ../auth/institute-login.php");
     exit();
 }
 
@@ -10,6 +22,25 @@ $con = require_once(__DIR__ . "/../Connections/OES.php"); // Auto-fixed connecti
 if ($con->connect_error) {
     die("Connection failed: " . $con->connect_error);
 }
+
+// Function to generate next department code
+function generateNextDepartmentCode($con) {
+    $query = "SELECT department_code FROM departments WHERE department_code LIKE 'DEPT%' ORDER BY department_code DESC LIMIT 1";
+    $result = $con->query($query);
+    
+    if($result && $result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $lastCode = $row['department_code'];
+        $number = intval(substr($lastCode, 4));
+        $nextNumber = $number + 1;
+        return 'DEPT' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+    } else {
+        return 'DEPT001';
+    }
+}
+
+// Generate next department code
+$nextDepartmentCode = generateNextDepartmentCode($con);
 
 $query_Recordsetd = "SELECT * FROM faculties ORDER BY faculty_name ASC";
 $Recordsetd = $con->query($query_Recordsetd);
@@ -485,8 +516,9 @@ if($Recordsetd->num_rows > 0) {
             </div>
             <form method="post" action="InsertDepartment.php">
                 <div class="form-group">
-                    <label for="txtID">Department ID:</label>
-                    <input type="text" name="txtID" id="txtID" required placeholder="Enter Department ID (e.g., DEPT001)">
+                    <label for="txtDeptCode">Department Code (Auto-generated):</label>
+                    <input type="text" name="txtDeptCode" id="txtDeptCode" value="<?php echo $nextDepartmentCode; ?>" readonly style="background-color: #f0f0f0; font-weight: 600; color: #ffc107; cursor: not-allowed;">
+                    <small style="display: block; margin-top: 0.5rem; color: #6c757d; font-size: 0.9rem;">This code will be automatically assigned</small>
                 </div>
                 
                 <div class="form-group">
@@ -501,7 +533,7 @@ if($Recordsetd->num_rows > 0) {
                         <?php
                         foreach($faculties as $faculty) {
                         ?>
-                        <option value="<?php echo $faculty['faculty_name']?>"><?php echo $faculty['faculty_name']?></option>
+                        <option value="<?php echo $faculty['faculty_id']?>"><?php echo $faculty['faculty_name']?></option>
                         <?php
                         }
                         ?>

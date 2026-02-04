@@ -1,7 +1,19 @@
 <?php
-session_start();
+require_once(__DIR__ . "/../utils/session_manager.php");
+
+// Start Administrator session
+SessionManager::startSession('Administrator');
+
+// Check if user is logged in
 if(!isset($_SESSION['username'])){
-    header("Location:../index.php");
+    header("Location: ../auth/institute-login.php");
+    exit();
+}
+
+// Validate user role
+if(!isset($_SESSION['UserType']) || $_SESSION['UserType'] !== 'Administrator'){
+    SessionManager::destroySession();
+    header("Location: ../auth/institute-login.php");
     exit();
 }
 
@@ -10,6 +22,25 @@ $con = require_once(__DIR__ . "/../Connections/OES.php"); // Auto-fixed connecti
 if ($con->connect_error) {
     die("Connection failed: " . $con->connect_error);
 }
+
+// Function to generate next course code
+function generateNextCourseCode($con) {
+    $query = "SELECT course_code FROM courses WHERE course_code LIKE 'CRS%' ORDER BY course_code DESC LIMIT 1";
+    $result = $con->query($query);
+    
+    if($result && $result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $lastCode = $row['course_code'];
+        $number = intval(substr($lastCode, 3));
+        $nextNumber = $number + 1;
+        return 'CRS' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+    } else {
+        return 'CRS001';
+    }
+}
+
+// Generate next course code
+$nextCourseCode = generateNextCourseCode($con);
 
 $query_Recordsetd = "SELECT * FROM departments ORDER BY department_name ASC";
 $Recordsetd = $con->query($query_Recordsetd);
@@ -538,8 +569,9 @@ if($Recordseti->num_rows > 0) {
             </div>
             <form method="post" action="InsertCourse.php">
                 <div class="form-group">
-                    <label for="txtDeptID">Course ID:</label>
-                    <input type="text" name="txtDeptID" id="txtDeptID" required placeholder="Enter Course ID (e.g., CS101)">
+                    <label for="txtCourseCode">Course Code (Auto-generated):</label>
+                    <input type="text" name="txtCourseCode" id="txtCourseCode" value="<?php echo $nextCourseCode; ?>" readonly style="background-color: #f0f0f0; font-weight: 600; color: #dc3545; cursor: not-allowed;">
+                    <small style="display: block; margin-top: 0.5rem; color: #6c757d; font-size: 0.9rem;">This code will be automatically assigned</small>
                 </div>
                 
                 <div class="form-group">
