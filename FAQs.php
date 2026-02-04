@@ -1,27 +1,16 @@
 <?php
 require_once(__DIR__ . "/utils/session_manager.php");
-
-// Start default session for public pages
 SessionManager::startSession();
 
 $isLoggedIn = isset($_SESSION['UserType']);
 $userRole = '';
 if ($isLoggedIn) {
-    // Determine user role based on session UserType
     $userType = $_SESSION['UserType'] ?? '';
     switch($userType) {
-        case 'Student':
-            $userRole = 'student';
-            break;
-        case 'Instructor':
-            $userRole = 'instructor';
-            break;
-        case 'DepartmentHead':
-            $userRole = 'departmenthead';
-            break;
-        case 'Administrator':
-            $userRole = 'admin';
-            break;
+        case 'Student': $userRole = 'student'; break;
+        case 'Instructor': $userRole = 'instructor'; break;
+        case 'DepartmentHead': $userRole = 'departmenthead'; break;
+        case 'Administrator': $userRole = 'admin'; break;
     }
 }
 ?>
@@ -30,7 +19,7 @@ if ($isLoggedIn) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Help - Debre Markos University Health Campus</title>
+    <title>FAQs - Debre Markos University Health Campus</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         * {
@@ -40,11 +29,9 @@ if ($isLoggedIn) {
         }
 
         :root {
-            --primary-color: #1e3a8a;
             --accent-color: #d4af37;
             --text-dark: #1f2937;
             --text-light: #6b7280;
-            --bg-light: #f9fafb;
             --white: #ffffff;
         }
 
@@ -53,16 +40,15 @@ if ($isLoggedIn) {
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-family: 'Inter', sans-serif;
             line-height: 1.6;
             color: var(--text-dark);
-            background: var(--bg-light);
+            background: #f9fafb;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
         }
 
-        /* Header */
         .header {
             background: var(--white);
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -120,7 +106,6 @@ if ($isLoggedIn) {
             text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
         }
 
-        /* Navigation */
         .main-nav {
             background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
         }
@@ -166,7 +151,6 @@ if ($isLoggedIn) {
             width: 80%;
         }
 
-        /* Main Content */
         .main-content {
             flex: 1;
             padding: 4rem 0;
@@ -188,63 +172,6 @@ if ($isLoggedIn) {
         .page-header p {
             font-size: 1.25rem;
             color: var(--text-light);
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-        /* Quick Links */
-        .quick-links {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            margin-bottom: 4rem;
-        }
-
-        .quick-link-card {
-            background: var(--white);
-            border: 2px solid #e5e7eb;
-            border-radius: 16px;
-            padding: 2.5rem 2rem;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .quick-link-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            border-color: var(--accent-color);
-        }
-
-        .quick-link-icon {
-            font-size: 3.5rem;
-            margin-bottom: 1.5rem;
-            display: block;
-        }
-
-        .quick-link-card h3 {
-            font-size: 1.35rem;
-            font-weight: 700;
-            color: var(--text-dark);
-            margin-bottom: 0.75rem;
-        }
-
-        .quick-link-card p {
-            color: var(--text-light);
-            font-size: 0.95rem;
-        }
-
-        /* FAQ Section */
-        .faq-section {
-            margin-bottom: 4rem;
-        }
-
-        .section-title {
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--text-dark);
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 3px solid var(--accent-color);
         }
 
         .faq-item {
@@ -318,81 +245,6 @@ if ($isLoggedIn) {
             }
         }
 
-        /* Contact Cards */
-        .contact-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .contact-card {
-            background: linear-gradient(135deg, #1a2b4a 0%, #2c5364 100%);
-            color: var(--white);
-            border-radius: 16px;
-            padding: 2rem;
-            border: 2px solid var(--accent-color);
-        }
-
-        .contact-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-            color: var(--accent-color);
-        }
-
-        .contact-card p {
-            margin-bottom: 0.75rem;
-            line-height: 1.8;
-        }
-
-        .contact-card strong {
-            color: var(--accent-color);
-        }
-
-        /* Tips Section */
-        .tips-section {
-            background: #f8fafc;
-            border-radius: 16px;
-            padding: 2.5rem;
-            margin-top: 3rem;
-            border: 2px solid #e5e7eb;
-        }
-
-        .tips-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .tip-box h4 {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--text-dark);
-            margin-bottom: 1rem;
-        }
-
-        .tip-box ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .tip-box li {
-            padding: 0.5rem 0;
-            padding-left: 1.5rem;
-            position: relative;
-            color: var(--text-light);
-        }
-
-        .tip-box li::before {
-            content: '✓';
-            position: absolute;
-            left: 0;
-            color: var(--accent-color);
-            font-weight: bold;
-        }
-
-        /* Buttons */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -417,7 +269,6 @@ if ($isLoggedIn) {
             color: #1a2b4a;
         }
 
-        /* Footer */
         .footer {
             background: linear-gradient(135deg, #1a2b4a 0%, #2c5364 100%);
             color: var(--white);
@@ -431,7 +282,6 @@ if ($isLoggedIn) {
             color: rgba(255, 255, 255, 0.9);
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .header-top .container {
                 flex-direction: column;
@@ -453,17 +303,10 @@ if ($isLoggedIn) {
             .page-header h1 {
                 font-size: 2rem;
             }
-
-            .quick-links,
-            .contact-grid,
-            .tips-grid {
-                grid-template-columns: 1fr;
-            }
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
     <header class="header">
         <div class="header-top">
             <div class="container">
@@ -475,17 +318,7 @@ if ($isLoggedIn) {
                     </div>
                 </div>
                 <div class="header-cta">
-                    <?php if ($isLoggedIn): ?>
-                        <a href="<?php 
-                            if ($userRole == 'student') echo 'Student/index.php';
-                            elseif ($userRole == 'instructor') echo 'Instructor/index.php';
-                            elseif ($userRole == 'departmenthead') echo 'DepartmentHead/index.php';
-                            elseif ($userRole == 'admin') echo 'Admin/index.php';
-                            else echo 'index.php';
-                        ?>" class="btn btn-outline">← Dashboard</a>
-                    <?php else: ?>
-                        <a href="index.php#login" class="btn btn-outline">🔐 Login</a>
-                    <?php endif; ?>
+                    <a href="Help.php" class="btn btn-outline">← Back to Help</a>
                 </div>
             </div>
         </div>
@@ -500,59 +333,111 @@ if ($isLoggedIn) {
         </nav>
     </header>
 
-    <!-- Main Content -->
     <main class="main-content">
         <div class="container">
-            <!-- Page Header -->
             <div class="page-header">
-                <h1>Help & Support</h1>
-                <p>Find answers to common questions and get assistance with the examination system</p>
+                <h1>📚 Frequently Asked Questions</h1>
+                <p>Find answers to common questions about the examination system</p>
             </div>
 
-            <!-- Quick Info -->
-            <div class="quick-links">
-                <a href="FAQs.php" style="text-decoration: none; color: inherit;">
-                    <div class="quick-link-card">
-                        <span class="quick-link-icon">📚</span>
-                        <h3>FAQs</h3>
-                        <p>Find answers to frequently asked questions</p>
-                    </div>
-                </a>
-                <a href="ContactSupport.php" style="text-decoration: none; color: inherit;">
-                    <div class="quick-link-card">
-                        <span class="quick-link-icon">📞</span>
-                        <h3>Contact Support</h3>
-                        <p>Get in touch with our technical support team</p>
-                    </div>
-                </a>
-                <a href="ExamTips.php" style="text-decoration: none; color: inherit;">
-                    <div class="quick-link-card">
-                        <span class="quick-link-icon">💡</span>
-                        <h3>Exam Tips</h3>
-                        <p>Best practices for taking online exams</p>
-                    </div>
-                </a>
-            </div>
-
-            <!-- Quick Access Info -->
-            <section style="margin-top: 4rem;">
-                <div style="background: #f8fafc; border-radius: 16px; padding: 2.5rem; border: 2px solid #e5e7eb; text-align: center;">
-                    <h2 style="font-size: 2rem; font-weight: 800; color: var(--text-dark); margin-bottom: 1rem;">Need Immediate Assistance?</h2>
-                    <p style="font-size: 1.15rem; color: var(--text-light); margin-bottom: 2rem;">Our support team is here to help you with any questions or technical issues</p>
-                    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                        <a href="ContactSupport.php" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 1rem 2rem; font-size: 1.1rem; font-weight: 700; text-decoration: none; border-radius: 12px; background: linear-gradient(135deg, #1a2b4a 0%, #2c5364 100%); color: white; transition: all 0.3s ease;">
-                            📞 Contact Support
-                        </a>
-                        <a href="FAQs.php" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 1rem 2rem; font-size: 1.1rem; font-weight: 700; text-decoration: none; border-radius: 12px; background: transparent; color: #1a2b4a; border: 2px solid #1a2b4a; transition: all 0.3s ease;">
-                            📚 View FAQs
-                        </a>
-                    </div>
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>How do I login to the system?</span>
+                    <span class="faq-icon">▼</span>
                 </div>
-            </section>
+                <div class="faq-answer">
+                    <p>Navigate to the home page and click on either "Student Login" or "Institute Login" depending on your role. Enter your credentials (username and password) and click the login button to access your dashboard.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>What should I do if I forget my password?</span>
+                    <span class="faq-icon">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Click on the "Forgot Password?" link on the login page. You'll need to provide your registered email or student ID. Follow the instructions sent to your email to reset your password. If you encounter issues, contact the IT support team.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>What are the system requirements?</span>
+                    <span class="faq-icon">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p>To use the system effectively, you need:</p>
+                    <ul>
+                        <li>A modern web browser (Chrome, Firefox, Safari, or Edge - latest version)</li>
+                        <li>Stable internet connection (minimum 2 Mbps recommended)</li>
+                        <li>JavaScript and cookies enabled in your browser</li>
+                        <li>Screen resolution of at least 1024x768 pixels</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>How do I take an exam?</span>
+                    <span class="faq-icon">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Follow these steps to take an exam:</p>
+                    <ol>
+                        <li>Login to your student account</li>
+                        <li>Navigate to the "Available Exams" section</li>
+                        <li>Select the exam you want to take</li>
+                        <li>Read all instructions carefully</li>
+                        <li>Click "Start Exam" when ready</li>
+                        <li>Answer questions within the time limit</li>
+                        <li>Review your answers before submitting</li>
+                        <li>Click "Submit Exam" to finalize</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>What happens if my internet disconnects during an exam?</span>
+                    <span class="faq-icon">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p>The system automatically saves your progress periodically. If your connection drops, simply log back in and continue from where you left off. Note that the exam timer continues running, so reconnect as quickly as possible.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>How can I view my exam results?</span>
+                    <span class="faq-icon">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Login to your student dashboard and navigate to the "Results" or "My Exams" section. Results are typically available within 24-48 hours for objective exams and 3-7 days for subjective exams, depending on instructor grading.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Can I use my mobile phone to take exams?</span>
+                    <span class="faq-icon">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Yes, the system is fully responsive and works on mobile devices. However, we strongly recommend using a computer or tablet for a better experience, especially for exams with complex questions, essays, or file uploads.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>How do I report a technical issue?</span>
+                    <span class="faq-icon">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Contact our technical support team immediately via email at support@dmu.edu.et or call +251-58-771-xxxx. Provide details about the issue, including screenshots if possible, your student ID, and the time the issue occurred.</p>
+                </div>
+            </div>
         </div>
     </main>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <p>&copy; 2026 Debre Markos University Health Campus. All rights reserved.</p>
@@ -560,16 +445,13 @@ if ($isLoggedIn) {
     </footer>
 
     <script>
-        // FAQ accordion functionality
         document.querySelectorAll('.faq-item').forEach(item => {
             item.addEventListener('click', function() {
-                // Close all other items
                 document.querySelectorAll('.faq-item').forEach(otherItem => {
                     if (otherItem !== item) {
                         otherItem.classList.remove('active');
                     }
                 });
-                // Toggle current item
                 this.classList.toggle('active');
             });
         });

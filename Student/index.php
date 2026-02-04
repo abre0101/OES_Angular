@@ -117,16 +117,15 @@ $con->close();
             left: 0;
             width: 100%;
             height: 100%;
-            background: url('../images/exam.webp') center/cover no-repeat;
-            opacity: 0.08;
+            background: url('../images/istockphoto-1772381872-612x612.jpg') center/cover no-repeat;
+            opacity: 0.35;
             z-index: 1;
             pointer-events: none;
         }
 
         /* Modern Header */
         .modern-header {
-            background: linear-gradient(135deg, #1a2b4a 0%, #2c5364 100%);
-            backdrop-filter: blur(10px);
+            background: #ffffff;
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
             position: sticky;
             top: 0;
@@ -135,6 +134,7 @@ $con->close();
         }
 
         .header-top {
+            background: linear-gradient(135deg, #1a2b4a 0%, #2c5364 100%);
             padding: 1.5rem 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
@@ -159,14 +159,14 @@ $con->close();
         }
 
         .university-logo {
-            width: 70px;
-            height: 70px;
+            width: 80px;
+            height: 80px;
             object-fit: contain;
             filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
         }
 
         .university-name h1 {
-            font-size: 1.5rem;
+            font-size: 1.85rem;
             font-weight: 900;
             color: #ffffff;
             margin: 0;
@@ -176,12 +176,12 @@ $con->close();
         }
 
         .university-name p {
-            font-size: 1rem;
+            font-size: 1.15rem;
             color: #ffd700;
             font-weight: 700;
-            margin: 0.25rem 0 0 0;
+            margin: 0.35rem 0 0 0;
             text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-            letter-spacing: 0.3px;
+            letter-spacing: 0.5px;
         }
 
         /* User Dropdown */
@@ -276,7 +276,7 @@ $con->close();
 
         /* Navigation */
         .main-nav {
-            background: #1a2b4a;
+            background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
         }
 
         .nav-menu {
@@ -285,19 +285,41 @@ $con->close();
             gap: 0;
             margin: 0;
             padding: 0;
+            justify-content: center;
         }
 
         .nav-menu li a {
             display: block;
             padding: 1rem 1.5rem;
-            color: white;
+            color: #1a2b4a;
             text-decoration: none;
-            font-weight: 600;
+            font-weight: 700;
             transition: all 0.3s ease;
             position: relative;
         }
 
         .nav-menu li a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 3px;
+            background: #1a2b4a;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-menu li a:hover,
+        .nav-menu li a.active {
+            background: rgba(26, 43, 74, 0.15);
+            color: #1a2b4a;
+        }
+
+        .nav-menu li a:hover::after,
+        .nav-menu li a.active::after {
+            width: 80%;
+        }
             content: '';
             position: absolute;
             bottom: 0;

@@ -37,8 +37,7 @@ if(isset($_SESSION['Name']) && isset($_SESSION['UserType'])){
 
         /* Modern Header */
         .modern-header {
-            background: linear-gradient(135deg, #1a2b4a 0%, #2c5364 100%);
-            backdrop-filter: blur(10px);
+            background: var(--white);
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
             position: sticky;
             top: 0;
@@ -47,6 +46,7 @@ if(isset($_SESSION['Name']) && isset($_SESSION['UserType'])){
         }
 
         .header-top {
+            background: linear-gradient(135deg, #1a2b4a 0%, #2c5364 100%);
             padding: 1.5rem 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
@@ -98,7 +98,7 @@ if(isset($_SESSION['Name']) && isset($_SESSION['UserType'])){
 
         /* Navigation */
         .main-nav {
-            background: #1a2b4a;
+            background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
         }
 
         .nav-menu {
@@ -107,14 +107,15 @@ if(isset($_SESSION['Name']) && isset($_SESSION['UserType'])){
             gap: 0;
             margin: 0;
             padding: 0;
+            justify-content: center;
         }
 
         .nav-menu li a {
             display: block;
             padding: 1rem 2rem;
-            color: white;
+            color: #1a2b4a;
             text-decoration: none;
-            font-weight: 600;
+            font-weight: 700;
             transition: all 0.3s ease;
             position: relative;
         }
@@ -126,15 +127,15 @@ if(isset($_SESSION['Name']) && isset($_SESSION['UserType'])){
             left: 50%;
             width: 0;
             height: 3px;
-            background: #d4af37;
+            background: #1a2b4a;
             transition: all 0.3s ease;
             transform: translateX(-50%);
         }
 
         .nav-menu li a:hover,
         .nav-menu li a.active {
-            background: rgba(212, 175, 55, 0.1);
-            color: #d4af37;
+            background: rgba(26, 43, 74, 0.15);
+            color: #1a2b4a;
         }
 
         .nav-menu li a:hover::after,
@@ -269,14 +270,15 @@ if(isset($_SESSION['Name']) && isset($_SESSION['UserType'])){
             box-shadow: 0 8px 25px rgba(26, 43, 74, 0.4);
         }
 
-        .btn-secondary {
-            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        .btn-outline {
+            background: transparent;
             color: white;
+            border: 2px solid white;
         }
 
-        .btn-secondary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+        .btn-outline:hover {
+            background: white;
+            color: #1a2b4a;
         }
 
         .btn-block {
@@ -290,12 +292,11 @@ if(isset($_SESSION['Name']) && isset($_SESSION['UserType'])){
 
         /* Footer */
         .modern-footer {
-            background: rgba(26, 43, 74, 0.98);
-            backdrop-filter: blur(10px);
+            background: linear-gradient(135deg, #1a2b4a 0%, #2c5364 100%);
             color: white;
-            padding: 1.5rem 0;
+            padding: 2rem 0;
             margin-top: auto;
-            border-top: 3px solid #d4af37;
+            border-top: 4px solid #d4af37;
             position: relative;
             z-index: 1000;
         }
@@ -349,23 +350,26 @@ if(isset($_SESSION['Name']) && isset($_SESSION['UserType'])){
         <div class="header-top">
             <div class="container">
                 <div class="university-info">
-                    <img src="../images/logo1.png" alt="Debre Markos University Health Campus" class="university-logo" onerror="this.style.display='none'">
+                    <img src="../images/logo1.png" alt="DMU Logo" class="university-logo" onerror="this.style.display='none'">
                     <div class="university-name">
                         <h1>Debre Markos University Health Campus</h1>
                         <p>Online Examination System</p>
                     </div>
                 </div>
                 <div class="header-actions">
-                    <a href="student-login.php" class="btn btn-secondary btn-sm">Student Login</a>
+                    <a href="student-login.php" class="btn btn-outline btn-sm">
+                        <span>👨‍🎓</span>
+                        <span>Student Login</span>
+                    </a>
                 </div>
             </div>
         </div>
         <nav class="main-nav">
             <div class="container">
                 <ul class="nav-menu">
-                    <li><a href="../index.php">Home</a></li>
-                    <li><a href="../AboutUs.php">About Us</a></li>
-                    <li><a href="../Help.php">Help</a></li>
+                    <li><a href="../index.php">🏠 Home</a></li>
+                    <li><a href="../AboutUs.php">ℹ️ About Us</a></li>
+                    <li><a href="../Help.php">❓ Help</a></li>
                 </ul>
             </div>
         </nav>

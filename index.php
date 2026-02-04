@@ -4,14 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Debre Markos University Health Campus - Online Examination System</title>
-    <link href="assets/css/modern-v2.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        /* Enhanced Home Page Styles */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #1e3a8a;
+            --secondary-color: #3b82f6;
+            --accent-color: #d4af37;
+            --success-color: #10b981;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-light: #f9fafb;
+            --white: #ffffff;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+            --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.2);
         }
 
         html {
@@ -19,61 +32,21 @@
         }
 
         body {
-            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
-            position: relative;
-            overflow-x: hidden;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background: var(--bg-light);
         }
 
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('images/exam.webp') center/cover no-repeat;
-            opacity: 0.08;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        /* Animated Background Particles */
-        .particles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        .particle {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            animation: float 15s infinite ease-in-out;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0) translateX(0); }
-            25% { transform: translateY(-100px) translateX(50px); }
-            50% { transform: translateY(-200px) translateX(-50px); }
-            75% { transform: translateY(-100px) translateX(100px); }
-        }
-
-        /* Modern Header */
-        .modern-header {
+        /* Header Styles */
+        .header {
             background: linear-gradient(135deg, #1a2b4a 0%, #2c5364 100%);
             backdrop-filter: blur(10px);
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
             position: sticky;
             top: 0;
             z-index: 1000;
-            border-bottom: 4px solid #d4af37;
+            border-bottom: 4px solid var(--accent-color);
         }
 
         .header-top {
@@ -94,7 +67,7 @@
             gap: 2rem;
         }
 
-        .university-info {
+        .university-branding {
             display: flex;
             align-items: center;
             gap: 1.5rem;
@@ -107,7 +80,7 @@
             filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
         }
 
-        .university-name h1 {
+        .university-info h1 {
             font-size: 1.85rem;
             font-weight: 900;
             color: #ffffff;
@@ -117,7 +90,7 @@
             letter-spacing: -0.5px;
         }
 
-        .university-name p {
+        .university-info p {
             font-size: 1.15rem;
             color: #ffd700;
             font-weight: 700;
@@ -126,7 +99,7 @@
             letter-spacing: 0.5px;
         }
 
-        .header-actions {
+        .header-cta {
             display: flex;
             gap: 1rem;
             align-items: center;
@@ -134,7 +107,7 @@
 
         /* Navigation */
         .main-nav {
-            background: #1a2b4a;
+            background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
         }
 
         .nav-menu {
@@ -143,14 +116,15 @@
             gap: 0;
             margin: 0;
             padding: 0;
+            justify-content: center;
         }
 
         .nav-menu li a {
             display: block;
             padding: 1rem 2rem;
-            color: white;
+            color: #1a2b4a;
             text-decoration: none;
-            font-weight: 600;
+            font-weight: 700;
             transition: all 0.3s ease;
             position: relative;
         }
@@ -162,15 +136,15 @@
             left: 50%;
             width: 0;
             height: 3px;
-            background: #d4af37;
+            background: #1a2b4a;
             transition: all 0.3s ease;
             transform: translateX(-50%);
         }
 
         .nav-menu li a:hover,
         .nav-menu li a.active {
-            background: rgba(212, 175, 55, 0.1);
-            color: #d4af37;
+            background: rgba(26, 43, 74, 0.15);
+            color: #1a2b4a;
         }
 
         .nav-menu li a:hover::after,
@@ -178,35 +152,80 @@
             width: 80%;
         }
 
-        /* Main Content */
-        .main-content {
-            flex: 1;
+        /* Hero Carousel Section */
+        .hero-carousel-section {
             position: relative;
-            z-index: 100;
-            padding: 3rem 0;
             width: 100%;
         }
 
-        /* Hero Section */
-        .hero-section {
-            text-align: center;
-            padding: 2rem 0;
-            margin-bottom: 3rem;
+        .carousel-container {
             position: relative;
-            z-index: 100;
+            width: 100%;
+            height: 600px;
+            overflow: hidden;
         }
 
-        .hero-content {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(20px);
-            border-radius: 30px;
-            padding: 3rem 2.5rem;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
-            border: 2px solid rgba(212, 175, 55, 0.4);
+        .carousel-slide {
+            display: none;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .carousel-slide.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.7);
+        }
+
+        .carousel-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.7) 0%, rgba(30, 64, 175, 0.6) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+
+        .carousel-caption {
+            text-align: center;
+            color: var(--white);
+            max-width: 800px;
+            padding: 2rem;
+        }
+
+        .carousel-caption h2 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
             animation: fadeInUp 0.8s ease;
-            position: relative;
-            z-index: 100;
-            max-width: 100%;
+        }
+
+        .carousel-caption p {
+            font-size: 1.5rem;
+            margin-bottom: 2.5rem;
+            color: rgba(255, 255, 255, 0.95);
+            font-weight: 400;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            animation: fadeInUp 1s ease;
+        }
+
+        .carousel-caption .btn {
+            animation: fadeInUp 1.2s ease;
         }
 
         @keyframes fadeInUp {
@@ -220,165 +239,225 @@
             }
         }
 
-        .hero-content h1 {
-            font-size: 3rem;
-            font-weight: 900;
-            background: linear-gradient(135deg, #1a2b4a 0%, #2c5364 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 1rem;
-            line-height: 1.2;
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
-        .hero-content > p {
-            font-size: 1.35rem;
-            color: #6c757d;
-            font-weight: 500;
-            margin-bottom: 2.5rem;
-        }
-
-        /* Feature Cards */
-        .hero-features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2.5rem;
-            position: relative;
-            z-index: 100;
-        }
-
-        .feature-card {
-            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-            border-radius: 20px;
-            padding: 2rem 1.5rem;
-            text-align: center;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 2px solid transparent;
-            position: relative;
-            overflow: hidden;
-            z-index: 100;
-        }
-
-        .feature-card::before {
-            content: '';
+        .carousel-btn {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(26, 43, 74, 0.05) 0%, rgba(212, 175, 55, 0.05) 100%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            color: var(--white);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            z-index: 20;
+            width: 55px;
+            height: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .feature-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-            border-color: #d4af37;
+        .carousel-btn:hover {
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+            transform: translateY(-50%) scale(1.15);
         }
 
-        .feature-card:hover::before {
-            opacity: 1;
+        .carousel-btn.prev { left: 30px; }
+        .carousel-btn.next { right: 30px; }
+
+        .carousel-dots {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 20;
         }
 
-        .feature-icon {
-            font-size: 4rem;
+        .dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot:hover,
+        .dot.active {
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+            transform: scale(1.3);
+        }
+
+        /* Stats Section */
+        .stats-section {
+            padding: 4rem 0;
+            background: var(--white);
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+            border: 2px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--accent-color);
+        }
+
+        .stat-icon {
+            font-size: 3rem;
             margin-bottom: 1rem;
-            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
-            animation: bounce 2s infinite;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .feature-card:hover .feature-icon {
-            animation: none;
-            transform: scale(1.2) rotate(5deg);
+            display: block;
         }
 
         .stat-number {
-            display: block;
-            font-size: 3rem;
+            font-size: 2.75rem;
             font-weight: 900;
-            background: linear-gradient(135deg, #1a2b4a 0%, #d4af37 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--primary-color);
+            display: block;
             margin-bottom: 0.5rem;
         }
 
+        .stat-label {
+            font-size: 1rem;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        /* Features Section */
+        .features-section {
+            padding: 5rem 0;
+            background: var(--bg-light);
+        }
+
+        .features-section:target {
+            scroll-margin-top: 80px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            font-size: 1.15rem;
+            color: var(--text-light);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid #e5e7eb;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--accent-color);
+        }
+
+        .feature-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+        }
+
         .feature-card h3 {
-            font-size: 1.5rem;
+            font-size: 1.35rem;
             font-weight: 700;
-            color: #1a2b4a;
-            margin-bottom: 0.75rem;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
         }
 
         .feature-card p {
-            color: #6c757d;
-            font-size: 1rem;
-            line-height: 1.6;
-            margin: 0;
+            color: var(--text-light);
+            font-size: 0.95rem;
+            line-height: 1.7;
         }
 
         /* Login Section */
-        .login-container {
-            margin: 3rem 0;
-            animation: fadeInUp 1s ease 0.3s both;
-            position: relative;
-            z-index: 100;
+        .login-section {
+            padding: 5rem 0;
+            background: var(--white);
         }
 
         .login-card {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(20px);
-            border-radius: 30px;
-            padding: 3rem 2.5rem;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
-            border: 2px solid rgba(212, 175, 55, 0.4);
+            max-width: 700px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+            border-radius: 24px;
+            padding: 4rem 3rem;
+            box-shadow: var(--shadow-xl);
+            border: 2px solid var(--accent-color);
             text-align: center;
-            position: relative;
-            z-index: 100;
-            max-width: 100%;
         }
 
-        .login-card-icon {
+        .login-icon {
             font-size: 5rem;
             margin-bottom: 1.5rem;
             display: inline-block;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
         }
 
         .login-card h2 {
-            font-size: 2.5rem;
-            font-weight: 900;
-            background: linear-gradient(135deg, #1a2b4a 0%, #2c5364 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-size: 2.25rem;
+            font-weight: 800;
+            color: var(--text-dark);
             margin-bottom: 1rem;
         }
 
         .login-card > p {
-            font-size: 1.15rem;
-            color: #6c757d;
-            margin-bottom: 2.5rem;
-            font-weight: 500;
+            font-size: 1.1rem;
+            color: var(--text-light);
+            margin-bottom: 3rem;
         }
 
         .login-buttons {
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 1.5rem;
-            justify-content: center;
-            flex-wrap: wrap;
             margin-bottom: 2.5rem;
         }
 
@@ -388,15 +467,15 @@
             align-items: center;
             justify-content: center;
             gap: 0.75rem;
-            padding: 1rem 2.5rem;
-            font-size: 1.125rem;
+            padding: 1rem 2rem;
+            font-size: 1.05rem;
             font-weight: 700;
             text-decoration: none;
-            border-radius: 50px;
+            border-radius: 12px;
             transition: all 0.3s ease;
-            border: none;
+            border: 2px solid transparent;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: var(--shadow-md);
             position: relative;
             overflow: hidden;
         }
@@ -404,49 +483,55 @@
         .btn::before {
             content: '';
             position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
         }
 
         .btn:hover::before {
-            width: 300px;
-            height: 300px;
+            left: 100%;
         }
 
-        .btn span {
-            position: relative;
-            z-index: 1;
-        }
-
-        .btn-success {
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-            color: white;
-        }
-
-        .btn-success:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
         }
 
         .btn-primary {
             background: linear-gradient(135deg, #1a2b4a 0%, #2c5364 100%);
             color: white;
+            border-color: var(--accent-color);
         }
 
         .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(26, 43, 74, 0.4);
+            background: linear-gradient(135deg, #2c5364 0%, #1a2b4a 100%);
+            box-shadow: 0 15px 35px rgba(26, 43, 74, 0.5);
         }
 
-        .btn-lg {
-            padding: 1.25rem 3rem;
-            font-size: 1.25rem;
+        .btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border-color: #20c997;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(40, 167, 69, 0.5);
+            border-color: #ffffff;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: white;
+            border-color: white;
+        }
+
+        .btn-outline:hover {
+            background: white;
+            color: #1a2b4a;
         }
 
         .btn-sm {
@@ -454,92 +539,64 @@
             font-size: 1rem;
         }
 
-        /* Forgot Password Link */
-        .forgot-password-section {
-            margin-top: 2.5rem;
-            padding-top: 2.5rem;
-            border-top: 2px solid rgba(0, 0, 0, 0.1);
+        .btn-lg {
+            padding: 1.25rem 2.5rem;
+            font-size: 1.15rem;
         }
 
-        .forgot-password-section p {
-            color: #6c757d;
-            margin: 0;
-            font-size: 1.125rem;
+        /* Forgot Password */
+        .forgot-password {
+            padding-top: 2rem;
+            border-top: 2px solid #e5e7eb;
         }
 
-        .forgot-password-section a {
-            color: #d4af37;
+        .forgot-password a {
+            color: var(--primary-color);
             font-weight: 700;
             text-decoration: none;
             transition: all 0.3s ease;
-            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .forgot-password-section a::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: #d4af37;
-            transition: width 0.3s ease;
-        }
-
-        .forgot-password-section a:hover::after {
-            width: 100%;
+        .forgot-password a:hover {
+            color: var(--accent-color);
+            gap: 0.75rem;
         }
 
         /* Footer */
-        .modern-footer {
-            background: rgba(26, 43, 74, 0.98);
-            backdrop-filter: blur(10px);
-            color: white;
-            padding: 1.5rem 0;
-            margin-top: auto;
-            border-top: 3px solid #d4af37;
-            position: relative;
-            z-index: 1000;
-        }
-
-        .footer-content {
+        .footer {
+            background: linear-gradient(135deg, #1a2b4a 0%, #2c5364 100%);
+            color: var(--white);
+            padding: 2rem 0;
             text-align: center;
+            border-top: 4px solid var(--accent-color);
         }
 
-        .footer-content p {
+        .footer p {
             margin: 0;
-            font-size: 1rem;
-            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.9);
         }
 
         /* Responsive Design */
         @media (max-width: 768px) {
-            .hero-content h1 {
-                font-size: 2.5rem;
+            .header-top .container {
+                flex-direction: column;
+                text-align: center;
             }
 
-            .hero-content > p {
-                font-size: 1.25rem;
-            }
-
-            .hero-features {
-                grid-template-columns: 1fr;
-            }
-
-            .login-card h2 {
-                font-size: 2rem;
-            }
-
-            .login-buttons {
+            .university-branding {
                 flex-direction: column;
             }
 
-            .btn-lg {
-                width: 100%;
+            .university-info h1 {
+                font-size: 1.25rem;
             }
 
-            .university-name h1 {
-                font-size: 1.25rem;
+            .university-info p {
+                font-size: 0.95rem;
             }
 
             .nav-menu {
@@ -549,39 +606,66 @@
             .nav-menu li a {
                 padding: 0.75rem 1.5rem;
             }
-        }
 
-        /* Loading Animation */
-        @keyframes shimmer {
-            0% { background-position: -1000px 0; }
-            100% { background-position: 1000px 0; }
-        }
+            .hero-content h2 {
+                font-size: 2rem;
+            }
 
-        .shimmer {
-            animation: shimmer 2s infinite;
-            background: linear-gradient(to right, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
-            background-size: 1000px 100%;
+            .hero-content p {
+                font-size: 1.1rem;
+            }
+
+            .carousel-container {
+                height: 450px;
+            }
+
+            .carousel-caption h2 {
+                font-size: 2.25rem;
+            }
+
+            .carousel-caption p {
+                font-size: 1.15rem;
+            }
+
+            .carousel-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 1.2rem;
+            }
+
+            .carousel-btn.prev { left: 15px; }
+            .carousel-btn.next { right: 15px; }
+
+            .section-header h2 {
+                font-size: 2rem;
+            }
+
+            .login-card {
+                padding: 2.5rem 1.5rem;
+            }
+
+            .login-buttons {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Animated Background Particles -->
-    <div class="particles" id="particles"></div>
-
     <!-- Header -->
-    <header class="modern-header">
+    <header class="header">
         <div class="header-top">
             <div class="container">
-                <div class="university-info">
-                    <img src="images/logo1.png" alt="Debre Markos University Health Campus" class="university-logo" onerror="this.style.display='none'">
-                    <div class="university-name">
+                <div class="university-branding">
+                    <img src="images/logo1.png" alt="DMU Logo" class="university-logo" onerror="this.style.display='none'">
+                    <div class="university-info">
                         <h1>Debre Markos University Health Campus</h1>
                         <p>Online Examination System</p>
                     </div>
                 </div>
-                <div class="header-actions">
-                    <a href="#login" class="btn btn-primary btn-sm">
-                        <span>🔐 Login</span>
+                <div class="header-cta">
+                    <a href="#login" class="btn btn-outline btn-sm">
+                        <span>🔐</span>
+                        <span>Login</span>
                     </a>
                 </div>
             </div>
@@ -597,96 +681,142 @@
         </nav>
     </header>
 
-    <!-- Main Content -->
-    <main class="main-content">
-        <div class="container">
-            <!-- Hero Section -->
-            <section class="hero-section">
-                <div class="hero-content">
-                    <h1>Welcome to Online Examination System</h1>
-                    <p>Secure, Efficient, and Modern Examination Platform</p>
-                    
-                    <div class="hero-features">
-                        <div class="feature-card">
-                            <div class="feature-icon">👨‍🎓</div>
-                            <span class="stat-number">1000+</span>
-                            <h3>Students</h3>
-                            <p>Active learners taking exams online with confidence and ease</p>
-                        </div>
-                        <div class="feature-card">
-                            <div class="feature-icon">👨‍🏫</div>
-                            <span class="stat-number">50+</span>
-                            <h3>Instructors</h3>
-                            <p>Expert faculty managing assessments and evaluating performance</p>
-                        </div>
-                        <div class="feature-card">
-                            <div class="feature-icon">📊</div>
-                            <span class="stat-number">98%</span>
-                            <h3>Success Rate</h3>
-                            <p>Reliable and secure exam delivery with instant results</p>
+    <!-- Hero Carousel Section -->
+    <section class="hero-carousel-section">
+        <div class="carousel-container">
+            <div class="carousel-slide active">
+                <img src="images/home1.jpg" alt="Campus View 1" onerror="this.src='images/exam.webp'">
+                <div class="carousel-overlay">
+                    <div class="container">
+                        <div class="carousel-caption">
+                            <h2>Welcome to Online Examination System</h2>
+                            <p>A secure, efficient, and modern platform for conducting examinations</p>
+                            <a href="#login" class="btn btn-primary btn-lg">Get Started</a>
                         </div>
                     </div>
                 </div>
-            </section>
-
-            <!-- Login Call-to-Action -->
-            <section id="login" class="login-container">
-                <div class="login-card">
-                    <div class="login-card-icon">🎓</div>
-                    <h2>Ready to Start?</h2>
-                    <p>Access your portal to take exams, view results, and manage your profile</p>
-                    
-                    <div class="login-buttons">
-                        <a href="student-login.php" class="btn btn-success btn-lg">
-                            <span>👨‍🎓 Student Login</span>
-                        </a>
-                        <a href="institute-login.php" class="btn btn-primary btn-lg">
-                            <span>👨‍💼 Institute Login</span>
-                        </a>
-                    </div>
-                    
-                    <div class="forgot-password-section">
-                        <p>
-                            <a href="forgot-password-request.php">🔑 Forgot Your Password?</a>
-                        </p>
+            </div>
+            <div class="carousel-slide">
+                <img src="images/home2.jpg" alt="Campus View 2" onerror="this.src='images/exam.webp'">
+                <div class="carousel-overlay">
+                    <div class="container">
+                        <div class="carousel-caption">
+                            <h2>Excellence in Digital Education</h2>
+                            <p>Empowering students and educators with cutting-edge technology</p>
+                            <a href="#login" class="btn btn-primary btn-lg">Learn More</a>
+                        </div>
                     </div>
                 </div>
-            </section>
+            </div>
+            <button class="carousel-btn prev" onclick="changeSlide(-1)">❮</button>
+            <button class="carousel-btn next" onclick="changeSlide(1)">❯</button>
+            <div class="carousel-dots">
+                <span class="dot active" onclick="currentSlide(0)"></span>
+                <span class="dot" onclick="currentSlide(1)"></span>
+            </div>
         </div>
-    </main>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">👨‍🎓</div>
+                    <span class="stat-number">1000+</span>
+                    <span class="stat-label">Active Students</span>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">👨‍🏫</div>
+                    <span class="stat-number">50+</span>
+                    <span class="stat-label">Instructors</span>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📈</div>
+                    <span class="stat-number">98%</span>
+                    <span class="stat-label">Success Rate</span>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🕐</div>
+                    <span class="stat-number">24/7</span>
+                    <span class="stat-label">Availability</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Login Section -->
+    <section id="login" class="login-section">
+        <div class="container">
+            <div class="login-card">
+                <div class="login-icon">🎓</div>
+                <h2>Ready to Get Started?</h2>
+                <p>Access your portal to take exams, view results, and manage your profile</p>
+                
+                <div class="login-buttons">
+                    <a href="student-login.php" class="btn btn-success btn-lg">
+                        <span>👨‍🎓</span>
+                        <span>Student Login</span>
+                    </a>
+                    <a href="institute-login.php" class="btn btn-primary btn-lg">
+                        <span>👨‍💼</span>
+                        <span>Institute Login</span>
+                    </a>
+                </div>
+                
+                <div class="forgot-password">
+                    <a href="forgot-password-request.php">
+                        <span>🔑</span>
+                        <span>Forgot Your Password?</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Footer -->
-    <footer class="modern-footer">
+    <footer class="footer">
         <div class="container">
-            <div class="footer-content">
-                <p>&copy; 2026 Debre Markos University Health Campus Online Examination System. All rights reserved.</p>
-            </div>
+            <p>&copy; 2026 Debre Markos University Health Campus. All rights reserved.</p>
         </div>
     </footer>
 
     <script>
-        // Create animated particles
-        function createParticles() {
-            const particlesContainer = document.getElementById('particles');
-            const particleCount = 30;
+        // Carousel functionality
+        let currentSlideIndex = 0;
+        const slides = document.querySelectorAll('.carousel-slide');
+        const dots = document.querySelectorAll('.dot');
 
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                
-                const size = Math.random() * 60 + 20;
-                particle.style.width = size + 'px';
-                particle.style.height = size + 'px';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.top = Math.random() * 100 + '%';
-                particle.style.animationDelay = Math.random() * 15 + 's';
-                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
-                
-                particlesContainer.appendChild(particle);
+        function showSlide(index) {
+            if (index >= slides.length) {
+                currentSlideIndex = 0;
+            } else if (index < 0) {
+                currentSlideIndex = slides.length - 1;
+            } else {
+                currentSlideIndex = index;
             }
+
+            slides.forEach(slide => slide.classList.remove('active'));
+            dots.forEach(dot => dot.classList.remove('active'));
+
+            slides[currentSlideIndex].classList.add('active');
+            dots[currentSlideIndex].classList.add('active');
         }
 
-        // Smooth scroll to login
+        function changeSlide(direction) {
+            showSlide(currentSlideIndex + direction);
+        }
+
+        function currentSlide(index) {
+            showSlide(index);
+        }
+
+        // Auto-advance carousel every 5 seconds
+        setInterval(() => {
+            changeSlide(1);
+        }, 5000);
+
+        // Smooth scroll for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -697,51 +827,6 @@
                         block: 'start'
                     });
                 }
-            });
-        });
-
-        // Intersection Observer for animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -100px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.feature-card, .login-card').forEach(el => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(30px)';
-            el.style.transition = 'all 0.6s ease';
-            observer.observe(el);
-        });
-
-        // Initialize particles
-        createParticles();
-
-        // Add ripple effect to buttons
-        document.querySelectorAll('.btn').forEach(button => {
-            button.addEventListener('click', function(e) {
-                const ripple = document.createElement('span');
-                const rect = this.getBoundingClientRect();
-                const size = Math.max(rect.width, rect.height);
-                const x = e.clientX - rect.left - size / 2;
-                const y = e.clientY - rect.top - size / 2;
-                
-                ripple.style.width = ripple.style.height = size + 'px';
-                ripple.style.left = x + 'px';
-                ripple.style.top = y + 'px';
-                ripple.classList.add('ripple');
-                
-                this.appendChild(ripple);
-                
-                setTimeout(() => ripple.remove(), 600);
             });
         });
     </script>

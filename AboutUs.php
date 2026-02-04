@@ -31,14 +31,22 @@ if ($isLoggedIn) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Us - Debre Markos University Health Campus</title>
-    <link href="assets/css/modern-v2.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        /* Match Home Page Styles */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #1e3a8a;
+            --secondary-color: #3b82f6;
+            --accent-color: #d4af37;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-light: #f9fafb;
+            --white: #ffffff;
         }
 
         html {
@@ -46,45 +54,32 @@ if ($isLoggedIn) {
         }
 
         body {
-            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
-            position: relative;
-            overflow-x: hidden;
-            min-height: 100vh;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background: var(--bg-light);
             display: flex;
             flex-direction: column;
+            min-height: 100vh;
         }
 
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('images/exam.webp') center/cover no-repeat;
-            opacity: 0.08;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        /* Modern Header */
-        .modern-header {
-            background: linear-gradient(135deg, #1a2b4a 0%, #2c5364 100%);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        /* Header */
+        .header {
+            background: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             position: sticky;
             top: 0;
             z-index: 1000;
-            border-bottom: 4px solid #d4af37;
+            border-bottom: 4px solid var(--accent-color);
         }
 
         .header-top {
+            background: linear-gradient(135deg, #1a2b4a 0%, #2c5364 100%);
             padding: 1.5rem 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1280px;
             margin: 0 auto;
             padding: 0 2rem;
         }
@@ -96,7 +91,7 @@ if ($isLoggedIn) {
             gap: 2rem;
         }
 
-        .university-info {
+        .university-branding {
             display: flex;
             align-items: center;
             gap: 1.5rem;
@@ -109,28 +104,26 @@ if ($isLoggedIn) {
             filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
         }
 
-        .university-name h1 {
+        .university-info h1 {
             font-size: 1.85rem;
             font-weight: 900;
             color: #ffffff;
             margin: 0;
             line-height: 1.2;
             text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-            letter-spacing: -0.5px;
         }
 
-        .university-name p {
+        .university-info p {
             font-size: 1.15rem;
             color: #ffd700;
             font-weight: 700;
             margin: 0.35rem 0 0 0;
             text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-            letter-spacing: 0.5px;
         }
 
         /* Navigation */
         .main-nav {
-            background: #1a2b4a;
+            background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
         }
 
         .nav-menu {
@@ -139,14 +132,15 @@ if ($isLoggedIn) {
             gap: 0;
             margin: 0;
             padding: 0;
+            justify-content: center;
         }
 
         .nav-menu li a {
             display: block;
             padding: 1rem 2rem;
-            color: white;
+            color: #1a2b4a;
             text-decoration: none;
-            font-weight: 600;
+            font-weight: 700;
             transition: all 0.3s ease;
             position: relative;
         }
@@ -158,15 +152,14 @@ if ($isLoggedIn) {
             left: 50%;
             width: 0;
             height: 3px;
-            background: #d4af37;
+            background: #1a2b4a;
             transition: all 0.3s ease;
             transform: translateX(-50%);
         }
 
         .nav-menu li a:hover,
         .nav-menu li a.active {
-            background: rgba(212, 175, 55, 0.1);
-            color: #d4af37;
+            background: rgba(26, 43, 74, 0.15);
         }
 
         .nav-menu li a:hover::after,
@@ -177,151 +170,197 @@ if ($isLoggedIn) {
         /* Main Content */
         .main-content {
             flex: 1;
-            position: relative;
-            z-index: 100;
-            padding: 3rem 0;
+            padding: 4rem 0;
+            background: var(--white);
         }
 
-        .content-wrapper {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(20px);
-            border-radius: 30px;
-            padding: 3rem 2.5rem;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
-            border: 2px solid rgba(212, 175, 55, 0.4);
-            animation: fadeInUp 0.8s ease;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .content-wrapper > h1 {
-            font-size: 2.75rem;
-            font-weight: 900;
-            background: linear-gradient(135deg, #1a2b4a 0%, #2c5364 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 2rem;
+        .page-header {
             text-align: center;
+            margin-bottom: 4rem;
         }
 
-        /* Cards */
-        .card {
-            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-            border-radius: 20px;
+        .page-header h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+        }
+
+        .page-header p {
+            font-size: 1.25rem;
+            color: var(--text-light);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Content Sections */
+        .content-section {
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 3px solid var(--accent-color);
+        }
+
+        .intro-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin-bottom: 2rem;
+        }
+
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .info-card {
+            background: var(--white);
+            border: 2px solid #e5e7eb;
+            border-radius: 16px;
             padding: 2rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            border: 2px solid rgba(212, 175, 55, 0.2);
             transition: all 0.3s ease;
         }
 
-        .card:hover {
+        .info-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-            border-color: #d4af37;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-color: var(--accent-color);
         }
 
-        .card-header {
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid rgba(212, 175, 55, 0.3);
-        }
-
-        .card-title {
+        .info-card h3 {
             font-size: 1.5rem;
             font-weight: 700;
-            color: #1a2b4a;
-            margin: 0;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
         }
 
-        /* Grid */
-        .grid {
+        .info-card p {
+            color: var(--text-light);
+            line-height: 1.7;
+        }
+
+        /* Features List */
+        .features-list {
             display: grid;
-            gap: 2rem;
-        }
-
-        .grid-2 {
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        }
-
-        .grid-3 {
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        }
-
-        .mt-3 {
-            margin-top: 1.5rem;
-        }
-
-        .mt-4 {
+            gap: 1.5rem;
             margin-top: 2rem;
+        }
+
+        .feature-item {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .feature-item h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-item p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            background: linear-gradient(135deg, #1a2b4a 0%, #2c5364 100%);
+            padding: 4rem 2rem;
+            border-radius: 20px;
+            margin: 3rem 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            text-align: center;
+        }
+
+        .stat-item {
+            color: var(--white);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--accent-color);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            font-weight: 600;
         }
 
         /* Buttons */
         .btn {
             display: inline-flex;
             align-items: center;
-            justify-content: center;
             gap: 0.5rem;
             padding: 0.75rem 1.5rem;
             font-size: 1rem;
             font-weight: 700;
             text-decoration: none;
-            border-radius: 50px;
+            border-radius: 12px;
             transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            border: 2px solid transparent;
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, #1a2b4a 0%, #2c5364 100%);
+        .btn-outline {
+            background: transparent;
             color: white;
+            border-color: white;
         }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(26, 43, 74, 0.4);
-        }
-
-        .btn-sm {
-            padding: 0.75rem 1.5rem;
-            font-size: 1rem;
+        .btn-outline:hover {
+            background: white;
+            color: #1a2b4a;
         }
 
         /* Footer */
-        .modern-footer {
-            background: rgba(26, 43, 74, 0.98);
-            backdrop-filter: blur(10px);
-            color: white;
-            padding: 1.5rem 0;
-            margin-top: auto;
-            border-top: 3px solid #d4af37;
-            position: relative;
-            z-index: 1000;
-        }
-
-        .footer-content {
+        .footer {
+            background: linear-gradient(135deg, #1a2b4a 0%, #2c5364 100%);
+            color: var(--white);
+            padding: 2rem 0;
             text-align: center;
+            border-top: 4px solid var(--accent-color);
         }
 
-        .footer-content p {
+        .footer p {
             margin: 0;
-            font-size: 1rem;
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255, 255, 255, 0.9);
         }
 
         /* Responsive */
         @media (max-width: 768px) {
-            .university-name h1 {
+            .header-top .container {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .university-branding {
+                flex-direction: column;
+            }
+
+            .university-info h1 {
                 font-size: 1.25rem;
             }
 
@@ -329,15 +368,16 @@ if ($isLoggedIn) {
                 flex-direction: column;
             }
 
-            .nav-menu li a {
-                padding: 0.75rem 1.5rem;
-            }
-
-            .content-wrapper > h1 {
+            .page-header h1 {
                 font-size: 2rem;
             }
 
-            .grid-2, .grid-3 {
+            .section-title {
+                font-size: 1.5rem;
+            }
+
+            .cards-grid,
+            .features-list {
                 grid-template-columns: 1fr;
             }
         }
@@ -345,17 +385,17 @@ if ($isLoggedIn) {
 </head>
 <body>
     <!-- Header -->
-    <header class="modern-header">
+    <header class="header">
         <div class="header-top">
             <div class="container">
-                <div class="university-info">
-                    <img src="images/logo1.png" alt="Debre Markos University Health Campus" class="university-logo" onerror="this.style.display='none'">
-                    <div class="university-name">
+                <div class="university-branding">
+                    <img src="images/logo1.png" alt="DMU Logo" class="university-logo" onerror="this.style.display='none'">
+                    <div class="university-info">
                         <h1>Debre Markos University Health Campus</h1>
                         <p>Online Examination System</p>
                     </div>
                 </div>
-                <div class="header-actions">
+                <div class="header-cta">
                     <?php if ($isLoggedIn): ?>
                         <a href="<?php 
                             if ($userRole == 'student') echo 'Student/index.php';
@@ -363,9 +403,9 @@ if ($isLoggedIn) {
                             elseif ($userRole == 'department_head') echo 'DepartmentHead/index.php';
                             elseif ($userRole == 'admin') echo 'Admin/index.php';
                             else echo 'index.php';
-                        ?>" class="btn btn-primary btn-sm">← Back to Dashboard</a>
+                        ?>" class="btn btn-outline">← Dashboard</a>
                     <?php else: ?>
-                        <a href="index.php#login" class="btn btn-primary btn-sm">Login</a>
+                        <a href="index.php#login" class="btn btn-outline">🔐 Login</a>
                     <?php endif; ?>
                 </div>
             </div>
@@ -373,9 +413,9 @@ if ($isLoggedIn) {
         <nav class="main-nav">
             <div class="container">
                 <ul class="nav-menu">
-                    <li><a href="index.php">Home</a></li>
-                    <li><a href="AboutUs.php" class="active">About Us</a></li>
-                    <li><a href="Help.php">Help</a></li>
+                    <li><a href="index.php">🏠 Home</a></li>
+                    <li><a href="AboutUs.php" class="active">ℹ️ About Us</a></li>
+                    <li><a href="Help.php">❓ Help</a></li>
                 </ul>
             </div>
         </nav>
@@ -384,89 +424,104 @@ if ($isLoggedIn) {
     <!-- Main Content -->
     <main class="main-content">
         <div class="container">
-            <div class="content-wrapper">
-                <h1>About Debre Markos University Health Campus Online Examination System</h1>
-                
-                <div class="grid grid-2 mt-4">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">🎯 Our Mission</h3>
-                        </div>
-                        <p>To provide a secure, efficient, and user-friendly online examination platform that enhances the academic assessment process at Debre Markos University Health Campus.</p>
-                    </div>
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1>About Our System</h1>
+                <p>Transforming education through innovative digital examination solutions</p>
+            </div>
 
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">👁️ Our Vision</h3>
-                        </div>
-                        <p>To become the leading digital examination system in Ethiopia, setting standards for academic integrity and technological innovation.</p>
+            <!-- Introduction -->
+            <section class="content-section">
+                <p class="intro-text">
+                    The Debre Markos University Health Campus Online Examination System is a comprehensive digital platform designed to modernize and streamline the examination process. Built with security, efficiency, and user experience at its core, our system serves students, instructors, department heads, and administrators with tailored interfaces and powerful features.
+                </p>
+            </section>
+
+            <!-- Mission & Vision -->
+            <section class="content-section">
+                <h2 class="section-title">Our Mission & Vision</h2>
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <h3>🎯 Mission</h3>
+                        <p>To provide a secure, efficient, and accessible online examination platform that enhances academic assessment while maintaining the highest standards of integrity and fairness.</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>👁️ Vision</h3>
+                        <p>To be the leading digital examination system in Ethiopian higher education, setting benchmarks for innovation, reliability, and academic excellence.</p>
                     </div>
                 </div>
+            </section>
 
-                <div class="card mt-4">
-                    <div class="card-header">
-                        <h3 class="card-title">✨ Key Features</h3>
+            <!-- Statistics -->
+            <div class="stats-section">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-number">1000+</span>
+                        <span class="stat-label">Active Students</span>
                     </div>
-                    <div class="grid grid-3 mt-3">
-                        <div>
-                            <h4>🔒 Secure Platform</h4>
-                            <p>Advanced security measures to ensure exam integrity and prevent cheating.</p>
-                        </div>
-                        <div>
-                            <h4>⚡ Real-time Results</h4>
-                            <p>Instant grading and result processing for objective questions.</p>
-                        </div>
-                        <div>
-                            <h4>📱 Responsive Design</h4>
-                            <p>Access exams from any device - desktop, tablet, or mobile.</p>
-                        </div>
-                        <div>
-                            <h4>👥 Multi-user Support</h4>
-                            <p>Separate interfaces for students, instructors, department heads, and administrators.</p>
-                        </div>
-                        <div>
-                            <h4>📊 Analytics Dashboard</h4>
-                            <p>Comprehensive reporting and analytics for performance tracking.</p>
-                        </div>
-                        <div>
-                            <h4>🌐 24/7 Availability</h4>
-                            <p>Take exams anytime, anywhere with internet connectivity.</p>
-                        </div>
+                    <div class="stat-item">
+                        <span class="stat-number">50+</span>
+                        <span class="stat-label">Faculty Members</span>
                     </div>
-                </div>
-
-                <div class="card mt-4">
-                    <div class="card-header">
-                        <h3 class="card-title">🏛️ About Debre Markos University Health Campus</h3>
+                    <div class="stat-item">
+                        <span class="stat-number">98%</span>
+                        <span class="stat-label">Success Rate</span>
                     </div>
-                    <p>Debre Markos University Health Campus is a leading institution of higher education in Ethiopia, committed to excellence in teaching, research, and community service. Our Online Examination System represents our dedication to embracing technology to improve educational outcomes.</p>
-                    <p>The system was developed to streamline the examination process, reduce administrative burden, and provide a better experience for both students and faculty members.</p>
-                </div>
-
-                <div class="card mt-4">
-                    <div class="card-header">
-                        <h3 class="card-title">📞 Contact Information</h3>
-                    </div>
-                    <div class="grid grid-2 mt-3">
-                        <div>
-                            <p><strong>Address:</strong><br>Debre Markos University Health Campus<br>Debre Markos, Ethiopia</p>
-                        </div>
-                        <div>
-                            <p><strong>Email:</strong><br>info@dmu.edu.et</p>
-                            <p><strong>Phone:</strong><br>+251-58-771-xxxx</p>
-                        </div>
+                    <div class="stat-item">
+                        <span class="stat-number">24/7</span>
+                        <span class="stat-label">System Availability</span>
                     </div>
                 </div>
             </div>
+
+            <!-- Key Features -->
+            <section class="content-section">
+                <h2 class="section-title">System Features</h2>
+                <div class="features-list">
+                    <div class="feature-item">
+                        <h4>🔒 Advanced Security</h4>
+                        <p>Multi-layer security protocols to ensure exam integrity and prevent unauthorized access</p>
+                    </div>
+                    <div class="feature-item">
+                        <h4>⚡ Real-Time Processing</h4>
+                        <p>Instant grading and result generation for objective assessments</p>
+                    </div>
+                    <div class="feature-item">
+                        <h4>📱 Responsive Design</h4>
+                        <p>Seamless experience across all devices - desktop, tablet, and mobile</p>
+                    </div>
+                    <div class="feature-item">
+                        <h4>👥 Role-Based Access</h4>
+                        <p>Customized interfaces for students, instructors, department heads, and admins</p>
+                    </div>
+                    <div class="feature-item">
+                        <h4>📊 Analytics Dashboard</h4>
+                        <p>Comprehensive reporting tools for performance tracking and insights</p>
+                    </div>
+                    <div class="feature-item">
+                        <h4>🌐 Cloud-Based</h4>
+                        <p>Accessible anytime, anywhere with reliable cloud infrastructure</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- About University -->
+            <section class="content-section">
+                <h2 class="section-title">About Debre Markos University Health Campus</h2>
+                <p class="intro-text">
+                    Debre Markos University Health Campus is a premier institution dedicated to excellence in health sciences education, research, and community service. Our commitment to innovation drives us to adopt cutting-edge technologies like this online examination system to enhance the learning experience and academic outcomes for our students.
+                </p>
+                <p class="intro-text">
+                    This system represents our dedication to digital transformation in education, reducing administrative overhead while improving accessibility and fairness in academic assessments.
+                </p>
+            </section>
         </div>
     </main>
 
     <!-- Footer -->
-    <footer class="modern-footer">
+    <footer class="footer">
         <div class="container">
-            <div class="footer-content">
-                <p>&copy; 2026 Debre Markos University Health Campus Online Examination System. All rights reserved.</p>
-            </div>
+            <p>&copy; 2026 Debre Markos University Health Campus. All rights reserved.</p>
         </div>
     </footer>
 </body>
