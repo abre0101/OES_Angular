@@ -9,12 +9,12 @@ set_time_limit(300); // 5 minutes
 echo "<h2>Database Import Script</h2>";
 echo "<pre>";
 
-// Get database credentials from environment
-$host = $_ENV['MYSQL_HOST'] ?? getenv('MYSQL_HOST') ?: $_ENV['DB_HOST'] ?? getenv('DB_HOST');
-$port = $_ENV['MYSQL_PORT'] ?? getenv('MYSQL_PORT') ?: 3306;
-$database = $_ENV['MYSQL_DATABASE'] ?? getenv('MYSQL_DATABASE') ?: $_ENV['DB_NAME'] ?? getenv('DB_NAME') ?: 'railway';
-$username = $_ENV['MYSQL_USER'] ?? getenv('MYSQL_USER') ?: $_ENV['DB_USER'] ?? getenv('DB_USER');
-$password = $_ENV['MYSQL_PASSWORD'] ?? getenv('MYSQL_PASSWORD') ?: $_ENV['DB_PASSWORD'] ?? getenv('DB_PASSWORD');
+// Get database credentials from environment (Railway uses no underscores)
+$host = $_ENV['MYSQLHOST'] ?? getenv('MYSQLHOST') ?: $_ENV['MYSQL_HOST'] ?? getenv('MYSQL_HOST');
+$port = $_ENV['MYSQLPORT'] ?? getenv('MYSQLPORT') ?: $_ENV['MYSQL_PORT'] ?? getenv('MYSQL_PORT') ?: 3306;
+$database = $_ENV['MYSQLDATABASE'] ?? getenv('MYSQLDATABASE') ?: $_ENV['MYSQL_DATABASE'] ?? getenv('MYSQL_DATABASE') ?: 'railway';
+$username = $_ENV['MYSQLUSER'] ?? getenv('MYSQLUSER') ?: $_ENV['MYSQL_USER'] ?? getenv('MYSQL_USER');
+$password = $_ENV['MYSQLPASSWORD'] ?? getenv('MYSQLPASSWORD') ?: $_ENV['MYSQL_PASSWORD'] ?? getenv('MYSQL_PASSWORD');
 
 echo "Connecting to MySQL...\n";
 echo "Host: $host\n";
