@@ -48,6 +48,7 @@ if(isset($_POST['process_request'])) {
         // Reset password based on user type
         switch($request['user_type']) {
             case 'student':
+                // Update student password
                 $stmt = $con->prepare("UPDATE students SET password = ? WHERE student_id = ?");
                 $stmt->bind_param("ss", $hashedTempPassword, $request['user_id']);
                 $stmt->execute();
