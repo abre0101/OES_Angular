@@ -62,22 +62,6 @@ $pageTitle = "Settings";
                         <a href="ChangePassword.php" class="btn btn-primary btn-block" style="margin-top: 1rem;">Change Password</a>
                     </div>
                 </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">📧 Notifications</h3>
-                    </div>
-                    <div style="padding: 1.5rem;">
-                        <label style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                            <input type="checkbox" checked>
-                            <span>Email notifications</span>
-                        </label>
-                        <label style="display: flex; align-items: center; gap: 1rem;">
-                            <input type="checkbox" checked>
-                            <span>Exam approval alerts</span>
-                        </label>
-                    </div>
-                </div>
             </div>
         </div>
     </div>

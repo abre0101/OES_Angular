@@ -75,6 +75,8 @@ $con->close();
     <link href="../assets/css/modern-v2.css" rel="stylesheet">
     <link href="../assets/css/student-modern.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <?php include 'includes/modern-header-styles.php'; ?>
     <style>
         .review-header {
             background: white;
@@ -238,6 +240,32 @@ $con->close();
                                 <div style="font-weight: 600;"><?php echo $_SESSION['Name']; ?></div>
                                 <div style="font-size: 0.75rem; opacity: 0.8;">Student</div>
                             </div>
+                            <svg style="width: 20px; height: 20px; margin-left: 0.5rem;" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <div class="dropdown-menu">
+                            <a href="Profile.php" class="dropdown-item">
+                                <i class="fas fa-user"></i>
+                                <span>My Profile</span>
+                            </a>
+                            <a href="EditProfile.php?Id=<?php echo $_SESSION['ID']; ?>" class="dropdown-item">
+                                <i class="fas fa-cog"></i>
+                                <span>Account Settings</span>
+                            </a>
+                            <a href="../Help.php" class="dropdown-item">
+                                <i class="fas fa-question-circle"></i>
+                                <span>Help</span>
+                            </a>
+                            <a href="../AboutUs.php" class="dropdown-item">
+                                <i class="fas fa-info-circle"></i>
+                                <span>About</span>
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a href="Logout.php" class="dropdown-item logout">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Log Out</span>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -249,6 +277,7 @@ $con->close();
                     <li><a href="index.php">Dashboard</a></li>
                     <li><a href="StartExam.php">Take Exam</a></li>
                     <li><a href="Result.php" class="active">Results</a></li>
+                    <li><a href="practice-selection.php">Practice</a></li>
                     <li><a href="Profile.php">Profile</a></li>
                 </ul>
             </div>
@@ -360,14 +389,25 @@ $con->close();
     </footer>
 
     <script>
+        // Dropdown menu functionality
         const userDropdown = document.querySelector('.user-dropdown');
-        if(userDropdown) {
-            const userInfo = userDropdown.querySelector('.user-info');
-            userInfo.addEventListener('click', function(e) {
-                e.stopPropagation();
-                userDropdown.classList.toggle('active');
-            });
-        }
+        const userInfo = userDropdown.querySelector('.user-info');
+        const dropdownMenu = userDropdown.querySelector('.dropdown-menu');
+
+        userInfo.addEventListener('click', function(e) {
+            e.stopPropagation();
+            userDropdown.classList.toggle('active');
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!userDropdown.contains(e.target)) {
+                userDropdown.classList.remove('active');
+            }
+        });
+
+        dropdownMenu.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
     </script>
 </body>
 </html>

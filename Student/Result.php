@@ -22,35 +22,123 @@ if(!isset($_SESSION['UserType']) || $_SESSION['UserType'] !== 'Student'){
     <link href="../assets/css/modern-v2.css" rel="stylesheet">
     <link href="../assets/css/student-modern.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <?php include 'includes/modern-header-styles.php'; ?>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            position: relative;
+            overflow-x: hidden;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('../images/istockphoto-1772381872-612x612.jpg') center/cover no-repeat;
+            opacity: 0.35;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .main-content {
+            flex: 1;
+            position: relative;
+            z-index: 100;
+            padding: 2rem 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Welcome Banner */
+        .welcome-banner {
+            background: linear-gradient(135deg, #1a2b4a 0%, #2c5364 100%) !important;
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 3rem 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            animation: fadeInUp 0.8s ease;
+            text-align: center;
+        }
+
+        .welcome-content h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #ffffff !important;
+            margin: 0 0 0.75rem 0;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .welcome-content p {
+            font-size: 1.25rem;
+            color: #ffd700 !important;
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .mt-4 {
+            margin-top: 2rem;
         }
 
         .result-card {
-            background: white;
+            background: rgba(255, 255, 255, 0.98) !important;
+            backdrop-filter: blur(20px);
             border-radius: 20px;
-            padding: 2rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            border: 2px solid;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(212, 175, 55, 0.3);
             transition: all 0.3s ease;
+            opacity: 1 !important;
+            animation: fadeInUp 0.8s ease;
         }
 
         .result-card.pass {
-            border-color: #28a745;
+            border-left: 6px solid #d4af37;
         }
 
         .result-card.fail {
-            border-color: #dc3545;
+            border-left: 6px solid #dc3545;
         }
 
         .result-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            border-color: #d4af37;
         }
 
         .result-header {
@@ -58,20 +146,22 @@ if(!isset($_SESSION['UserType']) || $_SESSION['UserType'] !== 'Student'){
             justify-content: space-between;
             align-items: start;
             margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid rgba(212, 175, 55, 0.2);
         }
 
         .result-title {
-            font-size: 1.5rem;
-            font-weight: 700;
+            font-size: 1.75rem;
+            font-weight: 900;
             color: #1a2b4a;
+            letter-spacing: -0.5px;
         }
 
         .result-score {
-            font-size: 3rem;
+            font-size: 3.5rem;
             font-weight: 900;
             color: #1a2b4a;
+            line-height: 1;
         }
 
         .result-details {
@@ -83,25 +173,131 @@ if(!isset($_SESSION['UserType']) || $_SESSION['UserType'] !== 'Student'){
 
         .result-detail {
             text-align: center;
-            padding: 1rem;
-            background: rgba(0, 0, 0, 0.02);
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
             border-radius: 15px;
+            border: 2px solid rgba(212, 175, 55, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .result-detail:hover {
+            border-color: #d4af37;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
         .result-detail-value {
-            font-size: 2rem;
+            font-size: 2.5rem;
             font-weight: 900;
             color: #1a2b4a;
         }
 
         .result-detail-label {
             font-size: 0.9rem;
-            color: #6c757d;
+            color: #1a2b4a;
             margin-top: 0.5rem;
-            font-weight: 600;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.7;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 800;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .status-active {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+
+        .status-inactive {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #1a2b4a 0%, #2c5364 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(26, 43, 74, 0.4);
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.98) !important;
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            opacity: 1 !important;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .card h3 {
+            color: #1a2b4a;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .card p {
+            color: #1a2b4a;
+            opacity: 0.7;
+        }
+
+        /* Modern Footer */
+        .modern-footer {
+            background: rgba(26, 43, 74, 0.98);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 1.5rem 0;
+            margin-top: auto;
+            border-top: 3px solid #d4af37;
+            position: relative;
+            z-index: 1000;
+        }
+
+        .footer-content {
+            text-align: center;
+        }
+
+        .footer-content p {
+            margin: 0;
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
         }
 
         @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+
             .result-details {
                 grid-template-columns: 1fr;
             }
@@ -109,6 +305,14 @@ if(!isset($_SESSION['UserType']) || $_SESSION['UserType'] !== 'Student'){
             .result-header {
                 flex-direction: column;
                 gap: 1rem;
+            }
+
+            .result-score {
+                font-size: 2.5rem;
+            }
+
+            .welcome-content h1 {
+                font-size: 2rem;
             }
         }
     </style>
@@ -141,24 +345,24 @@ if(!isset($_SESSION['UserType']) || $_SESSION['UserType'] !== 'Student'){
                         </div>
                         <div class="dropdown-menu">
                             <a href="Profile.php" class="dropdown-item">
-                                <span class="dropdown-icon">👤</span>
+                                <i class="fas fa-user"></i>
                                 <span>My Profile</span>
                             </a>
                             <a href="EditProfile.php?Id=<?php echo $_SESSION['ID']; ?>" class="dropdown-item">
-                                <span class="dropdown-icon">⚙️</span>
+                                <i class="fas fa-cog"></i>
                                 <span>Account Settings</span>
                             </a>
                             <a href="../Help.php" class="dropdown-item">
-                                <span class="dropdown-icon">❓</span>
+                                <i class="fas fa-question-circle"></i>
                                 <span>Help</span>
                             </a>
                             <a href="../AboutUs.php" class="dropdown-item">
-                                <span class="dropdown-icon">ℹ️</span>
+                                <i class="fas fa-info-circle"></i>
                                 <span>About</span>
                             </a>
                             <div class="dropdown-divider"></div>
                             <a href="Logout.php" class="dropdown-item logout">
-                                <span class="dropdown-icon">🚪</span>
+                                <i class="fas fa-sign-out-alt"></i>
                                 <span>Log Out</span>
                             </a>
                         </div>
@@ -182,11 +386,15 @@ if(!isset($_SESSION['UserType']) || $_SESSION['UserType'] !== 'Student'){
     <!-- Main Content -->
     <main class="main-content">
         <div class="container">
-            <div class="content-wrapper">
-                <h1>📊 My Exam Results</h1>
-                <p class="text-secondary">Welcome <?php echo $_SESSION['Name']; ?>! View all your examination results below.</p>
+            <!-- Welcome Banner -->
+            <div class="welcome-banner">
+                <div class="welcome-content">
+                    <h1>📊 My Exam Results</h1>
+                    <p>Welcome <?php echo $_SESSION['Name']; ?>! View all your examination results below.</p>
+                </div>
+            </div>
 
-                <?php
+            <?php
                 require_once(__DIR__ . "/../Connections/OES.php");
                 $studentId = $_SESSION['ID'];
                 
@@ -227,7 +435,7 @@ if(!isset($_SESSION['UserType']) || $_SESSION['UserType'] !== 'Student'){
                     <div class="result-header">
                         <div>
                             <div class="result-title"><?php echo $Subject; ?></div>
-                            <div style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.25rem;">
+                            <div style="color: #1a2b4a; opacity: 0.7; font-size: 0.95rem; margin-top: 0.25rem; font-weight: 600;">
                                 <?php echo $Exam; ?> - Semester <?php echo $Sem; ?>
                             </div>
                         </div>
@@ -240,17 +448,17 @@ if(!isset($_SESSION['UserType']) || $_SESSION['UserType'] !== 'Student'){
                             <div class="result-detail-label">Total Questions</div>
                         </div>
                         <div class="result-detail">
-                            <div class="result-detail-value" style="color: var(--success-color);"><?php echo $Correct; ?></div>
+                            <div class="result-detail-value" style="color: #28a745;"><?php echo $Correct; ?></div>
                             <div class="result-detail-label">Correct</div>
                         </div>
                         <div class="result-detail">
-                            <div class="result-detail-value" style="color: var(--danger-color);"><?php echo $Wrong; ?></div>
+                            <div class="result-detail-value" style="color: #dc3545;"><?php echo $Wrong; ?></div>
                             <div class="result-detail-label">Wrong</div>
                         </div>
                     </div>
                     
-                    <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 2px solid var(--border-color);">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 2px solid rgba(212, 175, 55, 0.2);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
                             <div>
                                 <?php if($isPassed): ?>
                                 <span class="status-badge status-active" style="font-size: 1rem; padding: 0.75rem 1.5rem;">
@@ -275,7 +483,7 @@ if(!isset($_SESSION['UserType']) || $_SESSION['UserType'] !== 'Student'){
                 <div class="card mt-4" style="text-align: center; padding: 4rem 2rem;">
                     <div style="font-size: 4rem; margin-bottom: 1rem;">📭</div>
                     <h3>No Results Yet</h3>
-                    <p style="color: var(--text-secondary); margin: 1rem 0 2rem 0;">
+                    <p style="color: #1a2b4a; opacity: 0.7; margin: 1rem 0 2rem 0; font-weight: 500;">
                         You haven't taken any exams yet. Start your first exam to see results here.
                     </p>
                     <a href="StartExam.php" class="btn btn-primary">
@@ -292,13 +500,12 @@ if(!isset($_SESSION['UserType']) || $_SESSION['UserType'] !== 'Student'){
                 <?php if($records > 0): ?>
                 <div class="card mt-4">
                     <div style="text-align: center; padding: 1.5rem;">
-                        <strong style="color: var(--primary-color); font-size: 1.1rem;">
+                        <strong style="color: #1a2b4a; font-size: 1.25rem; font-weight: 800;">
                             Total Exams Completed: <?php echo $records; ?>
                         </strong>
                     </div>
                 </div>
                 <?php endif; ?>
-            </div>
         </div>
     </main>
 

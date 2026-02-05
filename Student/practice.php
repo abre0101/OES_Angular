@@ -116,6 +116,138 @@ if ($totalQuestions == 0) {
             font-weight: 700;
             color: var(--primary-color);
         }
+
+        /* Professional Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            z-index: 9999;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+
+        .modal-icon {
+            font-size: 4rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: #1a2b4a;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .modal-message {
+            font-size: 1.05rem;
+            color: #4b5563;
+            text-align: center;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .modal-stats {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .modal-stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .modal-stat-row:last-child {
+            border-bottom: none;
+        }
+
+        .modal-stat-label {
+            font-weight: 600;
+            color: #1a2b4a;
+        }
+
+        .modal-stat-value {
+            font-weight: 700;
+            color: #6366f1;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            min-width: 140px;
+        }
+
+        .modal-btn-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+        }
+
+        .modal-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .modal-btn-secondary {
+            background: #e5e7eb;
+            color: #1a2b4a;
+        }
+
+        .modal-btn-secondary:hover {
+            background: #d1d5db;
+        }
     </style>
 </head>
 <body class="exam-body">
@@ -220,6 +352,13 @@ if ($totalQuestions == 0) {
         </div>
     </div>
 
+    <!-- Professional Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content" id="modalContent">
+            <!-- Modal content will be inserted here -->
+        </div>
+    </div>
+
     <script>
         // Questions data from PHP
         const questions = <?php echo json_encode($questions); ?>;
@@ -249,19 +388,19 @@ if ($totalQuestions == 0) {
                 <div class="options-container">
                     <label class="option-label">
                         <input type="radio" name="answer" value="A">
-                        <span class="option-text">(A) ${q.option_a || 'Option A'}</span>
+                        <span class="option-text"><strong>(A)</strong> ${q.option_a || 'Option A'}</span>
                     </label>
                     <label class="option-label">
                         <input type="radio" name="answer" value="B">
-                        <span class="option-text">(B) ${q.option_b || 'Option B'}</span>
+                        <span class="option-text"><strong>(B)</strong> ${q.option_b || 'Option B'}</span>
                     </label>
                     <label class="option-label">
                         <input type="radio" name="answer" value="C">
-                        <span class="option-text">(C) ${q.option_c || 'Option C'}</span>
+                        <span class="option-text"><strong>(C)</strong> ${q.option_c || 'Option C'}</span>
                     </label>
                     <label class="option-label">
                         <input type="radio" name="answer" value="D">
-                        <span class="option-text">(D) ${q.option_d || 'Option D'}</span>
+                        <span class="option-text"><strong>(D)</strong> ${q.option_d || 'Option D'}</span>
                     </label>
                 </div>
             `;
@@ -287,7 +426,14 @@ if ($totalQuestions == 0) {
         function checkAnswer() {
             const selectedAnswer = document.querySelector('input[name="answer"]:checked');
             if (!selectedAnswer) {
-                alert('Please select an answer first!');
+                showModal({
+                    icon: '⚠️',
+                    title: 'No Answer Selected',
+                    message: 'Please select an answer before checking.',
+                    buttons: [
+                        { text: 'OK', class: 'modal-btn-primary', action: 'close' }
+                    ]
+                });
                 return;
             }
 
@@ -298,17 +444,27 @@ if ($totalQuestions == 0) {
             // Get the text of the user's selected option
             const userAnswerText = q['option_' + userAnswerLetter.toLowerCase()];
             
-            // Get correct answer text from database
-            const correctAnswerText = q.correct_answer;
+            // Get correct answer from database - could be letter or full text
+            const correctAnswerFromDB = q.correct_answer;
             
             // Find which letter corresponds to the correct answer
             let correctAnswerLetter = '';
-            if (q.option_a === correctAnswerText) correctAnswerLetter = 'A';
-            else if (q.option_b === correctAnswerText) correctAnswerLetter = 'B';
-            else if (q.option_c === correctAnswerText) correctAnswerLetter = 'C';
-            else if (q.option_d === correctAnswerText) correctAnswerLetter = 'D';
             
-            const isCorrect = userAnswerText === correctAnswerText;
+            // Check if correct_answer is just a letter (A, B, C, D)
+            if (correctAnswerFromDB && correctAnswerFromDB.length === 1 && /[A-D]/i.test(correctAnswerFromDB)) {
+                correctAnswerLetter = correctAnswerFromDB.toUpperCase();
+            } else {
+                // Otherwise, match against option texts
+                if (q.option_a === correctAnswerFromDB) correctAnswerLetter = 'A';
+                else if (q.option_b === correctAnswerFromDB) correctAnswerLetter = 'B';
+                else if (q.option_c === correctAnswerFromDB) correctAnswerLetter = 'C';
+                else if (q.option_d === correctAnswerFromDB) correctAnswerLetter = 'D';
+            }
+            
+            // Get the correct option text
+            const correctAnswerText = q['option_' + correctAnswerLetter.toLowerCase()];
+            
+            const isCorrect = userAnswerLetter === correctAnswerLetter;
 
             // Save answer
             answers[currentQuestion] = userAnswerLetter;
@@ -350,7 +506,7 @@ if ($totalQuestions == 0) {
             } else {
                 feedbackHTML = `<div class="feedback-wrong">
                     <strong>❌ Wrong!</strong><br>
-                    <p style="margin: 0.5rem 0;">The correct answer is: <strong>(${correctAnswerLetter}) ${correctAnswerText}</strong></p>
+                    <p style="margin: 0.5rem 0;">The correct answer is: <strong>(${correctAnswerLetter})</strong> ${correctAnswerText || 'N/A'}</p>
                 </div>`;
             }
             
@@ -443,20 +599,75 @@ if ($totalQuestions == 0) {
             const attempted = Object.keys(questionStatus).length;
             const percentage = attempted > 0 ? Math.round((correctCount / attempted) * 100) : 0;
             
-            let message = 'Practice Session Summary\n\n';
-            message += `Total Questions: ${totalQuestions}\n`;
-            message += `Attempted: ${attempted}\n`;
-            message += `Correct: ${correctCount}\n`;
-            message += `Wrong: ${wrongCount}\n`;
-            message += `Score: ${percentage}%\n\n`;
-            message += 'Would you like to start a new practice session?';
+            const statsHTML = `
+                <div class="modal-stat-row">
+                    <span class="modal-stat-label">Total Questions:</span>
+                    <span class="modal-stat-value">${totalQuestions}</span>
+                </div>
+                <div class="modal-stat-row">
+                    <span class="modal-stat-label">Attempted:</span>
+                    <span class="modal-stat-value">${attempted}</span>
+                </div>
+                <div class="modal-stat-row">
+                    <span class="modal-stat-label">Correct Answers:</span>
+                    <span class="modal-stat-value" style="color: #10b981;">${correctCount}</span>
+                </div>
+                <div class="modal-stat-row">
+                    <span class="modal-stat-label">Wrong Answers:</span>
+                    <span class="modal-stat-value" style="color: #ef4444;">${wrongCount}</span>
+                </div>
+                <div class="modal-stat-row">
+                    <span class="modal-stat-label">Final Score:</span>
+                    <span class="modal-stat-value" style="font-size: 1.5rem; color: #6366f1;">${percentage}%</span>
+                </div>
+            `;
             
-            if (confirm(message)) {
-                window.location.reload();
-            } else {
-                window.location.href = 'index.php';
-            }
+            showModal({
+                icon: '🎯',
+                title: 'Practice Session Complete!',
+                message: 'Great job! Here\'s your performance summary:',
+                stats: statsHTML,
+                buttons: [
+                    { text: 'New Practice', class: 'modal-btn-primary', action: () => window.location.reload() },
+                    { text: 'Back to Dashboard', class: 'modal-btn-secondary', action: () => window.location.href = 'index.php' }
+                ]
+            });
         }
+
+        // Professional Modal Function
+        function showModal(options) {
+            const modal = document.getElementById('modalOverlay');
+            const content = document.getElementById('modalContent');
+            
+            let buttonsHTML = '';
+            options.buttons.forEach(btn => {
+                const action = btn.action === 'close' ? 'closeModal()' : `(${btn.action})()`;
+                buttonsHTML += `<button class="modal-btn ${btn.class}" onclick="${action}">${btn.text}</button>`;
+            });
+            
+            content.innerHTML = `
+                <div class="modal-icon">${options.icon}</div>
+                <h2 class="modal-title">${options.title}</h2>
+                <p class="modal-message">${options.message}</p>
+                ${options.stats ? `<div class="modal-stats">${options.stats}</div>` : ''}
+                <div class="modal-buttons">
+                    ${buttonsHTML}
+                </div>
+            `;
+            
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+        }
+
+        // Close modal on overlay click
+        document.getElementById('modalOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
 
         // Initialize on load
         window.onload = initPractice;

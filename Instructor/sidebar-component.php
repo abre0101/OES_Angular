@@ -47,13 +47,9 @@
             <span class="sidebar-nav-icon">📈</span>
             <span>Results</span>
         </a>
-        <a href="Reports.php" class="sidebar-nav-item <?php echo (basename($_SERVER['PHP_SELF']) == 'Reports.php') ? 'active' : ''; ?>" data-tooltip="Reports">
+        <a href="Reports.php" class="sidebar-nav-item <?php echo (basename($_SERVER['PHP_SELF']) == 'Reports.php') ? 'active' : ''; ?>" data-tooltip="Reports & Analytics">
             <span class="sidebar-nav-icon">📊</span>
-            <span>Reports</span>
-        </a>
-        <a href="Analytics.php" class="sidebar-nav-item <?php echo (basename($_SERVER['PHP_SELF']) == 'Analytics.php') ? 'active' : ''; ?>" data-tooltip="Analytics">
-            <span class="sidebar-nav-icon">📉</span>
-            <span>Analytics</span>
+            <span>Reports & Analytics</span>
         </a>
         
         <div class="sidebar-divider"></div>

@@ -1,10 +1,51 @@
 <?php
-// Simple session handling - don't destroy existing sessions
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+// Include session manager
+require_once(__DIR__ . "/utils/session_manager.php");
+
+// Try to detect user type from multiple sources
+$userType = null;
+
+// First, try all possible session types to find an active one
+$sessionTypes = ['Student', 'Instructor', 'Administrator', 'DepartmentHead'];
+foreach ($sessionTypes as $type) {
+    SessionManager::startSession($type);
+    if (isset($_SESSION['UserType']) && $_SESSION['UserType'] === $type) {
+        $userType = $type;
+        break;
+    }
 }
 
-$isLoggedIn = isset($_SESSION['UserType']);
+// If no session found, check referer as fallback
+if (!$userType) {
+    $referer = $_SERVER['HTTP_REFERER'] ?? '';
+    if (strpos($referer, '/Student/') !== false) {
+        $userType = 'Student';
+    } elseif (strpos($referer, '/Instructor/') !== false) {
+        $userType = 'Instructor';
+    } elseif (strpos($referer, '/Admin/') !== false) {
+        $userType = 'Administrator';
+    } elseif (strpos($referer, '/DepartmentHead/') !== false) {
+        $userType = 'DepartmentHead';
+    }
+}
+
+// Start appropriate session
+if ($userType) {
+    SessionManager::startSession($userType);
+} else {
+    // Start default session for public access
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start([
+            'cookie_lifetime' => 86400,
+            'cookie_path' => '/',
+            'cookie_secure' => false,
+            'cookie_httponly' => true,
+            'cookie_samesite' => 'Lax'
+        ]);
+    }
+}
+
+$isLoggedIn = isset($_SESSION['UserType']) && isset($_SESSION['Name']);
 $userRole = '';
 if ($isLoggedIn) {
     // Determine user role based on session UserType
@@ -17,7 +58,7 @@ if ($isLoggedIn) {
             $userRole = 'instructor';
             break;
         case 'DepartmentHead':
-            $userRole = 'department_head';
+            $userRole = 'departmenthead';
             break;
         case 'Administrator':
             $userRole = 'admin';
@@ -400,7 +441,7 @@ if ($isLoggedIn) {
                         <a href="<?php 
                             if ($userRole == 'student') echo 'Student/index.php';
                             elseif ($userRole == 'instructor') echo 'Instructor/index.php';
-                            elseif ($userRole == 'department_head') echo 'DepartmentHead/index.php';
+                            elseif ($userRole == 'departmenthead') echo 'DepartmentHead/index.php';
                             elseif ($userRole == 'admin') echo 'Admin/index.php';
                             else echo 'index.php';
                         ?>" class="btn btn-outline">← Dashboard</a>

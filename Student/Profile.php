@@ -34,12 +34,291 @@ $row = mysqli_fetch_array($result);
     <link href="../assets/css/modern-v2.css" rel="stylesheet">
     <link href="../assets/css/student-modern.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <?php include 'includes/modern-header-styles.php'; ?>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            position: relative;
+            overflow-x: hidden;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('../images/istockphoto-1772381872-612x612.jpg') center/cover no-repeat;
+            opacity: 0.35;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .main-content {
+            flex: 1;
+            position: relative;
+            z-index: 100;
+            padding: 2rem 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .profile-form {
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, #1a2b4a 0%, #2c5364 100%);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 3rem 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            text-align: center;
+        }
+
+        .profile-avatar-large {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: #1a2b4a;
+            margin: 0 auto 1.5rem;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .profile-header h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #ffffff;
+            margin: 0 0 0.5rem 0;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .profile-header p {
+            color: #ffd700 !important;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .grid {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        }
+
+        .mt-4 {
+            margin-top: 2rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.98) !important;
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            overflow: hidden;
+            opacity: 1 !important;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #1a2b4a 0%, #2c5364 100%);
+            padding: 1.5rem 2rem;
+            border-bottom: 3px solid #d4af37;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            margin: 0;
+        }
+
+        .info-list {
+            padding: 2rem;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem 0;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 700;
+            color: #1a2b4a;
+            font-size: 1rem;
+        }
+
+        .info-value {
+            color: #1a2b4a;
+            font-weight: 600;
+            opacity: 0.8;
+            text-align: right;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .status-active {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+
+        .status-inactive {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            margin: 0 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #1a2b4a 0%, #2c5364 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(26, 43, 74, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(108, 117, 125, 0.4);
+        }
+
+        /* Modern Footer */
+        .modern-footer {
+            background: rgba(26, 43, 74, 0.98);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 1.5rem 0;
+            margin-top: auto;
+            border-top: 3px solid #d4af37;
+            position: relative;
+            z-index: 1000;
+        }
+
+        .footer-content {
+            text-align: center;
+        }
+
+        .footer-content p {
+            margin: 0;
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-header h1 {
+                font-size: 2rem;
+            }
+
+            .profile-avatar-large {
+                width: 100px;
+                height: 100px;
+                font-size: 3rem;
+            }
+
+            .btn {
+                margin: 0.5rem 0;
+                width: 100%;
+            }
+
+            .info-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .info-value {
+                text-align: left;
+            }
         }
     </style>
 </head>
@@ -71,24 +350,24 @@ $row = mysqli_fetch_array($result);
                         </div>
                         <div class="dropdown-menu">
                             <a href="Profile.php" class="dropdown-item">
-                                <span class="dropdown-icon">👤</span>
+                                <i class="fas fa-user"></i>
                                 <span>My Profile</span>
                             </a>
                             <a href="EditProfile.php?Id=<?php echo $_SESSION['ID']; ?>" class="dropdown-item">
-                                <span class="dropdown-icon">⚙️</span>
+                                <i class="fas fa-cog"></i>
                                 <span>Account Settings</span>
                             </a>
                             <a href="../Help.php" class="dropdown-item">
-                                <span class="dropdown-icon">❓</span>
+                                <i class="fas fa-question-circle"></i>
                                 <span>Help</span>
                             </a>
                             <a href="../AboutUs.php" class="dropdown-item">
-                                <span class="dropdown-icon">ℹ️</span>
+                                <i class="fas fa-info-circle"></i>
                                 <span>About</span>
                             </a>
                             <div class="dropdown-divider"></div>
                             <a href="Logout.php" class="dropdown-item logout">
-                                <span class="dropdown-icon">🚪</span>
+                                <i class="fas fa-sign-out-alt"></i>
                                 <span>Log Out</span>
                             </a>
                         </div>

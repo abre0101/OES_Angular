@@ -132,10 +132,7 @@ $stats = $stmt->get_result()->fetch_assoc();
         .data-table td { padding: 0.85rem 1rem; border-bottom: 1px solid #e8eef3; font-size: 0.9rem; }
         .data-table tbody tr:hover { background: #f8f9fa; }
         .course-badge { display: inline-block; padding: 0.4rem 0.9rem; background: linear-gradient(135deg, #003366 0%, #0055aa 100%); color: white; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
-        @media (max-width: 768px) { .stats-grid { grid-template-columns: 1fr; } .filter-grid { grid-template-columns: 1fr; } .data-table { font-size: 0.8rem; } .data-table th, .data-table td { padding: 0.5rem; } }
-    </style>
-            opacity: 0.9;
-        }
+        
         .empty-state {
             text-align: center;
             padding: 4rem 2rem;
@@ -144,7 +141,10 @@ $stats = $stmt->get_result()->fetch_assoc();
         .empty-state-icon {
             font-size: 4rem;
             margin-bottom: 1rem;
+            opacity: 0.9;
         }
+        
+        @media (max-width: 768px) { .stats-grid { grid-template-columns: 1fr; } .filter-grid { grid-template-columns: 1fr; } .data-table { font-size: 0.8rem; } .data-table th, .data-table td { padding: 0.5rem; } }
     </style>
 </head>
 <body class="admin-layout">

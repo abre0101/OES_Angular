@@ -545,16 +545,6 @@ if($questionsExists && $studentAnswersExists) {
                         <?php endif; ?>
                     </div>
                 </div>
-
-                <!-- Performance Trends Chart -->
-                <div class="chart-card">
-                    <div class="section-header">
-                        <h3 class="section-title">📈 Performance Trends</h3>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="performanceChart"></canvas>
-                    </div>
-                </div>
             </div>
 
             <!-- Course Performance Comparison -->
