@@ -8,7 +8,7 @@ VALUES (
     'Introduction to Health Sciences - Midterm Exam',
     CURDATE(), -- Today's date
     DATE_SUB(NOW(), INTERVAL 5 MINUTE), -- Started 5 minutes ago
-    DATE_ADD(NOW(), INTERVAL 10 HOUR), -- Ends in 3 hours
+    DATE_ADD(NOW(), INTERVAL 5 HOUR), -- Ends in 5 hours
     90, -- 90 minutes duration
     100, -- total marks
     50, -- passing marks
