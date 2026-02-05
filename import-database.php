@@ -9,16 +9,32 @@ set_time_limit(300); // 5 minutes
 echo "<h2>Database Import Script</h2>";
 echo "<pre>";
 
-// Get database credentials from environment (Railway uses no underscores)
-$host = $_ENV['MYSQLHOST'] ?? getenv('MYSQLHOST') ?: $_ENV['MYSQL_HOST'] ?? getenv('MYSQL_HOST');
-$port = $_ENV['MYSQLPORT'] ?? getenv('MYSQLPORT') ?: $_ENV['MYSQL_PORT'] ?? getenv('MYSQL_PORT') ?: 3306;
-$database = $_ENV['MYSQLDATABASE'] ?? getenv('MYSQLDATABASE') ?: $_ENV['MYSQL_DATABASE'] ?? getenv('MYSQL_DATABASE') ?: 'railway';
-$username = $_ENV['MYSQLUSER'] ?? getenv('MYSQLUSER') ?: $_ENV['MYSQL_USER'] ?? getenv('MYSQL_USER');
-$password = $_ENV['MYSQLPASSWORD'] ?? getenv('MYSQLPASSWORD') ?: $_ENV['MYSQL_PASSWORD'] ?? getenv('MYSQL_PASSWORD');
+// Get database credentials from environment
+// Try to parse MYSQL_URL first (Railway format: mysql://user:pass@host:port/database)
+$mysql_url = $_ENV['MYSQL_URL'] ?? getenv('MYSQL_URL');
+
+if ($mysql_url) {
+    echo "Using MYSQL_URL connection string\n";
+    $url_parts = parse_url($mysql_url);
+    $host = $url_parts['host'];
+    $port = $url_parts['port'] ?? 3306;
+    $username = $url_parts['user'];
+    $password = $url_parts['pass'];
+    $database = ltrim($url_parts['path'], '/');
+} else {
+    // Fallback to individual environment variables
+    $host = $_ENV['MYSQLHOST'] ?? getenv('MYSQLHOST') ?: $_ENV['MYSQL_HOST'] ?? getenv('MYSQL_HOST');
+    $port = $_ENV['MYSQLPORT'] ?? getenv('MYSQLPORT') ?: $_ENV['MYSQL_PORT'] ?? getenv('MYSQL_PORT') ?: 3306;
+    $database = $_ENV['MYSQLDATABASE'] ?? getenv('MYSQLDATABASE') ?: $_ENV['MYSQL_DATABASE'] ?? getenv('MYSQL_DATABASE') ?: 'railway';
+    $username = $_ENV['MYSQLUSER'] ?? getenv('MYSQLUSER') ?: $_ENV['MYSQL_USER'] ?? getenv('MYSQL_USER');
+    $password = $_ENV['MYSQLPASSWORD'] ?? getenv('MYSQLPASSWORD') ?: $_ENV['MYSQL_PASSWORD'] ?? getenv('MYSQL_PASSWORD');
+}
 
 echo "Connecting to MySQL...\n";
 echo "Host: $host\n";
-echo "Database: $database\n\n";
+echo "Port: $port\n";
+echo "Database: $database\n";
+echo "User: $username\n\n";
 
 // Connect to MySQL
 $con = new mysqli($host, $username, $password, $database, $port);
