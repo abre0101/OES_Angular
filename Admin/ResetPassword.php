@@ -48,17 +48,17 @@ if(isset($_POST['process_request'])) {
         // Reset password based on user type
         switch($request['user_type']) {
             case 'student':
-                $stmt = $con->prepare("UPDATE students SET Password = ? WHERE Id = ?");
+                $stmt = $con->prepare("UPDATE students SET password = ? WHERE student_id = ?");
                 $stmt->bind_param("ss", $hashedTempPassword, $request['user_id']);
                 $stmt->execute();
                 break;
             case 'instructor':
-                $stmt = $con->prepare("UPDATE instructors SET Password = ? WHERE instructor_id = ?");
+                $stmt = $con->prepare("UPDATE instructors SET password = ? WHERE instructor_id = ?");
                 $stmt->bind_param("ss", $hashedTempPassword, $request['user_id']);
                 $stmt->execute();
                 break;
             case 'department_head':
-                $stmt = $con->prepare("UPDATE department_heads SET Password = ? WHERE department_head_id = ?");
+                $stmt = $con->prepare("UPDATE department_heads SET password = ? WHERE department_head_id = ?");
                 $stmt->bind_param("ss", $hashedTempPassword, $request['user_id']);
                 $stmt->execute();
                 break;
@@ -117,12 +117,12 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['reset_password'])) {
                 $updated = $stmt->execute();
                 break;
             case 'department_head':
-                $stmt = $con->prepare("UPDATE department_heads SET Password = ? WHERE department_head_id = ?");
+                $stmt = $con->prepare("UPDATE department_heads SET password = ? WHERE department_head_id = ?");
                 $stmt->bind_param("ss", $hashedPassword, $userId);
                 $updated = $stmt->execute();
                 break;
             case 'admin':
-                $stmt = $con->prepare("UPDATE administrators SET Password = ? WHERE username = ?");
+                $stmt = $con->prepare("UPDATE administrators SET password = ? WHERE username = ?");
                 $stmt->bind_param("ss", $hashedPassword, $userId);
                 $updated = $stmt->execute();
                 break;
