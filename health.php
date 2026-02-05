@@ -11,15 +11,13 @@ $health = [
 
 // Check database connection (optional)
 try {
-    $con = require_once(__DIR__ . "/Connections/OES.php");
-    if ($con && !$con->connect_error) {
+    $con = include(__DIR__ . "/Connections/OES.php");
+    if ($con && $con instanceof mysqli && !$con->connect_error) {
         $health['database'] = 'connected';
+        $con->close();
     } else {
         $health['database'] = 'disconnected';
         $health['status'] = 'degraded';
-    }
-    if ($con) {
-        $con->close();
     }
 } catch (Exception $e) {
     $health['database'] = 'error';
