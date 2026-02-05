@@ -1,8 +1,8 @@
 <?php
 require_once(__DIR__ . "/../utils/session_manager.php");
 
-// Include security logger
-require_once(__DIR__ . '/../utils/security_logger.php');
+// Include audit logger
+require_once(__DIR__ . '/../utils/audit_logger.php');
 
 // Start Administrator session to access session data
 SessionManager::startSession('Administrator');
@@ -13,7 +13,8 @@ $user_role = 'Administrator';
 $session_duration = isset($_SESSION['login_time']) ? time() - $_SESSION['login_time'] : 0;
 
 // Log the logout event
-logLogout($user_name, 'admin');
+$auditLogger = new AuditLogger();
+$auditLogger->logLogout($user_name, 'admin');
 
 // Destroy the session using SessionManager
 SessionManager::destroySession();
