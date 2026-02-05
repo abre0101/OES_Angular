@@ -176,8 +176,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             <div class="form-group">
                 <label>My ID Number: *</label>
-                <input type="text" name="user_id" class="form-control" required placeholder="Enter your ID (e.g., STU001, INS001)">
-                <small style="color: #6c757d;">Enter the ID you use to login</small>
+                <input type="text" name="user_id" class="form-control" required placeholder="e.g., STU001, INS001, DH001">
+                <small style="color: #6c757d;">Enter your ID in the format: STU001 (not 1, 2, 3...)</small>
             </div>
 
             <div class="form-group">
