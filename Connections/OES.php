@@ -3,11 +3,12 @@
 // Support both Railway (production) and local development
 
 // Railway environment variables (production)
-$hostname_OES = getenv('MYSQL_HOST') ?: getenv('MYSQLHOST') ?: 'localhost';
-$database_OES = getenv('MYSQL_DATABASE') ?: getenv('MYSQLDATABASE') ?: 'oes_professional';
-$username_OES = getenv('MYSQL_USER') ?: getenv('MYSQLUSER') ?: 'root';
-$password_OES = getenv('MYSQL_PASSWORD') ?: getenv('MYSQLPASSWORD') ?: '';
-$port_OES = getenv('MYSQL_PORT') ?: getenv('MYSQLPORT') ?: 3306;
+// Railway provides: MYSQLHOST, MYSQLDATABASE, MYSQLUSER, MYSQLPASSWORD, MYSQLPORT
+$hostname_OES = getenv('MYSQLHOST') ?: getenv('MYSQL_HOST') ?: 'localhost';
+$database_OES = getenv('MYSQLDATABASE') ?: getenv('MYSQL_DATABASE') ?: 'oes_professional';
+$username_OES = getenv('MYSQLUSER') ?: getenv('MYSQL_USER') ?: 'root';
+$password_OES = getenv('MYSQLPASSWORD') ?: getenv('MYSQL_PASSWORD') ?: '';
+$port_OES = getenv('MYSQLPORT') ?: getenv('MYSQL_PORT') ?: 3306;
 
 // Create connection with port support
 $con = new mysqli($hostname_OES, $username_OES, $password_OES, $database_OES, $port_OES);
