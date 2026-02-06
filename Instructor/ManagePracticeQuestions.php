@@ -113,9 +113,7 @@ $statsQuery = $con->prepare("SELECT
     SUM(CASE WHEN pq.is_active = 1 THEN 1 ELSE 0 END) as active_questions,
     SUM(CASE WHEN pq.difficulty_level = 'Easy' THEN 1 ELSE 0 END) as easy_questions,
     SUM(CASE WHEN pq.difficulty_level = 'Medium' THEN 1 ELSE 0 END) as medium_questions,
-    SUM(CASE WHEN pq.difficulty_level = 'Hard' THEN 1 ELSE 0 END) as hard_questions,
-    SUM(CASE WHEN pq.question_type = 'multiple_choice' THEN 1 ELSE 0 END) as mcq_questions,
-    SUM(CASE WHEN pq.question_type = 'true_false' THEN 1 ELSE 0 END) as tf_questions
+    SUM(CASE WHEN pq.difficulty_level = 'Hard' THEN 1 ELSE 0 END) as hard_questions
     FROM practice_questions pq
     INNER JOIN instructor_courses ic ON pq.course_id = ic.course_id
     WHERE ic.instructor_id = ? AND pq.created_by = ?");
