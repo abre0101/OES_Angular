@@ -389,7 +389,7 @@ if ($isLoggedIn) {
                     <span class="faq-icon">▼</span>
                 </div>
                 <div class="faq-answer">
-                    <p>Navigate to the home page and click on either "Student Login" or "Institute Login" depending on your role. Enter your credentials (username and password) and click the login button to access your dashboard.</p>
+                    <p>Navigate to the home page and click on either "Student Login" or "Staffs Login" depending on your role. Enter your credentials (username and password) and click the login button to access your dashboard.</p>
                 </div>
             </div>
 

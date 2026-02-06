@@ -760,7 +760,7 @@
                     </a>
                     <a href="institute-login.php" class="btn btn-primary btn-lg">
                         <span>👨‍💼</span>
-                        <span>Institute Login</span>
+                        <span>Staffs Login</span>
                     </a>
                 </div>
                 
