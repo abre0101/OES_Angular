@@ -6,14 +6,14 @@ SessionManager::startSession('Administrator');
 
 // Check if user is logged in
 if(!isset($_SESSION['username'])){
-    header("Location:../auth/institute-login.php");
+    header("Location:../auth/staff-login.php");
     exit();
 }
 
 // Validate user role - only administrators can access this page
 if(!isset($_SESSION['UserType']) || $_SESSION['UserType'] !== 'Administrator'){
     SessionManager::destroySession();
-    header("Location:../auth/institute-login.php");
+    header("Location:../auth/staff-login.php");
     exit();
 }
 

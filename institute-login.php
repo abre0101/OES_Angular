@@ -1,5 +1,5 @@
 <?php
 // Redirect to auth folder
-header("Location: auth/institute-login.php");
+header("Location: auth/staff-login.php");
 exit();
 ?>

@@ -4,7 +4,7 @@ require_once('../Connections/config.php');
 
 // Check if department head is logged in
 if (!isset($_SESSION['department_head_id'])) {
-    header("Location: ../institute-login.php");
+    header("Location: ../staff-login.php");
     exit();
 }
 

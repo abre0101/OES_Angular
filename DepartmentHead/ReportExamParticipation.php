@@ -3,13 +3,13 @@ require_once(__DIR__ . "/../utils/session_manager.php");
 SessionManager::startSession('DepartmentHead');
 
 if(!isset($_SESSION['Name'])){
-    header("Location:../auth/institute-login.php");
+    header("Location:../auth/staff-login.php");
     exit();
 }
 
 if(!isset($_SESSION['UserType']) || $_SESSION['UserType'] !== 'DepartmentHead'){
     SessionManager::destroySession();
-    header("Location:../auth/institute-login.php");
+    header("Location:../auth/staff-login.php");
     exit();
 }
 

@@ -7,7 +7,7 @@ require_once(__DIR__ . "/../utils/audit_helper.php");
 SessionManager::startSession('Administrator');
 
 if(!isset($_SESSION['username'])){
-    header("Location:../auth/institute-login.php");
+    header("Location:../auth/staff-login.php");
     exit();
 }
 

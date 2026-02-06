@@ -6,14 +6,14 @@ SessionManager::startSession('DepartmentHead');
 
 // Check if user is logged in
 if(!isset($_SESSION['Name'])){
-    header("Location:../auth/institute-login.php");
+    header("Location:../auth/staff-login.php");
     exit();
 }
 
 // Validate user role
 if(!isset($_SESSION['UserType']) || $_SESSION['UserType'] !== 'DepartmentHead'){
     SessionManager::destroySession();
-    header("Location:../auth/institute-login.php");
+    header("Location:../auth/staff-login.php");
     exit();
 }
 

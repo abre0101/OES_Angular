@@ -357,7 +357,7 @@ if(isset($_SESSION['Name']) && isset($_SESSION['UserType'])){
                     </div>
                 </div>
                 <div class="header-actions">
-                    <a href="institute-login.php" class="btn btn-outline btn-sm">
+                    <a href="staff-login.php" class="btn btn-outline btn-sm">
                         <span>👨‍💼</span>
                         <span>Staffs Login</span>
                     </a>
@@ -420,7 +420,7 @@ if(isset($_SESSION['Name']) && isset($_SESSION['UserType'])){
 
                             <div style="text-align: center; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 2px solid #e0e0e0;">
                                 <p style="color: #6c757d; margin: 0;">
-                                    Are you an instructor or admin? <a href="institute-login.php" style="color: #1a2b4a; font-weight: 600; text-decoration: none;">Go to Staffs login</a>
+                                    Are you an instructor or admin? <a href="staff-login.php" style="color: #1a2b4a; font-weight: 600; text-decoration: none;">Go to Staffs login</a>
                                 </p>
                             </div>
                         </form>

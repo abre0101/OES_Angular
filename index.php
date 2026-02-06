@@ -758,7 +758,7 @@
                         <span>👨‍🎓</span>
                         <span>Student Login</span>
                     </a>
-                    <a href="institute-login.php" class="btn btn-primary btn-lg">
+                    <a href="staff-login.php" class="btn btn-primary btn-lg">
                         <span>👨‍💼</span>
                         <span>Staffs Login</span>
                     </a>

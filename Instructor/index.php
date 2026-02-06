@@ -6,14 +6,14 @@ SessionManager::startSession('Instructor');
 
 // Check if user is logged in
 if(!isset($_SESSION['ID'])){
-    header("Location: ../auth/institute-login.php");
+    header("Location: ../auth/staff-login.php");
     exit();
 }
 
 // Validate instructor role - only instructors can access this page
 if(!isset($_SESSION['UserType']) || $_SESSION['UserType'] !== 'Instructor'){
     SessionManager::destroySession();
-    header("Location: ../auth/institute-login.php");
+    header("Location: ../auth/staff-login.php");
     exit();
 }
 

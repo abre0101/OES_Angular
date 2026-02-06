@@ -161,7 +161,7 @@ SessionManager::destroySession();
         </div>
         
         <div>
-            <a href="../auth/institute-login.php" class="btn btn-primary">
+            <a href="../auth/staff-login.php" class="btn btn-primary">
                 🔐 Login Again
             </a>
             <a href="../index.php" class="btn btn-secondary">
@@ -190,7 +190,7 @@ SessionManager::destroySession();
             
             if(seconds <= 0) {
                 clearInterval(interval);
-                window.location.href = '../auth/institute-login.php';
+                window.location.href = '../auth/staff-login.php';
             }
         }, 1000);
     </script>

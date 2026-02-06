@@ -83,5 +83,5 @@ $stmt->close();
 $con->close();
 
 // If no match found
-echo '<script type="text/javascript">alert("Wrong Username or Password, or Account is Inactive");window.location=\'institute-login.php\';</script>';
+echo '<script type="text/javascript">alert("Wrong Username or Password, or Account is Inactive");window.location=\'staff-login.php\';</script>';
 ?>
