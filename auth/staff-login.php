@@ -382,7 +382,7 @@ if(isset($_SESSION['Name']) && isset($_SESSION['UserType'])){
             <section class="login-container">
                 <div class="login-card">
                     <div class="login-header">
-                        <h2>👨‍💼 Institute Sign In</h2>
+                        <h2>👨‍💼 Staffs Sign In</h2>
                         <p>Login to access your account</p>
                     </div>
                     <div class="login-body">
