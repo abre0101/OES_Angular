@@ -1,6 +1,5 @@
 <?php
 require_once(__DIR__ . "/../utils/session_manager.php");
-require_once(__DIR__ . "/../utils/password_helper.php");
 
 // Start Instructor session
 SessionManager::startSession('Instructor');
@@ -18,14 +17,10 @@ if(!isset($_SESSION['UserType']) || $_SESSION['UserType'] !== 'Instructor'){
     exit();
 }
 
-$Id = $_SESSION['ID'];
-$FullName = $_POST['full_name'] ?? '';
-$Email = $_POST['email'] ?? '';
-$Phone = $_POST['phone'] ?? '';
-$UserName = $_POST['username'] ?? '';
+$practice_id = $_GET['id'] ?? 0;
 
-if(empty($UserName)) {
-    echo '<script type="text/javascript">alert("Username is required");window.history.back();</script>';
+if(!$practice_id) {
+    header("Location: ManagePracticeQuestions.php");
     exit();
 }
 
@@ -36,16 +31,14 @@ if ($con->connect_error) {
     die("Connection failed: " . $con->connect_error);
 }
 
-// Update profile (without password)
-$stmt = $con->prepare("UPDATE instructors SET full_name=?, email=?, phone=?, username=? WHERE instructor_id=?");
-$stmt->bind_param("ssssi", $FullName, $Email, $Phone, $UserName, $Id);
+// Delete the practice question
+$stmt = $con->prepare("DELETE FROM practice_questions WHERE practice_id = ?");
+$stmt->bind_param("i", $practice_id);
 
 if($stmt->execute()) {
-    $_SESSION['username'] = $UserName;
-    $_SESSION['Name'] = $FullName;
     $stmt->close();
     $con->close();
-    echo '<script type="text/javascript">alert("Profile Updated Successfully");window.location="Profile.php";</script>';
+    echo '<script type="text/javascript">alert("Practice Question Deleted Successfully");window.location="ManagePracticeQuestions.php";</script>';
 } else {
     $error = $stmt->error;
     $stmt->close();

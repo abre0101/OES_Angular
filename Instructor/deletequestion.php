@@ -1,26 +1,48 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Delete true/false Question</title>
-</head>
-
-<body>
 <?php
+require_once(__DIR__ . "/../utils/session_manager.php");
 
-	$Id=$_GET['QueId'];
-	// Establish Connection with MYSQL
-	$con = new mysqli("localhost","root");
-	// Select Database
-	$con->select_db("oes");
-	// Specify the query to Insert Record
-	$sql = "delete from truefalse_question where question_id='".$Id."'";
-	// execute query
-	$con->query ($sql);
-	// Close The Connection
-	$con->close ();
-	echo '<script type="text/javascript">alert("Question Deleted Succesfully");window.location=\'question.php\';</script>';
+// Start Instructor session
+SessionManager::startSession('Instructor');
 
+// Check if user is logged in
+if(!isset($_SESSION['ID'])){
+    header("Location: ../auth/staff-login.php");
+    exit();
+}
+
+// Validate instructor role
+if(!isset($_SESSION['UserType']) || $_SESSION['UserType'] !== 'Instructor'){
+    SessionManager::destroySession();
+    header("Location: ../auth/staff-login.php");
+    exit();
+}
+
+$question_id = $_GET['id'] ?? 0;
+
+if(!$question_id) {
+    header("Location: ManageQuestions.php");
+    exit();
+}
+
+// Establish Connection
+$con = require_once(__DIR__ . "/../Connections/OES.php");
+
+if ($con->connect_error) {
+    die("Connection failed: " . $con->connect_error);
+}
+
+// Delete the question
+$stmt = $con->prepare("DELETE FROM questions WHERE question_id = ?");
+$stmt->bind_param("i", $question_id);
+
+if($stmt->execute()) {
+    $stmt->close();
+    $con->close();
+    echo '<script type="text/javascript">alert("Question Deleted Successfully");window.location="ManageQuestions.php";</script>';
+} else {
+    $error = $stmt->error;
+    $stmt->close();
+    $con->close();
+    echo '<script type="text/javascript">alert("Error: ' . $error . '");window.history.back();</script>';
+}
 ?>
-</body>
-</html>

@@ -1,5 +1,6 @@
 <?php
 require_once(__DIR__ . "/../utils/session_manager.php");
+require_once(__DIR__ . "/../utils/password_helper.php");
 
 // Start Department Head session
 SessionManager::startSession('DepartmentHead');
@@ -37,16 +38,19 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         $error = 'Password must be at least 6 characters';
     } else {
         // Verify current password
-        $stmt = $con->prepare("SELECT password FROM exam_committee_members WHERE committee_member_id=?");
-        $stmt->bind_param("s", $_SESSION['ID']);
+        $stmt = $con->prepare("SELECT password FROM department_heads WHERE department_head_id=?");
+        $stmt->bind_param("i", $_SESSION['ID']);
         $stmt->execute();
         $result = $stmt->get_result();
         $user = $result->fetch_assoc();
         
-        if($user && $user['password'] === $current_password) {
+        if($user && verifyPassword($current_password, $user['password'])) {
+            // Hash the new password
+            $hashed_password = hashPassword($new_password);
+            
             // Update password
-            $update = $con->prepare("UPDATE exam_committee_members SET password=?, last_password_change=NOW() WHERE committee_member_id=?");
-            $update->bind_param("ss", $new_password, $_SESSION['ID']);
+            $update = $con->prepare("UPDATE department_heads SET password=? WHERE department_head_id=?");
+            $update->bind_param("si", $hashed_password, $_SESSION['ID']);
             
             if($update->execute()) {
                 $message = 'Password changed successfully!';

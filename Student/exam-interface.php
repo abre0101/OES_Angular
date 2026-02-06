@@ -583,10 +583,27 @@ mysqli_close($con);
             currentQuestion = index;
             const q = questions[index];
             
-            const questionHTML = `
-                <div class="question-number">Question No. ${index + 1}</div>
-                <div class="question-text">${q.question || 'Question text here'}</div>
-                <div class="options-container">
+            // Check if this is a True/False question
+            const isTrueFalse = (q.Option1 === 'True' && q.Option2 === 'False') || 
+                               (q.Answer === 'True' || q.Answer === 'False');
+            
+            let optionsHTML = '';
+            
+            if (isTrueFalse) {
+                // True/False question - only show 2 options
+                optionsHTML = `
+                    <label class="option-label ${answers[index] === 'True' ? 'selected' : ''}">
+                        <input type="radio" name="answer" value="True" ${answers[index] === 'True' ? 'checked' : ''}>
+                        <span class="option-text">✓ True</span>
+                    </label>
+                    <label class="option-label ${answers[index] === 'False' ? 'selected' : ''}">
+                        <input type="radio" name="answer" value="False" ${answers[index] === 'False' ? 'checked' : ''}>
+                        <span class="option-text">✗ False</span>
+                    </label>
+                `;
+            } else {
+                // Multiple Choice question - show all 4 options
+                optionsHTML = `
                     <label class="option-label ${answers[index] === 'A' ? 'selected' : ''}">
                         <input type="radio" name="answer" value="A" ${answers[index] === 'A' ? 'checked' : ''}>
                         <span class="option-text">(A) ${q.Option1 || 'Option A'}</span>
@@ -603,6 +620,14 @@ mysqli_close($con);
                         <input type="radio" name="answer" value="D" ${answers[index] === 'D' ? 'checked' : ''}>
                         <span class="option-text">(D) ${q.Option4 || 'Option D'}</span>
                     </label>
+                `;
+            }
+            
+            const questionHTML = `
+                <div class="question-number">Question No. ${index + 1}</div>
+                <div class="question-text">${q.question || 'Question text here'}</div>
+                <div class="options-container">
+                    ${optionsHTML}
                 </div>
             `;
             

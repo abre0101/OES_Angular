@@ -55,7 +55,7 @@
         <div class="sidebar-divider"></div>
         
         <!-- Settings -->
-        <a href="Settings.php" class="sidebar-nav-item <?php echo (basename($_SERVER['PHP_SELF']) == 'Settings.php') ? 'active' : ''; ?>" data-tooltip="Settings">
+        <a href="Settings.php" class="sidebar-nav-item <?php echo (basename($_SERVER['PHP_SELF']) == 'Settings.php' || basename($_SERVER['PHP_SELF']) == 'Profile.php' || basename($_SERVER['PHP_SELF']) == 'EditProfile.php' || basename($_SERVER['PHP_SELF']) == 'ChangePassword.php') ? 'active' : ''; ?>" data-tooltip="Settings">
             <span class="sidebar-nav-icon">⚙️</span>
             <span>Settings</span>
         </a>

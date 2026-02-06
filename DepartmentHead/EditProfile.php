@@ -16,136 +16,98 @@ if(!isset($_SESSION['UserType']) || $_SESSION['UserType'] !== 'DepartmentHead'){
     header("Location:../auth/staff-login.php");
     exit();
 }
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<link href="style1.css" rel="stylesheet" type="text/css" />
-<title>SUOES Student Profile</title>
-<script src="../SpryAssets/SpryValidationTextField.js" type="text/javascript"></script>
-<link href="../SpryAssets/SpryValidationTextField.css" rel="stylesheet" type="text/css" />
-<style type="text/css">
- #dep{
-        float:left;
-  width:550px;
-  margin-left:10px;
-  padding: 0px 10px 30px 0px;
-  display:inline;
-    }</style>
-</head>
 
-<body>
-<div id="container">
-<div id="header">
-  </div>
-  <div id="content">
-    
-    <?php
-    include "left_head.php";
-    ?>
-    <div id="left">
-      <div id="dep">
-          <h1>&nbsp;</h1>
+$con = require_once(__DIR__ . "/../Connections/OES.php");
+$pageTitle = "Edit Profile";
+$ID = $_SESSION['ID'];
 
-			<h1>Welcome <?php echo $_SESSION['Name']   ;?>! You can show and edit your profile</h1>
-			<?php
-$Id=$_GET['ECID'];
-	// Establish Connection with MYSQL
-	$con = new mysqli("localhost","root");
-	// Select Database
-	$con->select_db("oes");
-// Specify the query to execute
-//$sql = "select * FROM exam_committee_members where committee_member_id ='".$ID."'";
-$sql = "select * FROM exam_committee_members where exam_committee.committee_member_id='".$Id."'";
-// Execute query
-$result =$con->query($sql);
-// Loop through each records 
-while($row = $result->fetch_array())
-{
-$Id=$row['committee_member_id'];
-$Department=$row['department_name'];
-$Name=$row['full_name'];
+// Get department head details
+$query = $con->prepare("SELECT dh.*, d.department_name 
+    FROM department_heads dh
+    LEFT JOIN departments d ON dh.department_id = d.department_id
+    WHERE dh.department_head_id = ?");
+$query->bind_param("i", $ID);
+$query->execute();
+$profile = $query->get_result()->fetch_assoc();
 
-$Email=$row['email'];
-
-$UserName =$row['username'];
-$Password=$row['password'];
-$is_active=$row['is_active'];
+if(!$profile) {
+    die("Profile not found.");
 }
 ?>
-          <form method="post" action="UpdateProfile.php?Id=<?php echo $Id;?>">
-                      <table width="100%" border="0">
-                        <tr>
-                          <td height="32"><span class="style8"><strong>Department Head Id</strong></span></td>
-                          <td><?php echo $Id;?></td>
-                        </tr>
-                        <tr>
-                          <td height="36"><span class="style8"><strong>Department Head Name:</strong></span></td>
-                          <td><?php echo $Name;?></td>
-                        </tr>
-                           
-                          
-                        
-                           <tr>
-                          <td height="36"><span class="style8"><strong>   Email  :</strong></span></td>
-                          <td><?php echo $Email;?></td>
-                        </tr>
-                          <tr>
-                          <td height="36"><span class="style8"><strong>   Status  :</strong></span></td>
-                          <td><?php echo $Status;?></td>
-                        </tr>
-                          
-                       
-                        
-                        <tr>
-                          <td height="28"><strong>Change username:</strong></td>
-                          <td><span id="sprytextfield4">
-                            <label>
-                            <input type="text" name="txtUser" id="txtUser"  />
-                            </label>
-                          <span class="textfieldRequiredMsg">A value is required.</span></span></td>
-                        </tr>
-                        <tr>
-                          <td height="28"><strong>Change Password:</strong></td>
-                          <td><span id="sprytextfield5">
-                            <label>
-                            <input type="password" name="txtPass" id="txtPass"  />
-                            </label>
-                          <span class="textfieldRequiredMsg">A value is required.</span></span></td>
-                        </tr>
-                        <tr>
-                          <td height="28"></td>
-                          <td><label>
-                            <input type="submit" name="button" id="button" value="Update Profile" />
-                          </label></td>
-                        </tr>
-                      </table>
-          </form>
-                  <?php
-// Close the connection
-$con->close();
-?></td>
-              </tr>
-            </table>
-	<p>&nbsp;</p>
-	
-	<h1>&nbsp;</h1>
-	  </div>
-		
-		<div id="footerline"></div>
-	</div>
-	
-	<div id="footer">Copyright &copy; 2022 SU Online Examination System. All rights reserved.&nbsp;</div>	
-</div>
-<script type="text/javascript">
-<!--
-var sprytextfield1 = new Spry.Widget.ValidationTextField("sprytextfield1");
-var sprytextfield2 = new Spry.Widget.ValidationTextField("sprytextfield2");
-var sprytextfield3 = new Spry.Widget.ValidationTextField("sprytextfield3");
-var sprytextfield4 = new Spry.Widget.ValidationTextField("sprytextfield4");
-var sprytextfield5 = new Spry.Widget.ValidationTextField("sprytextfield5");
-//-->
-</script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile - Department Head</title>
+    <link href="../assets/css/modern-v2.css" rel="stylesheet">
+    <link href="../assets/css/admin-modern-v2.css" rel="stylesheet">
+    <link href="../assets/css/admin-sidebar.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body.admin-layout { background: #f5f7fa; font-family: 'Poppins', sans-serif; }
+        .profile-card { background: white; border-radius: 12px; padding: 2.5rem; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08); margin-bottom: 2rem; }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-label { display: block; font-weight: 600; color: #000000; margin-bottom: 0.5rem; }
+        .form-control { width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; color: #000000; }
+        .form-control:focus { outline: none; border-color: #003366; box-shadow: 0 0 0 3px rgba(0, 51, 102, 0.1); }
+        .btn { padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; text-decoration: none; display: inline-block; transition: all 0.3s ease; border: none; cursor: pointer; }
+        .btn-primary { background: linear-gradient(135deg, #003366 0%, #0055aa 100%); color: white; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 51, 102, 0.3); }
+        .btn-secondary { background: #6c757d; color: white; margin-left: 1rem; }
+        .info-text { color: #000000; font-size: 0.9rem; margin-top: 0.25rem; }
+    </style>
+</head>
+<body class="admin-layout">
+    <?php include 'sidebar-component.php'; ?>
+
+    <div class="admin-main-content">
+        <?php include 'header-component.php'; ?>
+
+        <div class="admin-content">
+            <div class="page-header">
+                <h1 style="color: #000000;">✏️ Edit Profile</h1>
+                <p style="color: #000000;">Update your profile information</p>
+            </div>
+
+            <div class="profile-card">
+                <form method="post" action="UpdateProfile.php">
+                    <div class="form-group">
+                        <label class="form-label">Department Head ID</label>
+                        <input type="text" class="form-control" value="<?php echo htmlspecialchars($profile['head_code']); ?>" readonly>
+                        <p class="info-text">This field cannot be changed</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" name="full_name" class="form-control" value="<?php echo htmlspecialchars($profile['full_name']); ?>" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email" class="form-control" value="<?php echo htmlspecialchars($profile['email'] ?? ''); ?>">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Phone</label>
+                        <input type="text" name="phone" class="form-control" value="<?php echo htmlspecialchars($profile['phone'] ?? ''); ?>">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Username</label>
+                        <input type="text" name="username" class="form-control" value="<?php echo htmlspecialchars($profile['username']); ?>" required>
+                    </div>
+
+                    <div style="margin-top: 2rem;">
+                        <button type="submit" class="btn btn-primary">💾 Update Profile</button>
+                        <a href="Profile.php" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/admin-sidebar.js"></script>
 </body>
 </html>
+<?php $con->close(); ?>

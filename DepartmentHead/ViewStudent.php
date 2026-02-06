@@ -284,6 +284,9 @@ $student = $result->fetch_assoc();
                         <a href="Students.php" class="btn btn-secondary" style="padding: 0.75rem 2rem; font-size: 1rem;">
                             ← Back to Students
                         </a>
+                        <a href="AutoEnrollStudent.php?id=<?php echo $student['student_id']; ?>" class="btn btn-success" style="padding: 0.75rem 2rem; font-size: 1rem; background: linear-gradient(135deg, #28a745 0%, #218838 100%);" onclick="return confirm('This will automatically enroll this student in all courses for their department, year, and semester. Continue?');">
+                            📚 Auto-Enroll in Courses
+                        </a>
                         <a href="EditStudent.php?id=<?php echo $student['student_id']; ?>" class="btn btn-primary" style="padding: 0.75rem 2rem; font-size: 1rem;">
                             ✏️ Edit Student
                         </a>

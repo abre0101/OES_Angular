@@ -56,6 +56,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register_student'])) {
     $username = mysqli_real_escape_string($con, $_POST['username']);
     $password = mysqli_real_escape_string($con, $_POST['password']);
     $academic_year = mysqli_real_escape_string($con, $_POST['academic_year']);
+    $semester = intval($_POST['semester']);
     
     // Hash password
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
@@ -72,13 +73,35 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register_student'])) {
         $messageType = "error";
     } else {
         // Insert new student
-        $insert_query = "INSERT INTO students (student_code, username, password, full_name, email, phone, department_id, academic_year, is_active) 
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)";
+        $insert_query = "INSERT INTO students (student_code, username, password, full_name, email, phone, department_id, academic_year, semester, is_active) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)";
         $stmt = $con->prepare($insert_query);
-        $stmt->bind_param("ssssssss", $student_code, $username, $hashed_password, $full_name, $email, $phone, $deptId, $academic_year);
+        $stmt->bind_param("ssssssssi", $student_code, $username, $hashed_password, $full_name, $email, $phone, $deptId, $academic_year, $semester);
         
         if($stmt->execute()) {
-            $message = "Student registered successfully!";
+            $student_id = $con->insert_id;
+            
+            // Automatically enroll student in courses for their department and semester
+            $courses_query = "SELECT course_id FROM courses 
+                             WHERE department_id = ? 
+                             AND semester = ?
+                             AND is_active = 1";
+            $course_stmt = $con->prepare($courses_query);
+            $course_stmt->bind_param("ii", $deptId, $semester);
+            $course_stmt->execute();
+            $courses = $course_stmt->get_result();
+            
+            $enrolled_count = 0;
+            while($course = $courses->fetch_assoc()) {
+                $enroll_query = "INSERT INTO student_courses (student_id, course_id) VALUES (?, ?)";
+                $enroll_stmt = $con->prepare($enroll_query);
+                $enroll_stmt->bind_param("ii", $student_id, $course['course_id']);
+                if($enroll_stmt->execute()) {
+                    $enrolled_count++;
+                }
+            }
+            
+            $message = "Student registered successfully and automatically enrolled in $enrolled_count course(s)!";
             $messageType = "success";
         } else {
             $message = "Error registering student: " . $con->error;
@@ -184,6 +207,19 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register_student'])) {
                                 </div>
                             </div>
                             <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Semester *</label>
+                                    <select name="semester" class="form-control" required>
+                                        <option value="">Select Semester</option>
+                                        <option value="1">Semester 1</option>
+                                        <option value="2">Semester 2</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
                                 <div class="form-group">
                                     <label>Department</label>
                                     <input type="text" class="form-control" value="<?php echo $_SESSION['Dept']; ?>" readonly>

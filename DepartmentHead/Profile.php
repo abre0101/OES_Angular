@@ -49,12 +49,12 @@ if(!$profile) {
         .profile-card { background: white; border-radius: 12px; padding: 2.5rem; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08); margin-bottom: 2rem; }
         .profile-header { text-align: center; padding: 2rem; background: linear-gradient(135deg, #003366 0%, #0055aa 100%); border-radius: 12px; color: white; margin-bottom: 2rem; }
         .profile-avatar { width: 120px; height: 120px; border-radius: 50%; background: white; color: #003366; display: flex; align-items: center; justify-content: center; font-size: 3rem; font-weight: 700; margin: 0 auto 1rem; }
-        .profile-name { font-size: 1.8rem; font-weight: 700; margin: 0; }
-        .profile-role { font-size: 1rem; opacity: 0.9; margin-top: 0.5rem; }
+        .profile-name { font-size: 1.8rem; font-weight: 700; margin: 0; color: #ffffff; }
+        .profile-role { font-size: 1rem; margin-top: 0.5rem; color: #e3f2fd; font-weight: 500; }
         .profile-info { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
         .info-item { padding: 1.5rem; background: #f8f9fa; border-radius: 8px; }
-        .info-label { font-size: 0.85rem; color: #6c757d; margin-bottom: 0.5rem; font-weight: 600; text-transform: uppercase; }
-        .info-value { font-size: 1.1rem; color: #003366; font-weight: 600; }
+        .info-label { font-size: 0.85rem; color: #000000; margin-bottom: 0.5rem; font-weight: 600; text-transform: uppercase; }
+        .info-value { font-size: 1.1rem; color: #000000; font-weight: 600; }
         .btn { padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; text-decoration: none; display: inline-block; transition: all 0.3s ease; }
         .btn-primary { background: linear-gradient(135deg, #003366 0%, #0055aa 100%); color: white; }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 51, 102, 0.3); }
@@ -68,8 +68,8 @@ if(!$profile) {
 
         <div class="admin-content">
             <div class="page-header">
-                <h1>👤 My Profile</h1>
-                <p>View and manage your profile information</p>
+                <h1 style="color: #000000;">👤 My Profile</h1>
+                <p style="color: #000000;">View and manage your profile information</p>
             </div>
 
             <div class="profile-card">

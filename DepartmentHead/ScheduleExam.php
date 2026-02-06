@@ -27,20 +27,34 @@ $deptId = $_SESSION['DeptId'] ?? null;
 // Get current tab
 $activeTab = $_GET['tab'] ?? 'pending';
 
-// Get pending exams (approved but not scheduled)
+// Get pending exams (awaiting approval)
 $pending_query = "SELECT es.*, c.course_name, c.course_code, ec.category_name, i.full_name as instructor_name
                   FROM exams es
                   LEFT JOIN courses c ON es.course_id = c.course_id
                   LEFT JOIN exam_categories ec ON es.exam_category_id = ec.exam_category_id
                   LEFT JOIN instructors i ON es.created_by = i.instructor_id
                   WHERE c.department_id = ? 
-                  AND es.approval_status = 'approved'
-                  AND (es.exam_date IS NULL OR es.exam_date = '0000-00-00')
-                  ORDER BY es.updated_at DESC";
+                  AND es.approval_status = 'pending'
+                  ORDER BY es.created_at DESC";
 $stmt = $con->prepare($pending_query);
 $stmt->bind_param("i", $deptId);
 $stmt->execute();
 $pending_exams = $stmt->get_result();
+
+// Get approved exams awaiting schedule
+$approved_query = "SELECT es.*, c.course_name, c.course_code, ec.category_name, i.full_name as instructor_name
+                   FROM exams es
+                   LEFT JOIN courses c ON es.course_id = c.course_id
+                   LEFT JOIN exam_categories ec ON es.exam_category_id = ec.exam_category_id
+                   LEFT JOIN instructors i ON es.created_by = i.instructor_id
+                   WHERE c.department_id = ? 
+                   AND es.approval_status = 'approved'
+                   AND (es.exam_date IS NULL OR es.exam_date = '0000-00-00')
+                   ORDER BY es.approved_at DESC";
+$stmt = $con->prepare($approved_query);
+$stmt->bind_param("i", $deptId);
+$stmt->execute();
+$approved_exams = $stmt->get_result();
 
 // Get scheduled exams (future exams)
 $scheduled_query = "SELECT es.*, c.course_name, c.course_code, ec.category_name, i.full_name as instructor_name
@@ -292,6 +306,9 @@ if(isset($_GET['success']) && isset($_GET['msg'])) {
                 <a href="?tab=pending" class="tab <?php echo $activeTab == 'pending' ? 'active' : ''; ?>">
                     ⏳ Pending (<?php echo $pending_exams->num_rows; ?>)
                 </a>
+                <a href="?tab=approved" class="tab <?php echo $activeTab == 'approved' ? 'active' : ''; ?>">
+                    ✅ Approved (<?php echo $approved_exams->num_rows; ?>)
+                </a>
                 <a href="?tab=scheduled" class="tab <?php echo $activeTab == 'scheduled' ? 'active' : ''; ?>">
                     📅 Scheduled (<?php echo $scheduled_exams->num_rows; ?>)
                 </a>
@@ -304,7 +321,8 @@ if(isset($_GET['success']) && isset($_GET['msg'])) {
             <div class="tab-content <?php echo $activeTab == 'pending' ? 'active' : ''; ?>">
                 <div class="card">
                     <div class="card-header">
-                        <h3>Pending Exams (Awaiting Schedule)</h3>
+                        <h3>Pending Approvals</h3>
+                        <p style="margin: 0.5rem 0 0 0; color: #6c757d;">Review and approve examination submissions</p>
                     </div>
                     <div class="card-body">
                         <?php if($pending_exams->num_rows > 0): ?>
@@ -318,6 +336,7 @@ if(isset($_GET['success']) && isset($_GET['msg'])) {
                                         <th>Instructor</th>
                                         <th>Duration</th>
                                         <th>Marks</th>
+                                        <th>Submitted</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -333,6 +352,62 @@ if(isset($_GET['success']) && isset($_GET['msg'])) {
                                         <td><?php echo htmlspecialchars($exam['instructor_name'] ?? 'N/A'); ?></td>
                                         <td><?php echo $exam['duration_minutes']; ?> min</td>
                                         <td><?php echo $exam['total_marks']; ?></td>
+                                        <td><?php echo date('M d, Y', strtotime($exam['created_at'])); ?></td>
+                                        <td>
+                                            <a href="ViewExamDetails.php?id=<?php echo $exam['exam_id']; ?>" class="btn btn-sm btn-primary">
+                                                🔍 Review
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <?php endwhile; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                        <?php else: ?>
+                        <div class="alert alert-info">
+                            <p>No exams pending approval.</p>
+                        </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Approved Exams Tab (Awaiting Schedule) -->
+            <div class="tab-content <?php echo $activeTab == 'approved' ? 'active' : ''; ?>">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Approved Exams (Awaiting Schedule)</h3>
+                        <p style="margin: 0.5rem 0 0 0; color: #6c757d;">Set exam date and time for approved exams</p>
+                    </div>
+                    <div class="card-body">
+                        <?php if($approved_exams->num_rows > 0): ?>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Exam Name</th>
+                                        <th>Course</th>
+                                        <th>Category</th>
+                                        <th>Instructor</th>
+                                        <th>Duration</th>
+                                        <th>Marks</th>
+                                        <th>Approved</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php 
+                                    $approved_exams->data_seek(0);
+                                    while($exam = $approved_exams->fetch_assoc()): 
+                                    ?>
+                                    <tr>
+                                        <td><strong><?php echo htmlspecialchars($exam['exam_name']); ?></strong></td>
+                                        <td><?php echo htmlspecialchars($exam['course_code']); ?></td>
+                                        <td><span class="badge badge-success"><?php echo htmlspecialchars($exam['category_name']); ?></span></td>
+                                        <td><?php echo htmlspecialchars($exam['instructor_name'] ?? 'N/A'); ?></td>
+                                        <td><?php echo $exam['duration_minutes']; ?> min</td>
+                                        <td><?php echo $exam['total_marks']; ?></td>
+                                        <td><?php echo date('M d, Y', strtotime($exam['approved_at'])); ?></td>
                                         <td>
                                             <button class="btn btn-sm btn-primary" onclick="openScheduleModal(<?php echo $exam['exam_id']; ?>, '<?php echo htmlspecialchars(addslashes($exam['exam_name'])); ?>', <?php echo $exam['duration_minutes']; ?>)">
                                                 📅 Schedule
@@ -346,7 +421,7 @@ if(isset($_GET['success']) && isset($_GET['msg'])) {
                         </div>
                         <?php else: ?>
                         <div class="alert alert-info">
-                            <p>No pending exams awaiting schedule.</p>
+                            <p>No approved exams awaiting schedule.</p>
                         </div>
                         <?php endif; ?>
                     </div>

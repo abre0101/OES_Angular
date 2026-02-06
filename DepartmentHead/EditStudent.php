@@ -58,7 +58,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $updateStmt->bind_param("ssssiiii", $fullName, $email, $phone, $gender, $semester, $academicYear, $isActive, $studentId);
     
     if ($updateStmt->execute()) {
-        $_SESSION['success_message'] = "Student updated successfully!";
+        // Check if semester changed - if so, re-enroll in new semester courses
+        if($semester != $student['semester']) {
+            // Remove old enrollments
+            $delete_query = "DELETE FROM student_courses WHERE student_id = ?";
+            $delete_stmt = $con->prepare($delete_query);
+            $delete_stmt->bind_param("i", $studentId);
+            $delete_stmt->execute();
+            
+            // Enroll in new semester courses
+            $courses_query = "SELECT course_id FROM courses 
+                             WHERE department_id = ? 
+                             AND semester = ?
+                             AND is_active = 1";
+            $course_stmt = $con->prepare($courses_query);
+            $course_stmt->bind_param("ii", $student['department_id'], $semester);
+            $course_stmt->execute();
+            $courses = $course_stmt->get_result();
+            
+            $enrolled_count = 0;
+            while($course = $courses->fetch_assoc()) {
+                $enroll_query = "INSERT INTO student_courses (student_id, course_id) VALUES (?, ?)";
+                $enroll_stmt = $con->prepare($enroll_query);
+                $enroll_stmt->bind_param("ii", $studentId, $course['course_id']);
+                if($enroll_stmt->execute()) {
+                    $enrolled_count++;
+                }
+            }
+            
+            $_SESSION['success_message'] = "Student updated successfully and re-enrolled in $enrolled_count course(s) for the new semester!";
+        } else {
+            $_SESSION['success_message'] = "Student updated successfully!";
+        }
+        
         header("Location: ViewStudent.php?id=" . $studentId);
         exit();
     } else {

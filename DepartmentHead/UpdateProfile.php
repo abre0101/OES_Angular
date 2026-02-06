@@ -1,29 +1,55 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Untitled Document</title>
-</head>
-
-<body>
 <?php
-$Id = $_GET['Id'];
+require_once(__DIR__ . "/../utils/session_manager.php");
+require_once(__DIR__ . "/../utils/password_helper.php");
 
-$UserName=$_POST['txtUser'];
-$Password=$_POST['txtPass'];
-// Establish Connection with Database
-$con = new mysqli("localhost","root");
-// Select Database
-$con->select_db("oes");
-// Specify the query to Update Record
-   // $sql = "UPDATE exam_committee_members set exam_committee.username='".$UserName."',exam_committee.password='".$Password."' where committee_member_id='".$Id."'";
-	$sql = "UPDATE exam_committee_members set exam_committee.username='".$UserName."',exam_committee.password='".$Password."' where committee_member_id='".$Id."'";
+// Start Department Head session
+SessionManager::startSession('DepartmentHead');
 
-	// execute query
-	$con->query ($sql);
-	// Close The Connection
-	$con->close ();
-echo '<script type="text/javascript">alert("Profile Updated Succesfully");window.location=\'Profile.php\';</script>';
+// Check if user is logged in
+if(!isset($_SESSION['ID'])){
+    header("Location: ../auth/staff-login.php");
+    exit();
+}
+
+// Validate user role
+if(!isset($_SESSION['UserType']) || $_SESSION['UserType'] !== 'DepartmentHead'){
+    SessionManager::destroySession();
+    header("Location: ../auth/staff-login.php");
+    exit();
+}
+
+$Id = $_SESSION['ID'];
+$FullName = $_POST['full_name'] ?? '';
+$Email = $_POST['email'] ?? '';
+$Phone = $_POST['phone'] ?? '';
+$UserName = $_POST['username'] ?? '';
+
+if(empty($UserName)) {
+    echo '<script type="text/javascript">alert("Username is required");window.history.back();</script>';
+    exit();
+}
+
+// Establish Connection
+$con = require_once(__DIR__ . "/../Connections/OES.php");
+
+if ($con->connect_error) {
+    die("Connection failed: " . $con->connect_error);
+}
+
+// Update profile (without password)
+$stmt = $con->prepare("UPDATE department_heads SET full_name=?, email=?, phone=?, username=? WHERE department_head_id=?");
+$stmt->bind_param("ssssi", $FullName, $Email, $Phone, $UserName, $Id);
+
+if($stmt->execute()) {
+    $_SESSION['username'] = $UserName;
+    $_SESSION['Name'] = $FullName;
+    $stmt->close();
+    $con->close();
+    echo '<script type="text/javascript">alert("Profile Updated Successfully");window.location="Profile.php";</script>';
+} else {
+    $error = $stmt->error;
+    $stmt->close();
+    $con->close();
+    echo '<script type="text/javascript">alert("Error: ' . $error . '");window.history.back();</script>';
+}
 ?>
-</body>
-</html>

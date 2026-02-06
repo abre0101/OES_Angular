@@ -36,6 +36,35 @@ $stmt->bind_param("iiisi", $Department, $is_active, $Sem, $Year, $Id);
 $stmt->execute();
 $stmt->close();
 
+// Check if semester changed - if so, re-enroll in new semester courses
+if($oldData && $Sem != $oldData['semester']) {
+    // Remove old enrollments
+    $delete_query = "DELETE FROM student_courses WHERE student_id = ?";
+    $delete_stmt = $con->prepare($delete_query);
+    $delete_stmt->bind_param("i", $Id);
+    $delete_stmt->execute();
+    
+    // Enroll in new semester courses
+    $courses_query = "SELECT course_id FROM courses 
+                     WHERE department_id = ? 
+                     AND semester = ?
+                     AND is_active = 1";
+    $course_stmt = $con->prepare($courses_query);
+    $course_stmt->bind_param("ii", $Department, $Sem);
+    $course_stmt->execute();
+    $courses = $course_stmt->get_result();
+    
+    $enrolled_count = 0;
+    while($course = $courses->fetch_assoc()) {
+        $enroll_query = "INSERT INTO student_courses (student_id, course_id) VALUES (?, ?)";
+        $enroll_stmt = $con->prepare($enroll_query);
+        $enroll_stmt->bind_param("ii", $Id, $course['course_id']);
+        if($enroll_stmt->execute()) {
+            $enrolled_count++;
+        }
+    }
+}
+
 // Track changes for audit log
 $newData = [
     'department_id' => $Department,

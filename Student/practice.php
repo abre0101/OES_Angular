@@ -382,10 +382,27 @@ if ($totalQuestions == 0) {
             hasChecked = false;
             const q = questions[index];
             
-            const questionHTML = `
-                <div class="question-number">Question No. ${index + 1}</div>
-                <div class="question-text">${q.question_text || 'Question text here'}</div>
-                <div class="options-container">
+            // Check if this is a True/False question
+            const isTrueFalse = (q.option_a === 'True' && q.option_b === 'False') || 
+                               (q.correct_answer === 'True' || q.correct_answer === 'False');
+            
+            let optionsHTML = '';
+            
+            if (isTrueFalse) {
+                // True/False question - only show 2 options
+                optionsHTML = `
+                    <label class="option-label">
+                        <input type="radio" name="answer" value="True">
+                        <span class="option-text">✓ True</span>
+                    </label>
+                    <label class="option-label">
+                        <input type="radio" name="answer" value="False">
+                        <span class="option-text">✗ False</span>
+                    </label>
+                `;
+            } else {
+                // Multiple Choice question - show all 4 options
+                optionsHTML = `
                     <label class="option-label">
                         <input type="radio" name="answer" value="A">
                         <span class="option-text"><strong>(A)</strong> ${q.option_a || 'Option A'}</span>
@@ -402,6 +419,14 @@ if ($totalQuestions == 0) {
                         <input type="radio" name="answer" value="D">
                         <span class="option-text"><strong>(D)</strong> ${q.option_d || 'Option D'}</span>
                     </label>
+                `;
+            }
+            
+            const questionHTML = `
+                <div class="question-number">Question No. ${index + 1}</div>
+                <div class="question-text">${q.question_text || 'Question text here'}</div>
+                <div class="options-container">
+                    ${optionsHTML}
                 </div>
             `;
             
@@ -438,36 +463,38 @@ if ($totalQuestions == 0) {
             }
 
             hasChecked = true;
-            const userAnswerLetter = selectedAnswer.value; // A, B, C, or D
+            const userAnswer = selectedAnswer.value; // Could be A, B, C, D, True, or False
             const q = questions[currentQuestion];
             
-            // Get the text of the user's selected option
-            const userAnswerText = q['option_' + userAnswerLetter.toLowerCase()];
+            // Check if this is a True/False question
+            const isTrueFalse = (q.option_a === 'True' && q.option_b === 'False') || 
+                               (q.correct_answer === 'True' || q.correct_answer === 'False');
             
-            // Get correct answer from database - could be letter or full text
-            const correctAnswerFromDB = q.correct_answer;
+            let correctAnswer = q.correct_answer;
+            let isCorrect = false;
             
-            // Find which letter corresponds to the correct answer
-            let correctAnswerLetter = '';
-            
-            // Check if correct_answer is just a letter (A, B, C, D)
-            if (correctAnswerFromDB && correctAnswerFromDB.length === 1 && /[A-D]/i.test(correctAnswerFromDB)) {
-                correctAnswerLetter = correctAnswerFromDB.toUpperCase();
+            if (isTrueFalse) {
+                // For True/False questions, compare directly
+                isCorrect = userAnswer === correctAnswer;
             } else {
-                // Otherwise, match against option texts
-                if (q.option_a === correctAnswerFromDB) correctAnswerLetter = 'A';
-                else if (q.option_b === correctAnswerFromDB) correctAnswerLetter = 'B';
-                else if (q.option_c === correctAnswerFromDB) correctAnswerLetter = 'C';
-                else if (q.option_d === correctAnswerFromDB) correctAnswerLetter = 'D';
+                // For Multiple Choice, handle both letter and text answers
+                if (correctAnswer && correctAnswer.length === 1 && /[A-D]/i.test(correctAnswer)) {
+                    isCorrect = userAnswer === correctAnswer.toUpperCase();
+                } else {
+                    // Match against option texts
+                    const userAnswerText = q['option_' + userAnswer.toLowerCase()];
+                    isCorrect = userAnswerText === correctAnswer;
+                    
+                    // Find correct answer letter for highlighting
+                    if (q.option_a === correctAnswer) correctAnswer = 'A';
+                    else if (q.option_b === correctAnswer) correctAnswer = 'B';
+                    else if (q.option_c === correctAnswer) correctAnswer = 'C';
+                    else if (q.option_d === correctAnswer) correctAnswer = 'D';
+                }
             }
-            
-            // Get the correct option text
-            const correctAnswerText = q['option_' + correctAnswerLetter.toLowerCase()];
-            
-            const isCorrect = userAnswerLetter === correctAnswerLetter;
 
             // Save answer
-            answers[currentQuestion] = userAnswerLetter;
+            answers[currentQuestion] = userAnswer;
             
             // Update status
             if (questionStatus[currentQuestion] === undefined) {
@@ -489,10 +516,10 @@ if ($totalQuestions == 0) {
             // Highlight correct and wrong answers
             document.querySelectorAll('.option-label').forEach(label => {
                 const input = label.querySelector('input');
-                if (input.value === correctAnswerLetter) {
+                if (input.value === correctAnswer) {
                     label.classList.add('correct-answer');
                 }
-                if (input.value === userAnswerLetter && !isCorrect) {
+                if (input.value === userAnswer && !isCorrect) {
                     label.classList.add('wrong-answer');
                 }
             });
@@ -504,9 +531,11 @@ if ($totalQuestions == 0) {
                     <strong>✅ Correct! Well done!</strong>
                 </div>`;
             } else {
+                const correctAnswerText = isTrueFalse ? correctAnswer : 
+                    (q['option_' + correctAnswer.toLowerCase()] || correctAnswer);
                 feedbackHTML = `<div class="feedback-wrong">
                     <strong>❌ Wrong!</strong><br>
-                    <p style="margin: 0.5rem 0;">The correct answer is: <strong>(${correctAnswerLetter})</strong> ${correctAnswerText || 'N/A'}</p>
+                    <p style="margin: 0.5rem 0;">The correct answer is: <strong>${isTrueFalse ? correctAnswer : '(' + correctAnswer + ')'}</strong> ${isTrueFalse ? '' : correctAnswerText}</p>
                 </div>`;
             }
             

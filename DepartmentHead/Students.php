@@ -92,7 +92,17 @@ $students = $stmt->get_result();
                                     <td><?php echo htmlspecialchars($student['full_name']); ?></td>
                                     <td><?php echo htmlspecialchars($student['email']); ?></td>
                                     <td><?php echo htmlspecialchars($student['phone'] ?? 'N/A'); ?></td>
-                                    <td><?php echo $student['academic_year'] ? 'Year ' . htmlspecialchars($student['academic_year']) : 'N/A'; ?></td>
+                                    <td>
+                                        <?php 
+                                        if($student['academic_year']) {
+                                            $year = htmlspecialchars($student['academic_year']);
+                                            // If it doesn't already contain "Year", add it
+                                            echo (stripos($year, 'year') === false) ? 'Year ' . $year : $year;
+                                        } else {
+                                            echo 'N/A';
+                                        }
+                                        ?>
+                                    </td>
                                     <td>
                                         <?php if($student['is_active']): ?>
                                             <span class="badge badge-success">Active</span>

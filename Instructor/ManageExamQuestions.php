@@ -314,24 +314,40 @@ $question_count = $examQuestions->num_rows;
                 
                 <?php if($availableQuestions->num_rows > 0): ?>
                     <?php while($q = $availableQuestions->fetch_assoc()): ?>
+                    <?php 
+                    // Check if this is a True/False question
+                    $isTrueFalse = ($q['option_a'] == 'True' && $q['option_b'] == 'False') || 
+                                   ($q['correct_answer'] == 'True' || $q['correct_answer'] == 'False');
+                    ?>
                     <div class="question-item">
                         <div class="question-text"><?php echo htmlspecialchars($q['question_text']); ?></div>
                         <div class="options">
-                            <div class="option <?php echo $q['correct_answer'] == 'A' ? 'correct' : ''; ?>">
-                                A) <?php echo htmlspecialchars($q['option_a']); ?>
-                            </div>
-                            <div class="option <?php echo $q['correct_answer'] == 'B' ? 'correct' : ''; ?>">
-                                B) <?php echo htmlspecialchars($q['option_b']); ?>
-                            </div>
-                            <?php if($q['option_c']): ?>
-                            <div class="option <?php echo $q['correct_answer'] == 'C' ? 'correct' : ''; ?>">
-                                C) <?php echo htmlspecialchars($q['option_c']); ?>
-                            </div>
-                            <?php endif; ?>
-                            <?php if($q['option_d']): ?>
-                            <div class="option <?php echo $q['correct_answer'] == 'D' ? 'correct' : ''; ?>">
-                                D) <?php echo htmlspecialchars($q['option_d']); ?>
-                            </div>
+                            <?php if($isTrueFalse): ?>
+                                <!-- True/False Options -->
+                                <div class="option <?php echo $q['correct_answer'] == 'True' ? 'correct' : ''; ?>">
+                                    A) True
+                                </div>
+                                <div class="option <?php echo $q['correct_answer'] == 'False' ? 'correct' : ''; ?>">
+                                    B) False
+                                </div>
+                            <?php else: ?>
+                                <!-- Multiple Choice Options -->
+                                <div class="option <?php echo $q['correct_answer'] == 'A' ? 'correct' : ''; ?>">
+                                    A) <?php echo htmlspecialchars($q['option_a']); ?>
+                                </div>
+                                <div class="option <?php echo $q['correct_answer'] == 'B' ? 'correct' : ''; ?>">
+                                    B) <?php echo htmlspecialchars($q['option_b']); ?>
+                                </div>
+                                <?php if($q['option_c']): ?>
+                                <div class="option <?php echo $q['correct_answer'] == 'C' ? 'correct' : ''; ?>">
+                                    C) <?php echo htmlspecialchars($q['option_c']); ?>
+                                </div>
+                                <?php endif; ?>
+                                <?php if($q['option_d']): ?>
+                                <div class="option <?php echo $q['correct_answer'] == 'D' ? 'correct' : ''; ?>">
+                                    D) <?php echo htmlspecialchars($q['option_d']); ?>
+                                </div>
+                                <?php endif; ?>
                             <?php endif; ?>
                         </div>
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">

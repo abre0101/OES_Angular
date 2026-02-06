@@ -76,6 +76,28 @@ $questions = $con->query("SELECT q.*, qt.topic_name
         .option { padding: 0.75rem; margin-bottom: 0.5rem; background: #f8f9fa; border-radius: 8px; border-left: 3px solid #e0e0e0; }
         .option.correct { background: rgba(40, 167, 69, 0.1); border-left-color: #28a745; font-weight: 600; }
         .action-section { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08); margin-top: 2rem; }
+        
+        /* Modal Styles */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.6); z-index: 9999; align-items: center; justify-content: center; }
+        .modal-overlay.active { display: flex; }
+        .modal-content { background: white; border-radius: 16px; padding: 2rem; max-width: 500px; width: 90%; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); animation: modalSlideIn 0.3s ease; }
+        @keyframes modalSlideIn { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .modal-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+        .modal-icon { font-size: 3rem; }
+        .modal-title { font-size: 1.5rem; font-weight: 700; color: #003366; margin: 0; }
+        .modal-body { margin-bottom: 1.5rem; color: #495057; line-height: 1.6; }
+        .modal-footer { display: flex; gap: 1rem; justify-content: flex-end; }
+        .modal-btn { padding: 0.75rem 1.5rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 1rem; transition: all 0.3s; }
+        .modal-btn-primary { background: linear-gradient(135deg, #003366 0%, #0055aa 100%); color: white; }
+        .modal-btn-success { background: linear-gradient(135deg, #28a745 0%, #218838 100%); color: white; }
+        .modal-btn-danger { background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: white; }
+        .modal-btn-warning { background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%); color: white; }
+        .modal-btn-secondary { background: #6c757d; color: white; }
+        .modal-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); }
+        .modal-input { width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem; font-family: 'Poppins', sans-serif; margin-top: 1rem; }
+        .modal-input:focus { outline: none; border-color: #003366; }
+        .modal-textarea { width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem; font-family: 'Poppins', sans-serif; margin-top: 1rem; min-height: 120px; resize: vertical; }
+        .modal-textarea:focus { outline: none; border-color: #003366; }
     </style>
 </head>
 <body class="admin-layout">
@@ -108,51 +130,40 @@ $questions = $con->query("SELECT q.*, qt.topic_name
                     <div class="info-label">Department</div>
                     <div class="info-value"><?php echo htmlspecialchars($exam['department_name']); ?></div>
                 </div>
+                <?php if($exam['instructor_name']): ?>
                 <div class="info-card">
                     <div class="info-label">Instructor</div>
-                    <div class="info-value"><?php echo htmlspecialchars($exam['instructor_name'] ?? 'N/A'); ?></div>
+                    <div class="info-value"><?php echo htmlspecialchars($exam['instructor_name']); ?></div>
                 </div>
+                <?php endif; ?>
                 <div class="info-card">
                     <div class="info-label">Exam Category</div>
                     <div class="info-value"><?php echo htmlspecialchars($exam['category_name']); ?></div>
-                </div>
-                <div class="info-card">
-                    <div class="info-label">Exam Date</div>
-                    <div class="info-value"><?php echo $exam['exam_date'] ? date('M d, Y', strtotime($exam['exam_date'])) : 'Not Scheduled'; ?></div>
-                </div>
-                <div class="info-card">
-                    <div class="info-label">Start Time</div>
-                    <div class="info-value"><?php echo $exam['start_time'] ? date('h:i A', strtotime($exam['start_time'])) : 'Not Set'; ?></div>
                 </div>
                 <div class="info-card">
                     <div class="info-label">Duration</div>
                     <div class="info-value"><?php echo $exam['duration_minutes']; ?> Minutes</div>
                 </div>
                 <div class="info-card">
-                    <div class="info-label">Total Questions</div>
-                    <div class="info-value"><?php echo $exam['question_count']; ?> Questions</div>
-                </div>
-                <div class="info-card">
                     <div class="info-label">Total Marks</div>
                     <div class="info-value"><?php echo $exam['total_marks']; ?> Points</div>
                 </div>
-                <?php if(isset($exam['enrolled_count'])): ?>
+                <?php if($exam['question_count'] > 0): ?>
                 <div class="info-card">
-                    <div class="info-label">Enrolled Students</div>
-                    <div class="info-value"><?php echo $exam['enrolled_count']; ?> Students</div>
+                    <div class="info-label">Total Questions</div>
+                    <div class="info-value"><?php echo $exam['question_count']; ?> Questions</div>
                 </div>
+                <?php endif; ?>
+                <?php if($exam['exam_date'] && $exam['exam_date'] != '0000-00-00'): ?>
                 <div class="info-card">
-                    <div class="info-label">Submissions</div>
-                    <div class="info-value"><?php echo $exam['completed_count']; ?> / <?php echo $exam['enrolled_count']; ?></div>
+                    <div class="info-label">Exam Date</div>
+                    <div class="info-value"><?php echo date('M d, Y', strtotime($exam['exam_date'])); ?></div>
                 </div>
+                <?php endif; ?>
+                <?php if($exam['start_time']): ?>
                 <div class="info-card">
-                    <div class="info-label">Completion Rate</div>
-                    <div class="info-value">
-                        <?php 
-                        $completion = $exam['enrolled_count'] > 0 ? round(($exam['completed_count'] / $exam['enrolled_count']) * 100) : 0;
-                        echo $completion; 
-                        ?>%
-                    </div>
+                    <div class="info-label">Start Time</div>
+                    <div class="info-value"><?php echo date('h:i A', strtotime($exam['start_time'])); ?></div>
                 </div>
                 <?php endif; ?>
             </div>
@@ -245,31 +256,116 @@ $questions = $con->query("SELECT q.*, qt.topic_name
     </div>
 
     <script src="../assets/js/admin-sidebar.js"></script>
+    
+    <!-- Modal Overlays -->
+    <div id="approveModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-icon">✅</div>
+                <h3 class="modal-title">Approve Exam</h3>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to approve this exam?</p>
+                <p style="font-size: 0.9rem; color: #6c757d;">This will make the exam available to students on the scheduled date.</p>
+                <textarea id="approveComments" class="modal-textarea" placeholder="Add optional comments or feedback for the instructor..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-secondary" onclick="closeModal('approveModal')">Cancel</button>
+                <button class="modal-btn modal-btn-success" onclick="submitApproval()">✓ Approve</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="revisionModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-icon">✏️</div>
+                <h3 class="modal-title">Request Revision</h3>
+            </div>
+            <div class="modal-body">
+                <p>Please provide detailed feedback for the instructor:</p>
+                <textarea id="revisionComments" class="modal-textarea" placeholder="Describe what needs to be revised..." required></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-secondary" onclick="closeModal('revisionModal')">Cancel</button>
+                <button class="modal-btn modal-btn-warning" onclick="submitRevision()">✏️ Request Revision</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="rejectModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-icon">❌</div>
+                <h3 class="modal-title">Reject Exam</h3>
+            </div>
+            <div class="modal-body">
+                <p style="color: #dc3545; font-weight: 600;">This action cannot be undone.</p>
+                <p>Please provide a reason for rejection:</p>
+                <textarea id="rejectComments" class="modal-textarea" placeholder="Explain why this exam is being rejected..." required></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-secondary" onclick="closeModal('rejectModal')">Cancel</button>
+                <button class="modal-btn modal-btn-danger" onclick="submitRejection()">✗ Reject Exam</button>
+            </div>
+        </div>
+    </div>
+    
     <script>
         function goBack() {
             window.history.back();
         }
         
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+        
+        // Close modal when clicking outside
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function(e) {
+                if(e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
+        });
+        
         function approveExam() {
-            if(confirm('Are you sure you want to approve this exam?\n\nThis will make it available to students on the scheduled date.')) {
-                window.location.href = 'ProcessApproval.php?exam_id=<?php echo $exam_id; ?>&action=approve';
-            }
+            openModal('approveModal');
         }
         
         function requestRevision() {
-            const comments = prompt('Please provide feedback for revision:');
-            if(comments && comments.trim()) {
-                window.location.href = 'ProcessApproval.php?exam_id=<?php echo $exam_id; ?>&action=revision&comments=' + encodeURIComponent(comments);
-            }
+            openModal('revisionModal');
         }
         
         function rejectExam() {
-            const reason = prompt('Please provide a reason for rejection:');
-            if(reason && reason.trim()) {
-                if(confirm('Are you sure you want to reject this exam?')) {
-                    window.location.href = 'ProcessApproval.php?exam_id=<?php echo $exam_id; ?>&action=reject&comments=' + encodeURIComponent(reason);
-                }
+            openModal('rejectModal');
+        }
+        
+        function submitApproval() {
+            const comments = document.getElementById('approveComments').value;
+            window.location.href = 'ProcessApproval.php?exam_id=<?php echo $exam_id; ?>&action=approve&comments=' + encodeURIComponent(comments);
+        }
+        
+        function submitRevision() {
+            const comments = document.getElementById('revisionComments').value.trim();
+            if(!comments) {
+                alert('Please provide feedback for revision.');
+                return;
             }
+            window.location.href = 'ProcessApproval.php?exam_id=<?php echo $exam_id; ?>&action=revision&comments=' + encodeURIComponent(comments);
+        }
+        
+        function submitRejection() {
+            const comments = document.getElementById('rejectComments').value.trim();
+            if(!comments) {
+                alert('Please provide a reason for rejection.');
+                return;
+            }
+            window.location.href = 'ProcessApproval.php?exam_id=<?php echo $exam_id; ?>&action=reject&comments=' + encodeURIComponent(comments);
         }
     </script>
 </body>

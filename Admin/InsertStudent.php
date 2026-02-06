@@ -52,26 +52,71 @@ if(!isset($_SESSION['UserType']) || $_SESSION['UserType'] !== 'Administrator'){
 	$ID = generateNextStudentCode($con);
 	
 	$Name=$_POST['txtName'];
-        $StudDept=$_POST['cmbDept'];
+        $StudDept=intval($_POST['cmbDept']); // Convert to integer (department_id)
         $StudYear=$_POST['cmbYear'];
-        $StudSem=$_POST['cmbSem'];
+        $StudSem=intval($_POST['cmbSem']); // Convert to integer
         $UserName=$_POST['txtUserName'];
         $Password=$_POST['txtPassword'];
         $Sex=$_POST['gender'];
-        $is_active=$_POST['cmbStatus'];
+        $is_active=intval($_POST['cmbStatus']); // Convert to integer
+	
+	// Debug: Show what was received
+	error_log("Department received: " . $_POST['cmbDept'] . " (converted to: " . $StudDept . ")");
+	
+	// Validate department exists
+	if($StudDept <= 0) {
+		echo '<script type="text/javascript">alert("Please select a valid department! Received value: ' . htmlspecialchars($_POST['cmbDept']) . '");window.history.back();</script>';
+		exit();
+	}
+	
+	// Check if department exists
+	$check_dept = $con->prepare("SELECT department_id FROM departments WHERE department_id = ?");
+	$check_dept->bind_param("i", $StudDept);
+	$check_dept->execute();
+	$dept_result = $check_dept->get_result();
+	if($dept_result->num_rows == 0) {
+		echo '<script type="text/javascript">alert("Selected department does not exist! Please select a valid department.");window.history.back();</script>';
+		exit();
+	}
 
 	// Hash the password before storing
 	$hashedPassword = hashPassword($Password);
 
-	// Specify the query to Insert Record
-	$stmt = $con->prepare("Insert INTO students(Id,Name,department_name,year,semester,Sex,username,password,is_active) values(?,?,?,?,?,?,?,?,?)");
-	$stmt->bind_param("ssssissss", $ID, $Name, $StudDept, $StudYear, $StudSem, $Sex, $UserName, $hashedPassword, $is_active);
+	// Specify the query to Insert Record with correct column names
+	$stmt = $con->prepare("INSERT INTO students(student_code, full_name, department_id, academic_year, semester, gender, username, password, is_active) VALUES(?,?,?,?,?,?,?,?,?)");
+	$stmt->bind_param("ssisisssi", $ID, $Name, $StudDept, $StudYear, $StudSem, $Sex, $UserName, $hashedPassword, $is_active);
 	// execute query
-	$stmt->execute();
+	if($stmt->execute()) {
+		$student_id = $con->insert_id;
+		
+		// Automatically enroll student in courses for their department and semester
+		$courses_query = "SELECT course_id FROM courses 
+						 WHERE department_id = ? 
+						 AND semester = ?
+						 AND is_active = 1";
+		$course_stmt = $con->prepare($courses_query);
+		$course_stmt->bind_param("ii", $StudDept, $StudSem);
+		$course_stmt->execute();
+		$courses = $course_stmt->get_result();
+		
+		$enrolled_count = 0;
+		while($course = $courses->fetch_assoc()) {
+			$enroll_query = "INSERT INTO student_courses (student_id, course_id) VALUES (?, ?)";
+			$enroll_stmt = $con->prepare($enroll_query);
+			$enroll_stmt->bind_param("ii", $student_id, $course['course_id']);
+			if($enroll_stmt->execute()) {
+				$enrolled_count++;
+			}
+		}
+		
+		echo '<script type="text/javascript">alert("New Student Inserted Successfully with Code: ' . $ID . ' and enrolled in ' . $enrolled_count . ' course(s)!");window.location=\'Student.php\';</script>';
+	} else {
+		echo '<script type="text/javascript">alert("Error inserting student: ' . $con->error . '");window.history.back();</script>';
+	}
+	
 	$stmt->close();
 	// Close The Connection
 	$con->close();
-	echo '<script type="text/javascript">alert("New Student Inserted Successfully with Code: ' . $ID . '");window.location=\'Student.php\';</script>';
 
 ?>
 </body>
