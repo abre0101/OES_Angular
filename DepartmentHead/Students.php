@@ -90,7 +90,7 @@ $students = $stmt->get_result();
                                 <tr>
                                     <td><?php echo htmlspecialchars($student['student_code']); ?></td>
                                     <td><?php echo htmlspecialchars($student['full_name']); ?></td>
-                                    <td><?php echo htmlspecialchars($student['email']); ?></td>
+                                    <td><?php echo htmlspecialchars($student['email'] ?? 'N/A'); ?></td>
                                     <td><?php echo htmlspecialchars($student['phone'] ?? 'N/A'); ?></td>
                                     <td>
                                         <?php 

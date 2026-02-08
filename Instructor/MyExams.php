@@ -382,10 +382,25 @@ while($exam = $exams->fetch_assoc()) {
                 <span style="font-size: 1.5rem;">✅</span>
                 <span>Exam updated successfully! Status changed to "Pending" - awaiting re-approval from department head.</span>
             </div>
+            <?php elseif(isset($_GET['success']) && $_GET['success'] == 'deleted'): ?>
+            <div class="alert alert-success">
+                <span style="font-size: 1.5rem;">✅</span>
+                <span>Draft exam deleted successfully!</span>
+            </div>
             <?php elseif(isset($_GET['error']) && $_GET['error'] == 'locked'): ?>
             <div class="alert alert-danger" style="background: #f8d7da; color: #721c24; border-left: 4px solid #dc3545;">
                 <span style="font-size: 1.5rem;">🔒</span>
                 <span>This exam cannot be edited because students have already taken it.</span>
+            </div>
+            <?php elseif(isset($_GET['error']) && $_GET['error'] == 'cannot_delete_submitted'): ?>
+            <div class="alert alert-danger" style="background: #f8d7da; color: #721c24; border-left: 4px solid #dc3545;">
+                <span style="font-size: 1.5rem;">❌</span>
+                <span>Only draft exams can be deleted. This exam has already been submitted.</span>
+            </div>
+            <?php elseif(isset($_GET['error']) && $_GET['error'] == 'has_results'): ?>
+            <div class="alert alert-danger" style="background: #f8d7da; color: #721c24; border-left: 4px solid #dc3545;">
+                <span style="font-size: 1.5rem;">❌</span>
+                <span>This exam cannot be deleted because students have already taken it.</span>
             </div>
             <?php endif; ?>
 
@@ -474,6 +489,12 @@ while($exam = $exams->fetch_assoc()) {
                                     <span>✅</span> Submit for Approval
                                 </a>
                                 <?php endif; ?>
+                                <a href="DeleteExam.php?id=<?php echo $exam['exam_id']; ?>" 
+                                   class="btn btn-sm" 
+                                   style="background: #dc3545; color: white;"
+                                   onclick="return confirm('Are you sure you want to delete this draft exam? This action cannot be undone.')">
+                                    <span>🗑️</span> Delete Draft
+                                </a>
                             </div>
                         </div>
                         <?php endforeach; ?>

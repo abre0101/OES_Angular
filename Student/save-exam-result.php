@@ -175,8 +175,8 @@ if ($stmt->execute()) {
         $stmt->close();
         
         // Insert answers into student_answers table
-        // Table structure: answer_id, result_id, student_id, question_id, selected_answer, is_correct, points_earned, answered_at
-        $answerStmt = $con->prepare("INSERT INTO student_answers (result_id, student_id, question_id, selected_answer, is_correct, points_earned) VALUES (?, ?, ?, ?, ?, ?)");
+        // Table structure: answer_id, result_id, question_id, selected_answer, is_correct, points_earned, answered_at
+        $answerStmt = $con->prepare("INSERT INTO student_answers (result_id, question_id, selected_answer, is_correct, points_earned) VALUES (?, ?, ?, ?, ?)");
         
         foreach($answersArray as $questionIndex => $selectedAnswer) {
             // JavaScript sends 0-based index, but question_order is 1-based
@@ -189,7 +189,7 @@ if ($stmt->execute()) {
                 $isCorrect = ($correct_answer == $selectedAnswer) ? 1 : 0;
                 $points_earned = $isCorrect ? $point_value : 0;
                 
-                $answerStmt->bind_param("iiisid", $resultId, $student_db_id, $question_id, $selectedAnswer, $isCorrect, $points_earned);
+                $answerStmt->bind_param("iisid", $resultId, $question_id, $selectedAnswer, $isCorrect, $points_earned);
                 $answerStmt->execute();
             }
         }

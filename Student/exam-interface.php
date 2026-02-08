@@ -365,12 +365,6 @@ mysqli_close($con);
                 ⚠️ Exam will auto-submit when timer ends
             </div>
         </div>
-        <div class="exam-header-right">
-            <div class="marking-info">
-                <div class="marking-badge positive">Right: +2</div>
-                <div class="marking-badge negative">Wrong: -1</div>
-            </div>
-        </div>
     </div>
 
     <!-- Main Exam Container -->

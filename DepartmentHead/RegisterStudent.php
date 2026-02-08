@@ -76,7 +76,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register_student'])) {
         $insert_query = "INSERT INTO students (student_code, username, password, full_name, email, phone, department_id, academic_year, semester, is_active) 
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)";
         $stmt = $con->prepare($insert_query);
-        $stmt->bind_param("ssssssssi", $student_code, $username, $hashed_password, $full_name, $email, $phone, $deptId, $academic_year, $semester);
+        $stmt->bind_param("ssssssisi", $student_code, $username, $hashed_password, $full_name, $email, $phone, $deptId, $academic_year, $semester);
         
         if($stmt->execute()) {
             $student_id = $con->insert_id;

@@ -675,6 +675,18 @@ if($Recordsetd->num_rows > 0) {
                     <input type="text" name="txtName" id="txtName" required placeholder="Enter Full Name">
                 </div>
                 
+                <div class="form-group-inline">
+                    <div class="form-group">
+                        <label for="txtEmail">Email:</label>
+                        <input type="email" name="txtEmail" id="txtEmail" placeholder="student@example.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="txtPhone">Phone:</label>
+                        <input type="text" name="txtPhone" id="txtPhone" placeholder="+251...">
+                    </div>
+                </div>
+                
                 <div class="form-group">
                     <label for="cmbDept">Department:</label>
                     <select name="cmbDept" id="cmbDept" required>

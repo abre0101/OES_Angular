@@ -559,7 +559,7 @@ $studentSemester = $_SESSION['Sem'];
                     $currentTime = date('H:i:s');
                     
                     // Get exams for courses the student is enrolled in
-                    $sql = "SELECT e.*, ec.category_name as exam_type_name, c.course_name, c.semester
+                    $sql = "SELECT e.*, ec.category_name as exam_type_name, c.course_name, c.course_code, c.semester
                             FROM exams e 
                             LEFT JOIN exam_categories ec ON e.exam_category_id = ec.exam_category_id
                             INNER JOIN courses c ON e.course_id = c.course_id
@@ -577,6 +577,7 @@ $studentSemester = $_SESSION['Sem'];
                             $scheduleId = $row['exam_id'];
                             $examType = $row['exam_type_name'] ? $row['exam_type_name'] : 'Unknown';
                             $course = $row['course_name'];
+                            $courseCode = $row['course_code'];
                             $examDate = $row['exam_date'];
                             $startTime = $row['start_time'];
                             $endTime = $row['end_time'] ? $row['end_time'] : date('H:i:s', strtotime($startTime) + 7200);
@@ -656,8 +657,8 @@ $studentSemester = $_SESSION['Sem'];
                                 <div class="detail-value"><?php echo $row['semester']; ?></div>
                             </div>
                             <div class="detail-item">
-                                <div class="detail-label">Schedule ID</div>
-                                <div class="detail-value">#<?php echo $scheduleId; ?></div>
+                                <div class="detail-label">Course Code</div>
+                                <div class="detail-value"><?php echo htmlspecialchars($courseCode); ?></div>
                             </div>
                         </div>
                         

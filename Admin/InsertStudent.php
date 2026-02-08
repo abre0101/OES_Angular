@@ -52,6 +52,8 @@ if(!isset($_SESSION['UserType']) || $_SESSION['UserType'] !== 'Administrator'){
 	$ID = generateNextStudentCode($con);
 	
 	$Name=$_POST['txtName'];
+	$Email=$_POST['txtEmail'] ?? null;
+	$Phone=$_POST['txtPhone'] ?? null;
         $StudDept=intval($_POST['cmbDept']); // Convert to integer (department_id)
         $StudYear=$_POST['cmbYear'];
         $StudSem=intval($_POST['cmbSem']); // Convert to integer
@@ -83,8 +85,8 @@ if(!isset($_SESSION['UserType']) || $_SESSION['UserType'] !== 'Administrator'){
 	$hashedPassword = hashPassword($Password);
 
 	// Specify the query to Insert Record with correct column names
-	$stmt = $con->prepare("INSERT INTO students(student_code, full_name, department_id, academic_year, semester, gender, username, password, is_active) VALUES(?,?,?,?,?,?,?,?,?)");
-	$stmt->bind_param("ssisisssi", $ID, $Name, $StudDept, $StudYear, $StudSem, $Sex, $UserName, $hashedPassword, $is_active);
+	$stmt = $con->prepare("INSERT INTO students(student_code, full_name, email, phone, department_id, academic_year, semester, gender, username, password, is_active) VALUES(?,?,?,?,?,?,?,?,?,?,?)");
+	$stmt->bind_param("ssssisssssi", $ID, $Name, $Email, $Phone, $StudDept, $StudYear, $StudSem, $Sex, $UserName, $hashedPassword, $is_active);
 	// execute query
 	if($stmt->execute()) {
 		$student_id = $con->insert_id;
