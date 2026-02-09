@@ -88,10 +88,10 @@ $con->close();
 else if ($UserType=="DepartmentHead")
 {
 require_once('../Connections/OES.php');
-$stmt = $con->prepare("SELECT ecm.*, d.department_name 
-                       FROM exam_committee_members ecm 
-                       LEFT JOIN departments d ON ecm.department_id = d.department_id 
-                       WHERE ecm.username=? AND ecm.is_active=1");
+$stmt = $con->prepare("SELECT dh.*, d.department_name 
+                       FROM department_heads dh 
+                       LEFT JOIN departments d ON dh.department_id = d.department_id 
+                       WHERE dh.username=? AND dh.is_active=1");
 $stmt->bind_param("s", $UserName);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -107,15 +107,16 @@ else
 {
 // Start Department Head session
 SessionManager::startSession('DepartmentHead');
-$_SESSION['ID']=$row['committee_member_id'];
+$_SESSION['ID']=$row['department_head_id'];
 $_SESSION['Name']=$row['full_name'];
 $_SESSION['Dept']=$row['department_name'] ?? 'Not Set';
 $_SESSION['DeptId']=$row['department_id'];
+$_SESSION['Email']=$row['email'] ?? '';
 $_SESSION['UserType']='DepartmentHead';
 $_SESSION['login_time']=time();
 
 $logger = new AuditLogger($con);
-$logger->logLogin($row['committee_member_id'], 'department_head', true, $UserName);
+$logger->logLogin($row['department_head_id'], 'department_head', true, $UserName);
 header("location:../DepartmentHead/index.php");
 } 
 $stmt->close();

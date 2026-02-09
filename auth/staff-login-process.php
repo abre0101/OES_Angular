@@ -1,11 +1,13 @@
 <?php
 require_once(__DIR__ . "/../utils/session_manager.php");
 require_once(__DIR__ . "/../utils/password_helper.php");
+require_once(__DIR__ . "/../utils/audit_logger.php");
 
 $UserName = $_POST['txtUserName'];
 $Password = $_POST['txtPassword'];
 
 $con = require_once(__DIR__ . "/../Connections/OES.php");
+$logger = new AuditLogger($con);
 
 // Try Administrator first
 $stmt = $con->prepare("SELECT * FROM administrators WHERE username=?");
@@ -23,6 +25,7 @@ if ($row && verifyPassword($Password, $row['password'])) {
     $_SESSION['UserType'] = 'Administrator';
     $_SESSION['Email'] = $row['email'] ?? '';
     $_SESSION['login_time'] = time();
+    $logger->logLogin($row['admin_id'], 'admin', true, $UserName);
     $stmt->close();
     $con->close();
     header("location:../Admin/index.php");
@@ -50,6 +53,7 @@ if ($row && verifyPassword($Password, $row['password'])) {
     $_SESSION['Email'] = $row['email'] ?? '';
     $_SESSION['UserType'] = 'Instructor';
     $_SESSION['login_time'] = time();
+    $logger->logLogin($row['instructor_id'], 'instructor', true, $UserName);
     $stmt->close();
     $con->close();
     header("location:../Instructor/index.php");
@@ -77,12 +81,16 @@ if ($row && verifyPassword($Password, $row['password'])) {
     $_SESSION['Email'] = $row['email'] ?? '';
     $_SESSION['UserType'] = 'DepartmentHead';
     $_SESSION['login_time'] = time();
+    $logger->logLogin($row['department_head_id'], 'department_head', true, $UserName);
     $stmt->close();
     $con->close();
     header("location:../DepartmentHead/index.php");
     exit();
 }
 $stmt->close();
+
+// If no match found - log failed attempt
+$logger->logLogin(null, 'staff', false, $UserName);
 $con->close();
 
 // If no match found
