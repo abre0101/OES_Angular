@@ -18,19 +18,21 @@ if(!isset($_SESSION['UserType']) || $_SESSION['UserType'] !== 'DepartmentHead'){
 }
 
 $con = require_once(__DIR__ . "/../Connections/OES.php");
+$deptId = $_SESSION['DeptId'] ?? null;
 
 // Get filter parameters
 $departmentFilter = $_GET['department'] ?? '';
 $searchQuery = $_GET['search'] ?? '';
 
-// Build query
+// Build query - filter by department head's department
 $query = "SELECT es.*, c.course_name, c.course_code, d.department_name, ec.category_name,
     (SELECT COUNT(*) FROM exam_questions eq WHERE eq.exam_id = es.exam_id) as question_count
     FROM exams es
     INNER JOIN courses c ON es.course_id = c.course_id
     INNER JOIN departments d ON c.department_id = d.department_id
     INNER JOIN exam_categories ec ON es.exam_category_id = ec.exam_category_id
-    WHERE es.approval_status = 'approved'";
+    WHERE es.approval_status = 'approved'
+    AND c.department_id = " . intval($deptId);
 
 if($departmentFilter) {
     $query .= " AND d.department_id = " . intval($departmentFilter);
@@ -53,13 +55,15 @@ $departments = $con->query("SELECT DISTINCT d.department_id, d.department_name
     WHERE es.approval_status = 'approved'
     ORDER BY d.department_name");
 
-// Get statistics
+// Get statistics - filter by department
 $stats = $con->query("SELECT 
     COUNT(*) as total_approved,
     SUM(CASE WHEN DATE(es.approved_at) = CURDATE() THEN 1 ELSE 0 END) as approved_today,
     SUM(CASE WHEN es.exam_date >= CURDATE() THEN 1 ELSE 0 END) as upcoming
     FROM exams es
-    WHERE es.approval_status = 'approved'")->fetch_assoc();
+    INNER JOIN courses c ON es.course_id = c.course_id
+    WHERE es.approval_status = 'approved'
+    AND c.department_id = " . intval($deptId))->fetch_assoc();
 ?>
 <!DOCTYPE html>
 <html lang="en">

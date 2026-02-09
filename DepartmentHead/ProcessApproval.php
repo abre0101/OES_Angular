@@ -68,7 +68,10 @@ try {
                 $log_stmt->bind_param("iisss", $exam_id, $reviewer_id, $comments, $prev_status, $review_date);
                 $log_stmt->execute();
                 
-                $_SESSION['success'] = "✓ Exam approved successfully!";
+                $_SESSION['success'] = "✓ Exam approved successfully! You can now schedule it.";
+                $con->close();
+                header("Location: ScheduleExam.php?tab=approved");
+                exit();
             } else {
                 $_SESSION['error'] = "Failed to approve exam: " . $con->error;
             }

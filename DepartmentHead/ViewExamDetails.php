@@ -204,6 +204,15 @@ $questions = $con->query("SELECT q.*, qt.topic_name
                             // Normalize correct answer - handle both uppercase and lowercase, trim whitespace
                             $correctAnswer = strtoupper(trim($q['correct_answer']));
                             
+                            // For True/False questions, map True/False to A/B
+                            if($isTrueFalse) {
+                                if(strtolower($correctAnswer) === 'true') {
+                                    $correctAnswer = strtolower(trim($q['option_a'])) === 'true' ? 'A' : 'B';
+                                } elseif(strtolower($correctAnswer) === 'false') {
+                                    $correctAnswer = strtolower(trim($q['option_a'])) === 'false' ? 'A' : 'B';
+                                }
+                            }
+                            
                             // Display Option A
                             $isCorrectA = ($correctAnswer === 'A');
                             ?>

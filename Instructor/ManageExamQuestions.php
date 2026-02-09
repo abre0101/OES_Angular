@@ -96,20 +96,47 @@ function updateExamMarks($con, $exam_id) {
 if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_question'])) {
     $question_id = intval($_POST['question_id']);
     
-    // Get next order number
-    $orderQuery = $con->prepare("SELECT COALESCE(MAX(question_order), 0) + 1 as next_order FROM exam_questions WHERE exam_id = ?");
-    $orderQuery->bind_param("i", $exam_id);
-    $orderQuery->execute();
-    $next_order = $orderQuery->get_result()->fetch_assoc()['next_order'];
+    // Get the point value of the question being added
+    $questionPointQuery = $con->prepare("SELECT point_value FROM questions WHERE question_id = ?");
+    $questionPointQuery->bind_param("i", $question_id);
+    $questionPointQuery->execute();
+    $questionPoint = $questionPointQuery->get_result()->fetch_assoc()['point_value'] ?? 0;
     
-    $insertQuery = $con->prepare("INSERT INTO exam_questions (exam_id, question_id, question_order) VALUES (?, ?, ?)");
-    $insertQuery->bind_param("iii", $exam_id, $question_id, $next_order);
+    // Calculate total marks for all exams in this course (excluding rejected and current exam)
+    $courseMarksQuery = $con->prepare("SELECT SUM(total_marks) as course_total 
+        FROM exams 
+        WHERE course_id = ? 
+        AND exam_id != ?
+        AND approval_status NOT IN ('rejected', 'draft')");
+    $courseMarksQuery->bind_param("ii", $exam['course_id'], $exam_id);
+    $courseMarksQuery->execute();
+    $courseTotal = $courseMarksQuery->get_result()->fetch_assoc()['course_total'] ?? 0;
     
-    if($insertQuery->execute()) {
-        // Update total marks and pass marks
-        updateExamMarks($con, $exam_id);
-        header("Location: ManageExamQuestions.php?exam_id=" . $exam_id . "&success=added");
-        exit();
+    // Calculate what the new total would be if we add this question
+    $newExamTotal = $actualTotal + $questionPoint;
+    $newCourseTotal = $courseTotal + $newExamTotal;
+    
+    // Check if adding this question would exceed 100 marks for the course
+    if($newCourseTotal > 100) {
+        $remaining = 100 - $courseTotal;
+        $error = "Cannot add question. Adding this question ($questionPoint marks) would exceed the 100-mark limit for this course. " .
+                 "Current course total: $courseTotal marks. Available: $remaining marks.";
+    } else {
+        // Get next order number
+        $orderQuery = $con->prepare("SELECT COALESCE(MAX(question_order), 0) + 1 as next_order FROM exam_questions WHERE exam_id = ?");
+        $orderQuery->bind_param("i", $exam_id);
+        $orderQuery->execute();
+        $next_order = $orderQuery->get_result()->fetch_assoc()['next_order'];
+        
+        $insertQuery = $con->prepare("INSERT INTO exam_questions (exam_id, question_id, question_order) VALUES (?, ?, ?)");
+        $insertQuery->bind_param("iii", $exam_id, $question_id, $next_order);
+        
+        if($insertQuery->execute()) {
+            // Update total marks and pass marks
+            updateExamMarks($con, $exam_id);
+            header("Location: ManageExamQuestions.php?exam_id=" . $exam_id . "&success=added");
+            exit();
+        }
     }
 }
 
@@ -195,6 +222,12 @@ $question_count = $examQuestions->num_rows;
                 <?php elseif($_GET['success'] == 'updated'): ?>
                     ✅ Question updated successfully!
                 <?php endif; ?>
+            </div>
+            <?php endif; ?>
+
+            <?php if(isset($error)): ?>
+            <div class="alert" style="background: #f8d7da; color: #721c24; border-left: 4px solid #dc3545;">
+                ❌ <?php echo $error; ?>
             </div>
             <?php endif; ?>
 

@@ -19,7 +19,11 @@ if(!isset($_SESSION['UserType']) || $_SESSION['UserType'] !== 'DepartmentHead'){
 
 $con = require_once(__DIR__ . "/../Connections/OES.php");
 
-// Get statistics
+// Get statistics and first pending exam ID
+$pending_result = $con->query("SELECT exam_id FROM exams WHERE approval_status = 'pending' ORDER BY submitted_at ASC LIMIT 1");
+$first_pending_exam = $pending_result->fetch_assoc();
+$first_pending_id = $first_pending_exam['exam_id'] ?? null;
+
 $pending_count = $con->query("SELECT COUNT(*) as count FROM exams WHERE approval_status = 'pending'")->fetch_assoc()['count'] ?? 0;
 $approved_today = $con->query("SELECT COUNT(*) as count FROM exams WHERE approval_status = 'approved' AND DATE(approved_at) = CURDATE()")->fetch_assoc()['count'] ?? 0;
 $approved_month = $con->query("SELECT COUNT(*) as count FROM exams WHERE approval_status = 'approved' AND MONTH(approved_at) = MONTH(CURDATE()) AND YEAR(approved_at) = YEAR(CURDATE())")->fetch_assoc()['count'] ?? 0;
@@ -40,7 +44,7 @@ $recent_approvals = $con->query("SELECT eah.*, es.exam_name, c.course_code, c.co
     FROM exam_approval_history eah
     INNER JOIN exams es ON eah.exam_id = es.exam_id
     LEFT JOIN courses c ON es.course_id = c.course_id
-    WHERE eah.performed_by_type = 'committee'
+    WHERE eah.performed_by_type = 'department_head'
     ORDER BY eah.created_at DESC
     LIMIT 5");
 
@@ -155,7 +159,7 @@ $upcoming_exams = $con->query("SELECT es.*, c.course_name, c.course_code, ec.cat
                         Action required to keep exam schedule on track
                     </p>
                 </div>
-                <a href="PendingApprovals.php" class="btn" style="background: white; color: #ff6b35; font-weight: 700; white-space: nowrap; padding: 0.75rem 1.75rem; font-size: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: none; transition: all 0.3s;">
+                <a href="<?php echo $first_pending_id ? 'ViewExamDetails.php?id=' . $first_pending_id : 'PendingApprovals.php'; ?>" class="btn" style="background: white; color: #ff6b35; font-weight: 700; white-space: nowrap; padding: 0.75rem 1.75rem; font-size: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: none; transition: all 0.3s;">
                     Review Now →
                 </a>
             </div>

@@ -50,25 +50,76 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     if(empty($exam_name) || $duration <= 0) {
         $error = "Please fill all required fields with valid values.";
     } else {
-        // Insert exam as draft
-        $insertQuery = $con->prepare("INSERT INTO exams 
-            (course_id, exam_category_id, exam_name, duration_minutes, total_marks, pass_marks, 
-            instructions, approval_status, created_by, created_at) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, 'draft', ?, NOW())");
+        // Get category name to check if it's Quiz or Makeup (allow multiple)
+        $categoryQuery = $con->prepare("SELECT category_name FROM exam_categories WHERE exam_category_id = ?");
+        $categoryQuery->bind_param("i", $category_id);
+        $categoryQuery->execute();
+        $categoryResult = $categoryQuery->get_result();
+        $categoryName = $categoryResult->fetch_assoc()['category_name'] ?? '';
         
-        $insertQuery->bind_param("iisiissi", 
-            $course_id, $category_id, $exam_name, $duration, 
-            $total_marks, $pass_marks, $instructions, $instructor_id);
+        // Check for duplicate exam (only for Final and Midterm - not Quiz or Makeup)
+        $allowMultiple = (stripos($categoryName, 'quiz') !== false || stripos($categoryName, 'makeup') !== false);
         
-        if($insertQuery->execute()) {
-            $exam_id = $con->insert_id;
-            $success = "Exam created successfully as draft! You can now add questions.";
+        if(!$allowMultiple) {
+            $checkDuplicate = $con->prepare("SELECT exam_id, exam_name, approval_status 
+                FROM exams 
+                WHERE course_id = ? 
+                AND exam_category_id = ? 
+                AND approval_status NOT IN ('rejected')
+                LIMIT 1");
+            $checkDuplicate->bind_param("ii", $course_id, $category_id);
+            $checkDuplicate->execute();
+            $duplicateResult = $checkDuplicate->get_result();
             
-            // Redirect to add questions
-            header("Location: ManageExamQuestions.php?exam_id=" . $exam_id . "&new=1");
-            exit();
-        } else {
-            $error = "Failed to create exam: " . $con->error;
+            if($duplicateResult->num_rows > 0) {
+                $existingExam = $duplicateResult->fetch_assoc();
+                $statusText = ucfirst($existingExam['approval_status']);
+                $error = "An exam already exists for this course and category: \"" . 
+                         htmlspecialchars($existingExam['exam_name']) . "\" (Status: $statusText). " .
+                         "Only one " . htmlspecialchars($categoryName) . " exam is allowed per course.";
+            }
+        }
+        
+        // Check total marks across all exams for this course don't exceed 100
+        if(!isset($error)) {
+            $totalMarksQuery = $con->prepare("SELECT SUM(total_marks) as total 
+                FROM exams 
+                WHERE course_id = ? 
+                AND approval_status NOT IN ('rejected', 'draft')");
+            $totalMarksQuery->bind_param("i", $course_id);
+            $totalMarksQuery->execute();
+            $totalMarksResult = $totalMarksQuery->get_result();
+            $currentTotal = $totalMarksResult->fetch_assoc()['total'] ?? 0;
+            
+            // Note: We can't check exact marks yet since this is a draft with 0 marks
+            // This will be validated when questions are added
+            if($currentTotal >= 100) {
+                $error = "Cannot create exam. The total marks for all exams in this course already equals or exceeds 100 marks. " .
+                         "Current total: " . $currentTotal . " marks.";
+            }
+        }
+        
+        // Insert exam if no errors
+        if(!isset($error)) {
+            $insertQuery = $con->prepare("INSERT INTO exams 
+                (course_id, exam_category_id, exam_name, duration_minutes, total_marks, pass_marks, 
+                instructions, approval_status, created_by, created_at) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, 'draft', ?, NOW())");
+            
+            $insertQuery->bind_param("iisiissi", 
+                $course_id, $category_id, $exam_name, $duration, 
+                $total_marks, $pass_marks, $instructions, $instructor_id);
+            
+            if($insertQuery->execute()) {
+                $exam_id = $con->insert_id;
+                $success = "Exam created successfully as draft! You can now add questions.";
+                
+                // Redirect to add questions
+                header("Location: ManageExamQuestions.php?exam_id=" . $exam_id . "&new=1");
+                exit();
+            } else {
+                $error = "Failed to create exam: " . $con->error;
+            }
         }
     }
 }
@@ -216,7 +267,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <script src="../assets/js/admin-sidebar.js"></script>
     <script>
-        function generateExamName() {
+        async function generateExamName() {
             const courseSelect = document.getElementById('course_id');
             const categorySelect = document.getElementById('category_id');
             const examNameInput = document.getElementById('exam_name');
@@ -227,9 +278,28 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
             if (courseSelect.value && categorySelect.value) {
                 const courseName = selectedCourse.getAttribute('data-course-name');
                 const categoryName = selectedCategory.getAttribute('data-category-name');
+                const courseId = courseSelect.value;
+                const categoryId = categorySelect.value;
                 
-                // Generate exam name: Course Name + Category
-                examNameInput.value = courseName + ' - ' + categoryName;
+                // Check if it's a Quiz or Makeup exam (needs numbering)
+                const needsNumbering = categoryName.toLowerCase().includes('quiz') || 
+                                      categoryName.toLowerCase().includes('makeup');
+                
+                if (needsNumbering) {
+                    // Fetch the count of existing exams for this course and category
+                    try {
+                        const response = await fetch(`GetExamCount.php?course_id=${courseId}&category_id=${categoryId}`);
+                        const data = await response.json();
+                        const nextNumber = (data.count || 0) + 1;
+                        examNameInput.value = courseName + ' - ' + categoryName + ' ' + nextNumber;
+                    } catch (error) {
+                        console.error('Error fetching exam count:', error);
+                        examNameInput.value = courseName + ' - ' + categoryName;
+                    }
+                } else {
+                    // For Final, Midterm, etc. - no numbering
+                    examNameInput.value = courseName + ' - ' + categoryName;
+                }
             } else {
                 examNameInput.value = '';
             }
