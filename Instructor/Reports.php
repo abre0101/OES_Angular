@@ -1473,7 +1473,15 @@ $topicPerformance = $topicPerformanceQuery->get_result();
                             borderWidth: 3,
                             fill: true,
                             tension: 0.4,
-                            yAxisID: 'y'
+                            yAxisID: 'y',
+                            pointRadius: 6,
+                            pointHoverRadius: 8,
+                            pointBackgroundColor: '#003366',
+                            pointBorderColor: '#ffffff',
+                            pointBorderWidth: 2,
+                            pointHoverBackgroundColor: '#0055aa',
+                            pointHoverBorderColor: '#ffffff',
+                            pointHoverBorderWidth: 3
                         },
                         {
                             label: 'Exams Conducted',
@@ -1483,7 +1491,15 @@ $topicPerformance = $topicPerformanceQuery->get_result();
                             borderWidth: 2,
                             fill: false,
                             tension: 0.4,
-                            yAxisID: 'y1'
+                            yAxisID: 'y1',
+                            pointRadius: 5,
+                            pointHoverRadius: 7,
+                            pointBackgroundColor: '#28a745',
+                            pointBorderColor: '#ffffff',
+                            pointBorderWidth: 2,
+                            pointHoverBackgroundColor: '#218838',
+                            pointHoverBorderColor: '#ffffff',
+                            pointHoverBorderWidth: 3
                         }
                     ]
                 },

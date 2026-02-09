@@ -26,6 +26,7 @@ $course_filter = $_GET['course'] ?? null;
 $exam_filter = $_GET['exam'] ?? null;
 $grade_filter = $_GET['grade'] ?? null;
 $pass_filter = $_GET['pass'] ?? null;
+$search_student = $_GET['search_student'] ?? null;
 
 // Build query
 $query = "SELECT 
@@ -78,6 +79,14 @@ if($pass_filter) {
     $types .= "s";
 }
 
+if($search_student) {
+    $query .= " AND (s.student_code LIKE ? OR s.full_name LIKE ?)";
+    $search_param = "%$search_student%";
+    $params[] = $search_param;
+    $params[] = $search_param;
+    $types .= "ss";
+}
+
 $query .= " ORDER BY er.exam_submitted_at DESC LIMIT 100";
 
 $stmt = $con->prepare($query);
@@ -124,6 +133,7 @@ $statsQueryStr = "SELECT
     INNER JOIN exams es ON er.exam_id = es.exam_id
     INNER JOIN courses c ON es.course_id = c.course_id
     INNER JOIN instructor_courses ic ON c.course_id = ic.course_id
+    INNER JOIN students s ON er.student_id = s.student_id
     WHERE ic.instructor_id = ?";
 
 $statsParams = [$instructor_id];
@@ -154,6 +164,14 @@ if($pass_filter) {
     $statsTypes .= "s";
 }
 
+if($search_student) {
+    $statsQueryStr .= " AND (s.student_code LIKE ? OR s.full_name LIKE ?)";
+    $search_param = "%$search_student%";
+    $statsParams[] = $search_param;
+    $statsParams[] = $search_param;
+    $statsTypes .= "ss";
+}
+
 $statsQuery = $con->prepare($statsQueryStr);
 $statsQuery->bind_param($statsTypes, ...$statsParams);
 $statsQuery->execute();
@@ -168,6 +186,7 @@ $gradeDistQuery = "SELECT
     INNER JOIN exams es ON er.exam_id = es.exam_id
     INNER JOIN courses c ON es.course_id = c.course_id
     INNER JOIN instructor_courses ic ON c.course_id = ic.course_id
+    INNER JOIN students s ON er.student_id = s.student_id
     WHERE ic.instructor_id = ?
     AND er.letter_grade IS NOT NULL
     AND er.letter_grade != ''";
@@ -185,6 +204,14 @@ if($exam_filter) {
     $gradeDistQuery .= " AND es.exam_id = ?";
     $gradeDistParams[] = $exam_filter;
     $gradeDistTypes .= "i";
+}
+
+if($search_student) {
+    $gradeDistQuery .= " AND (s.student_code LIKE ? OR s.full_name LIKE ?)";
+    $search_param = "%$search_student%";
+    $gradeDistParams[] = $search_param;
+    $gradeDistParams[] = $search_param;
+    $gradeDistTypes .= "ss";
 }
 
 $gradeDistQuery .= " GROUP BY er.letter_grade
@@ -543,13 +570,18 @@ $pass_rate = $stats['total_results'] > 0 ? round(($stats['passed'] / $stats['tot
                                 <option value="Fail" <?php echo $pass_filter == 'Fail' ? 'selected' : ''; ?>>Fail</option>
                             </select>
                         </div>
+
+                        <div class="form-group">
+                            <label>Search Student</label>
+                            <input type="text" name="search_student" class="form-control" placeholder="Student code or name..." value="<?php echo htmlspecialchars($search_student ?? ''); ?>" style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 0.95rem; font-family: 'Poppins', sans-serif;">
+                        </div>
                     </div>
                     
                     <div style="display: flex; gap: 1rem;">
                         <button type="submit" class="btn btn-primary">
                             <span>🔍</span> Apply Filters
                         </button>
-                        <?php if($course_filter || $exam_filter || $pass_filter): ?>
+                        <?php if($course_filter || $exam_filter || $pass_filter || $search_student): ?>
                         <a href="ResultsOverview.php" class="btn btn-secondary">
                             <span>🔄</span> Clear Filters
                         </a>
@@ -605,7 +637,7 @@ $pass_rate = $stats['total_results'] > 0 ? round(($stats['passed'] / $stats['tot
                     <div class="empty-state-icon">📊</div>
                     <h3>No Results Found</h3>
                     <p>
-                        <?php if($course_filter || $exam_filter || $grade_filter || $pass_filter): ?>
+                        <?php if($course_filter || $exam_filter || $grade_filter || $pass_filter || $search_student): ?>
                             No results match your filter criteria. Try adjusting the filters.
                         <?php else: ?>
                             No exam results available yet.

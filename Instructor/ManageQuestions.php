@@ -513,30 +513,47 @@ $stats = $statsQuery->get_result()->fetch_assoc();
                     </div>
 
                     <div class="options-grid">
-                        <div class="option-item <?php echo $q['correct_answer'] == 'A' ? 'correct' : ''; ?>">
+                        <?php
+                        // Normalize correct answer for comparison
+                        $correctAnswer = strtoupper(trim($q['correct_answer']));
+                        
+                        // Check if this is a True/False question
+                        $isTrueFalse = (strtolower(trim($q['option_a'])) === 'true' && strtolower(trim($q['option_b'])) === 'false') ||
+                                      (strtolower(trim($q['option_a'])) === 'false' && strtolower(trim($q['option_b'])) === 'true');
+                        
+                        // For True/False questions, map True/False to A/B
+                        if($isTrueFalse) {
+                            if(strtolower($correctAnswer) === 'true') {
+                                $correctAnswer = strtolower(trim($q['option_a'])) === 'true' ? 'A' : 'B';
+                            } elseif(strtolower($correctAnswer) === 'false') {
+                                $correctAnswer = strtolower(trim($q['option_a'])) === 'false' ? 'A' : 'B';
+                            }
+                        }
+                        ?>
+                        <div class="option-item <?php echo $correctAnswer == 'A' ? 'correct' : ''; ?>">
                             <strong>A)</strong> <?php echo htmlspecialchars($q['option_a']); ?>
-                            <?php if($q['correct_answer'] == 'A'): ?>
+                            <?php if($correctAnswer == 'A'): ?>
                             <span style="float: right; color: #28a745;">✓</span>
                             <?php endif; ?>
                         </div>
-                        <div class="option-item <?php echo $q['correct_answer'] == 'B' ? 'correct' : ''; ?>">
+                        <div class="option-item <?php echo $correctAnswer == 'B' ? 'correct' : ''; ?>">
                             <strong>B)</strong> <?php echo htmlspecialchars($q['option_b']); ?>
-                            <?php if($q['correct_answer'] == 'B'): ?>
+                            <?php if($correctAnswer == 'B'): ?>
                             <span style="float: right; color: #28a745;">✓</span>
                             <?php endif; ?>
                         </div>
                         <?php if($q['option_c']): ?>
-                        <div class="option-item <?php echo $q['correct_answer'] == 'C' ? 'correct' : ''; ?>">
+                        <div class="option-item <?php echo $correctAnswer == 'C' ? 'correct' : ''; ?>">
                             <strong>C)</strong> <?php echo htmlspecialchars($q['option_c']); ?>
-                            <?php if($q['correct_answer'] == 'C'): ?>
+                            <?php if($correctAnswer == 'C'): ?>
                             <span style="float: right; color: #28a745;">✓</span>
                             <?php endif; ?>
                         </div>
                         <?php endif; ?>
                         <?php if($q['option_d']): ?>
-                        <div class="option-item <?php echo $q['correct_answer'] == 'D' ? 'correct' : ''; ?>">
+                        <div class="option-item <?php echo $correctAnswer == 'D' ? 'correct' : ''; ?>">
                             <strong>D)</strong> <?php echo htmlspecialchars($q['option_d']); ?>
-                            <?php if($q['correct_answer'] == 'D'): ?>
+                            <?php if($correctAnswer == 'D'): ?>
                             <span style="float: right; color: #28a745;">✓</span>
                             <?php endif; ?>
                         </div>

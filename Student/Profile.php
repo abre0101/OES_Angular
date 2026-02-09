@@ -407,8 +407,8 @@ $row = mysqli_fetch_array($result);
                         </div>
                         <div class="info-list">
                             <div class="info-item">
-                                <span class="info-label">Student ID</span>
-                                <span class="info-value"><?php echo $row['student_id']; ?></span>
+                                <span class="info-label">Student Code</span>
+                                <span class="info-value"><?php echo htmlspecialchars($row['student_code']); ?></span>
                             </div>
                             <div class="info-item">
                                 <span class="info-label">Full Name</span>

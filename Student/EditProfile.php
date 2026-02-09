@@ -19,15 +19,19 @@ $Id = $_SESSION['ID'];
 // Establish Connection with Database
 require_once(__DIR__ . "/../Connections/OES.php");
 
-// Fetch student data
-$stmt = $con->prepare("SELECT * FROM students WHERE student_id=?");
+// Fetch student data with department name
+$stmt = $con->prepare("SELECT s.*, d.department_name 
+                       FROM students s 
+                       LEFT JOIN departments d ON s.department_id = d.department_id 
+                       WHERE s.student_id=?");
 $stmt->bind_param("i", $Id);
 $stmt->execute();
 $result = $stmt->get_result();
 
 if($row = mysqli_fetch_array($result)) {
     $Id = $row['student_id'];
-    $Department = $row['department_id'];
+    $StudentCode = $row['student_code'];
+    $Department = $row['department_name'] ?? 'N/A';
     $Name = $row['full_name'];
     $Semester = $row['semester'];
     $Email = $row['email'];
@@ -360,8 +364,8 @@ mysqli_close($con);
                             </div>
                             <div class="info-grid">
                                 <div class="info-field">
-                                    <div class="info-field-label">Student ID</div>
-                                    <div class="info-field-value"><?php echo $Id; ?></div>
+                                    <div class="info-field-label">Student Code</div>
+                                    <div class="info-field-value"><?php echo htmlspecialchars($StudentCode); ?></div>
                                 </div>
                                 <div class="info-field">
                                     <div class="info-field-label">Full Name</div>

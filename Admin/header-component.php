@@ -12,7 +12,8 @@
     <div class="header-center">
         <div class="header-search">
             <span class="search-icon">🔍</span>
-            <input type="text" placeholder="Search students, courses, instructors..." class="search-input">
+            <input type="text" placeholder="Search students, courses, instructors..." class="search-input" id="globalSearchInput" autocomplete="off">
+            <div class="search-results" id="searchResults"></div>
         </div>
     </div>
     
