@@ -56,6 +56,10 @@
 
         <div class="sidebar-divider"></div>
 
+        <a href="TechnicalIssues.php" class="sidebar-nav-item <?php echo (basename($_SERVER['PHP_SELF']) == 'TechnicalIssues.php' || basename($_SERVER['PHP_SELF']) == 'ViewIssueDetails.php') ? 'active' : ''; ?>" data-tooltip="Technical Issues">
+            <span class="sidebar-nav-icon">⚠️</span>
+            <span>Technical Issues</span>
+        </a>
         <a href="Reports.php" class="sidebar-nav-item <?php echo (basename($_SERVER['PHP_SELF']) == 'Reports.php') ? 'active' : ''; ?>" data-tooltip="Reports">
             <span class="sidebar-nav-icon">📈</span>
             <span>Reports</span>

@@ -825,6 +825,16 @@ $con->close();
                         <div class="action-title">Practice</div>
                         <div class="action-desc">Practice with sample questions</div>
                     </a>
+                    <a href="ReportIssue.php" class="action-card" style="border-left: 4px solid #dc3545;">
+                        <div class="action-icon">⚠️</div>
+                        <div class="action-title">Report Issue</div>
+                        <div class="action-desc">Report technical problems</div>
+                    </a>
+                    <a href="MyReportedIssues.php" class="action-card" style="border-left: 4px solid #17a2b8;">
+                        <div class="action-icon">📋</div>
+                        <div class="action-title">My Issues</div>
+                        <div class="action-desc">View reported issues</div>
+                    </a>
                 </div>
             </div>
 
