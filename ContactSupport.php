@@ -398,14 +398,14 @@ if ($isLoggedIn) {
             <div class="contact-grid">
                 <div class="contact-card">
                     <h3>📧 Email Support</h3>
-                    <p><strong>Email:</strong> support@dmu.edu.et</p>
+                    <p><strong>Email:</strong> debremarkos@dmu.edu.et</p>
                     <p><strong>Response Time:</strong> Within 24 hours</p>
                     <p>Best for non-urgent inquiries, detailed technical issues, and documentation requests</p>
                 </div>
 
                 <div class="contact-card">
                     <h3>📞 Phone Support</h3>
-                    <p><strong>Phone:</strong> +251-58-771-xxxx</p>
+                    <p><strong>Phone:</strong> +251-900469816</p>
                     <p><strong>Hours:</strong> Monday - Friday<br>8:00 AM - 5:00 PM</p>
                     <p>For urgent issues during exam periods and immediate assistance</p>
                 </div>
@@ -423,7 +423,6 @@ if ($isLoggedIn) {
                     <li>Have your Student ID or Employee ID ready</li>
                     <li>Describe the issue clearly and provide specific details</li>
                     <li>Include screenshots if possible</li>
-                    <li>Mention the browser and device you're using</li>
                     <li>Note the date and time when the issue occurred</li>
                     <li>Specify which page or feature you were using</li>
                 </ul>

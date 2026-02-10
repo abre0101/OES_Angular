@@ -433,7 +433,7 @@ if ($isLoggedIn) {
 
             <div class="warning-box">
                 <h4>⚠️ Important Reminders</h4>
-                <p>If you experience technical difficulties during the exam, contact support immediately at +251-58-771-xxxx or support@dmu.edu.et. Do not attempt to restart the exam without authorization. The system automatically saves your progress, so you can resume from where you left off after resolving technical issues.</p>
+                <p>If you experience technical difficulties during the exam, contact support immediately at +251-900469816 or support@dmu.edu.et. Do not attempt to restart the exam without authorization. The system automatically saves your progress, so you can resume from where you left off after resolving technical issues.</p>
             </div>
 
             <div class="tips-grid">

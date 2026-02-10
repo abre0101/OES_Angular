@@ -68,7 +68,13 @@ The Online Examination System (OES) is a full-featured platform that enables:
 
 ## 🚀 Installation
 
-### 1. Database Setup
+### 1. Clone or Download
+```bash
+git clone <repository-url>
+cd online-examination-system
+```
+
+### 2. Database Setup
 ```bash
 # Import the database schema
 mysql -u root -p < database/oes_professional.sql
@@ -76,7 +82,7 @@ mysql -u root -p < database/oes_professional.sql
 # Or use phpMyAdmin to import the SQL file
 ```
 
-### 2. Configure Database Connection
+### 3. Configure Database Connection
 Edit `Connections/OES.php`:
 ```php
 $hostname_OES = 'localhost';
@@ -86,14 +92,14 @@ $password_OES = 'your_password';
 $port_OES = 3306;
 ```
 
-### 3. Set Permissions
+### 4. Set Permissions
 ```bash
 # Make sure these directories are writable
 chmod 755 backups/
 chmod 755 images/
 ```
 
-### 4. Configure Apache
+### 5. Configure Apache
 Ensure `.htaccess` is enabled and mod_rewrite is active:
 ```apache
 <Directory /path/to/oes>
@@ -102,7 +108,7 @@ Ensure `.htaccess` is enabled and mod_rewrite is active:
 </Directory>
 ```
 
-### 5. Access the System
+### 6. Access the System
 Navigate to: `http://localhost/online-examination-system/`
 
 ## 👥 Default Login Credentials

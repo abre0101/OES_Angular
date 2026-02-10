@@ -475,7 +475,7 @@ if ($isLoggedIn) {
                     <span class="faq-icon">▼</span>
                 </div>
                 <div class="faq-answer">
-                    <p>Contact our technical support team immediately via email at support@dmu.edu.et or call +251-58-771-xxxx. Provide details about the issue, including screenshots if possible, your student ID, and the time the issue occurred.</p>
+                    <p>Contact our technical support team immediately via email at support@dmu.edu.et or call +251-900469816. Provide details about the issue, including screenshots if possible, your student ID, and the time the issue occurred.</p>
                 </div>
             </div>
         </div>
