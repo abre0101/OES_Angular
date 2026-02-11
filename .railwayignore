@@ -1,7 +1,0 @@
-.git
-.vscode
-node_modules
-*.log
-.env.local
-backups/*.sql
-docs/

@@ -18,6 +18,7 @@ _mmServerScripts/
 # Database backups
 *.sql.backup
 database/backups/
+backups/
 
 # Sensitive files (if any)
 config.php
