@@ -1,8 +1,0 @@
-[phases.setup]
-nixPkgs = ['php83', 'php83Extensions.mysqli', 'php83Extensions.pdo', 'php83Extensions.pdo_mysql', 'php83Extensions.mbstring']
-
-[phases.install]
-cmds = ['php -m | grep mysqli || echo "mysqli not found"']
-
-[start]
-cmd = 'php -S 0.0.0.0:8080 -t .'
