@@ -9,30 +9,42 @@ RUN apt-get update && apt-get install -y nginx && rm -rf /var/lib/apt/lists/*
 # Copy application files
 COPY . /var/www/html/
 
-# Copy nginx configuration
-RUN echo 'server { \n\
-    listen 80; \n\
-    root /var/www/html; \n\
-    index index.php index.html; \n\
-    location / { \n\
-        try_files $uri $uri/ /index.php?$query_string; \n\
-    } \n\
-    location ~ \.php$ { \n\
-        fastcgi_pass 127.0.0.1:9000; \n\
-        fastcgi_index index.php; \n\
-        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name; \n\
-        include fastcgi_params; \n\
-    } \n\
+# Create nginx configuration
+RUN echo 'server {\n\
+    listen 80;\n\
+    server_name _;\n\
+    root /var/www/html;\n\
+    index index.php index.html;\n\
+\n\
+    location / {\n\
+        try_files $uri $uri/ /index.php?$query_string;\n\
+    }\n\
+\n\
+    location ~ \.php$ {\n\
+        fastcgi_pass 127.0.0.1:9000;\n\
+        fastcgi_index index.php;\n\
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;\n\
+        include fastcgi_params;\n\
+    }\n\
+\n\
+    location ~ /\.ht {\n\
+        deny all;\n\
+    }\n\
 }' > /etc/nginx/sites-available/default
 
 # Set proper permissions
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
 
+# Create start script
+RUN echo '#!/bin/bash\n\
+set -e\n\
+echo "Starting PHP-FPM..."\n\
+php-fpm -D\n\
+echo "Starting Nginx..."\n\
+nginx -g "daemon off;"' > /start.sh && chmod +x /start.sh
+
 # Expose port 80
 EXPOSE 80
-
-# Start script
-RUN echo '#!/bin/bash\nphp-fpm -D\nnginx -g "daemon off;"' > /start.sh && chmod +x /start.sh
 
 CMD ["/start.sh"]
