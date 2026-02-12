@@ -336,6 +336,51 @@ mysqli_close($con);
         </div>
     </div>
 
+    <!-- Technical Issue Modal -->
+    <div class="warning-overlay" id="issueModal" style="background: rgba(220, 53, 69, 0.95); display: none;" onclick="if(event.target === this) closeIssueModal();">
+        <div class="warning-content" style="max-width: 600px;" onclick="event.stopPropagation();">
+            <div class="warning-icon">🐛</div>
+            <div class="warning-title">Report Technical Issue</div>
+            <div style="background: rgba(255, 255, 255, 0.2); padding: 0.75rem; border-radius: 8px; margin-bottom: 1rem; text-align: center;">
+                <strong>⏱️ Note:</strong> The exam timer continues while reporting an issue
+            </div>
+            <div class="warning-message" style="text-align: left;">
+                <form id="issueForm" onsubmit="return submitTechnicalIssue(event);">
+                    <div style="margin-bottom: 1rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Issue Type:</label>
+                        <select name="issue_type" required style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 2px solid white; font-size: 1rem; color: #000;">
+                            <option value="">-- Select Issue Type --</option>
+                            <option value="Question Error">Question has an error</option>
+                            <option value="Timer Issue">Timer not working correctly</option>
+                            <option value="Cannot Select Answer">Cannot select an answer</option>
+                            <option value="Page Not Loading">Page not loading properly</option>
+                            <option value="Other">Other technical issue</option>
+                        </select>
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Question Number (if applicable):</label>
+                        <input type="number" name="question_number" min="1" max="<?php echo $totalQuestions; ?>" 
+                               placeholder="Optional" 
+                               style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 2px solid white; font-size: 1rem; color: #000;">
+                    </div>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Description:</label>
+                        <textarea name="description" required rows="4" placeholder="Please describe the issue in detail..." 
+                                  style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 2px solid white; font-size: 1rem; resize: vertical; color: #000;"></textarea>
+                    </div>
+                    <div style="display: flex; gap: 1rem;">
+                        <button type="submit" class="btn btn-light" style="flex: 1; font-size: 1.1rem; padding: 1rem;" onclick="event.stopPropagation();">
+                            📤 Submit Report
+                        </button>
+                        <button type="button" onclick="closeIssueModal(); event.stopPropagation(); return false;" class="btn btn-secondary" style="flex: 1; font-size: 1.1rem; padding: 1rem;">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Exam Locked Overlay -->
     <div class="exam-locked" id="examLocked">
         <div class="locked-content">
@@ -398,6 +443,9 @@ mysqli_close($con);
                 </button>
                 <button class="btn btn-secondary" id="flagBtn" onclick="toggleFlag()">
                     🚩 Flag for Review
+                </button>
+                <button class="btn btn-danger" id="issueBtn" onclick="reportTechnicalIssue(); return false;" style="margin-left: auto;">
+                    🐛 Report Issue
                 </button>
             </div>
         </div>
@@ -894,6 +942,18 @@ mysqli_close($con);
         // Initialize on load
         window.onload = initExam;
         
+        // Close issue modal when clicking outside
+        document.addEventListener('DOMContentLoaded', function() {
+            const issueModal = document.getElementById('issueModal');
+            if (issueModal) {
+                issueModal.addEventListener('click', function(e) {
+                    if (e.target === issueModal) {
+                        closeIssueModal();
+                    }
+                });
+            }
+        });
+        
         // Toggle flag for review
         function toggleFlag() {
             if (examLocked) return;
@@ -913,6 +973,92 @@ mysqli_close($con);
             }
             
             updateQuestionPanel();
+        }
+        
+        // Report technical issue
+        function reportTechnicalIssue() {
+            // Pause anti-cheat monitoring while modal is open
+            const wasMonitoring = monitoringStarted;
+            monitoringStarted = false;
+            
+            // Pre-fill question number with current question
+            const questionNumberInput = document.querySelector('#issueForm input[name="question_number"]');
+            if (questionNumberInput) {
+                questionNumberInput.value = currentQuestion + 1;
+            }
+            
+            const issueModal = document.getElementById('issueModal');
+            issueModal.style.display = 'flex';
+            
+            // Store monitoring state to restore later
+            issueModal.dataset.wasMonitoring = wasMonitoring;
+            
+            return false;
+        }
+        
+        // Close issue modal
+        function closeIssueModal() {
+            const issueModal = document.getElementById('issueModal');
+            issueModal.style.display = 'none';
+            document.getElementById('issueForm').reset();
+            
+            // Resume anti-cheat monitoring if it was active
+            const wasMonitoring = issueModal.dataset.wasMonitoring === 'true';
+            if (wasMonitoring) {
+                setTimeout(() => {
+                    monitoringStarted = true;
+                }, 1000); // Give 1 second grace period
+            }
+            
+            return false;
+        }
+        
+        // Submit technical issue
+        function submitTechnicalIssue(event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            
+            // Disable submit button to prevent double submission
+            const form = document.getElementById('issueForm');
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '⏳ Submitting...';
+            
+            const formData = new FormData(form);
+            formData.append('exam_id', <?php echo $exam_id; ?>);
+            formData.append('student_id', <?php echo $student_id; ?>);
+            formData.append('student_name', '<?php echo addslashes($_SESSION['Name']); ?>');
+            
+            fetch('submit-technical-issue.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+                
+                if (data.success) {
+                    closeIssueModal();
+                    // Use setTimeout to ensure modal is closed before showing alert
+                    setTimeout(() => {
+                        showCustomAlert('✅ Issue reported successfully! An administrator will review it.\n\nNote: The exam timer continues running.');
+                    }, 100);
+                } else {
+                    showCustomAlert('❌ Failed to submit issue: ' + (data.message || 'Please try again.'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+                showCustomAlert('❌ Failed to submit issue. Please try again.');
+            });
+            
+            return false;
         }
     </script>
 </body>

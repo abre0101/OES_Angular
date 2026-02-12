@@ -351,21 +351,39 @@ $con->close();
                         'C' => $q['option_c'], 
                         'D' => $q['option_d']
                     ];
+                    
+                    // Check if this is a True/False question
+                    $isTrueFalse = (strtolower(trim($q['option_a'])) == 'true' && strtolower(trim($q['option_b'])) == 'false') ||
+                                   (strtolower(trim($q['option_a'])) == 'false' && strtolower(trim($q['option_b'])) == 'true');
+                    
                     foreach($options as $letter => $text):
                         if(empty($text)) continue; // Skip empty options
                         
                         $optionClass = '';
                         $indicator = '';
                         
-                        if($letter == $correctAnswer) {
+                        // Normalize comparison for True/False questions
+                        $normalizedText = strtolower(trim($text));
+                        $normalizedCorrect = strtolower(trim($correctAnswer));
+                        $normalizedStudent = strtolower(trim($studentAnswer));
+                        
+                        // Check if this option matches the correct answer (by letter OR by text for True/False)
+                        $isCorrectOption = ($letter == $correctAnswer) || 
+                                          ($isTrueFalse && $normalizedText == $normalizedCorrect);
+                        
+                        // Check if this option matches the student's answer
+                        $isStudentOption = ($letter == $studentAnswer) || 
+                                          ($isTrueFalse && $normalizedText == $normalizedStudent);
+                        
+                        if($isCorrectOption) {
                             $optionClass = 'correct-answer';
                             $indicator = '<span style="color: var(--success-color); font-weight: 700; margin-left: 1rem;">✅ Correct Answer</span>';
                         }
                         
-                        if($letter == $studentAnswer && $letter != $correctAnswer) {
+                        if($isStudentOption && !$isCorrectOption) {
                             $optionClass = 'wrong-answer';
                             $indicator = '<span style="color: #dc3545; font-weight: 700; margin-left: 1rem;">❌ Your Answer (Wrong)</span>';
-                        } elseif($letter == $studentAnswer && $letter == $correctAnswer) {
+                        } elseif($isStudentOption && $isCorrectOption) {
                             $indicator = '<span style="color: var(--success-color); font-weight: 700; margin-left: 1rem;">✅ Your Answer (Correct!)</span>';
                         }
                     ?>

@@ -96,7 +96,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['schedule_exam'])) {
     $exam_date = $_POST['exam_date'];
     $start_time = $_POST['start_time'];
     $duration = $_POST['duration_minutes'];
-    $academic_year = mysqli_real_escape_string($con, $_POST['academic_year']);
     $room_lab = mysqli_real_escape_string($con, $_POST['room_lab'] ?? '');
     
     // Calculate end time
@@ -572,19 +571,6 @@ if(isset($_GET['success']) && isset($_GET['msg'])) {
                 <div class="form-group">
                     <label>Start Time *</label>
                     <input type="time" name="start_time" class="form-control" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Student Batch *</label>
-                    <select name="academic_year" class="form-control" required>
-                        <option value="">-- Select Batch --</option>
-                        <option value="Year 1">Year 1</option>
-                        <option value="Year 2">Year 2</option>
-                        <option value="Year 3">Year 3</option>
-                        <option value="Year 4">Year 4</option>
-                        <option value="Year 5">Year 5</option>
-                        <option value="All Years">All Years</option>
-                    </select>
                 </div>
 
                 <div class="form-group">

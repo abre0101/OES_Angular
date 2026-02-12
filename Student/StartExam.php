@@ -595,6 +595,7 @@ $studentSemester = $_SESSION['Sem'];
                             $statusClass = '';
                             $canTake = false;
                             $message = '';
+                            $lateMinutes = 0;
                             
                             if ($hasCompleted) {
                                 $is_active = 'Completed';
@@ -605,15 +606,33 @@ $studentSemester = $_SESSION['Sem'];
                                 $statusClass = 'status-closed';
                                 $message = 'This exam has ended';
                             } elseif ($examDate == $currentDate) {
+                                // Calculate minutes since start time
+                                $startDateTime = strtotime($examDate . ' ' . $startTime);
+                                $currentDateTime = strtotime($currentDate . ' ' . $currentTime);
+                                $minutesSinceStart = floor(($currentDateTime - $startDateTime) / 60);
+                                
                                 if ($currentTime < $startTime) {
                                     $is_active = 'Upcoming Today';
                                     $statusClass = 'status-upcoming';
                                     $message = 'Exam starts at ' . date('g:i A', strtotime($startTime));
                                 } elseif ($currentTime >= $startTime && $currentTime <= $endTime) {
-                                    $is_active = 'Available Now';
-                                    $statusClass = 'status-available';
-                                    $canTake = true;
-                                    $message = 'You can take this exam now';
+                                    // Check if within 15-minute window
+                                    if ($minutesSinceStart <= 15) {
+                                        $is_active = 'Available Now';
+                                        $statusClass = 'status-available';
+                                        $canTake = true;
+                                        $lateMinutes = $minutesSinceStart;
+                                        if ($minutesSinceStart == 0) {
+                                            $message = 'You can take this exam now';
+                                        } else {
+                                            $message = 'Started ' . $minutesSinceStart . ' min ago - Join now!';
+                                        }
+                                    } else {
+                                        $is_active = 'Entry Closed';
+                                        $statusClass = 'status-closed';
+                                        $canTake = false;
+                                        $message = 'Late entry window expired (15 min limit)';
+                                    }
                                 } else {
                                     $is_active = 'Closed';
                                     $statusClass = 'status-closed';
@@ -664,6 +683,17 @@ $studentSemester = $_SESSION['Sem'];
                         
                         <div class="exam-actions">
                             <?php if ($canTake): ?>
+                                <?php if ($lateMinutes > 0): ?>
+                                    <div style="background: rgba(255, 193, 7, 0.15); padding: 1rem; border-radius: 12px; border: 2px solid #ffc107; margin-bottom: 1rem; text-align: center;">
+                                        <div style="font-size: 0.85rem; color: #856404; font-weight: 700; margin-bottom: 0.5rem;">⚠️ LATE ENTRY</div>
+                                        <div style="font-size: 1.1rem; color: #856404; font-weight: 800;"><?php echo (15 - $lateMinutes); ?> min left to join</div>
+                                    </div>
+                                <?php else: ?>
+                                    <div style="background: rgba(40, 167, 69, 0.15); padding: 1rem; border-radius: 12px; border: 2px solid #28a745; margin-bottom: 1rem; text-align: center;">
+                                        <div style="font-size: 0.85rem; color: #155724; font-weight: 700; margin-bottom: 0.5rem;">✅ ON TIME</div>
+                                        <div style="font-size: 1.1rem; color: #155724; font-weight: 800;">15 min to join</div>
+                                    </div>
+                                <?php endif; ?>
                                 <a href="exam-instructions.php?exam_id=<?php echo $scheduleId; ?>" class="btn btn-success" style="font-size: 1.1rem;">
                                     🚀 Start Exam
                                 </a>
@@ -703,6 +733,19 @@ $studentSemester = $_SESSION['Sem'];
                                         ?>
                                     </div>
                                 </div>
+                            <?php elseif ($is_active == 'Entry Closed'): ?>
+                                <div style="background: rgba(220, 53, 69, 0.15); padding: 1.5rem; border-radius: 12px; border: 2px solid #dc3545; margin-bottom: 1rem; text-align: center;">
+                                    <div style="font-size: 1.2rem; color: #721c24; font-weight: 800; margin-bottom: 0.5rem;">🚫 ENTRY CLOSED</div>
+                                    <div style="font-size: 0.95rem; color: #721c24; font-weight: 600; line-height: 1.5;">
+                                        You missed the 15-minute<br>entry window
+                                    </div>
+                                </div>
+                                <button class="btn btn-secondary" disabled style="font-size: 1.1rem; background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);">
+                                    🔒 Too Late to Join
+                                </button>
+                                <div style="text-align: center; color: #721c24; font-size: 0.9rem; font-weight: 600; margin-top: 1rem; padding: 0.75rem; background: rgba(220, 53, 69, 0.1); border-radius: 8px;">
+                                    Students must join within<br>15 minutes of start time
+                                </div>
                             <?php else: ?>
                                 <button class="btn btn-secondary" disabled style="font-size: 1.1rem;">
                                     <?php echo $hasCompleted ? '✅ Completed' : '🔒 Not Available'; ?>
@@ -736,9 +779,11 @@ $studentSemester = $_SESSION['Sem'];
                     <ul>
                         <li>✅ Ensure you have a stable internet connection before starting</li>
                         <li>⏰ You can only take the exam during the scheduled time window</li>
+                        <li>🚨 <strong>IMPORTANT:</strong> You must join within 15 minutes of the exam start time</li>
                         <li>⚠️ Once started, you must complete the exam within the allocated duration</li>
                         <li>📖 Read all questions carefully before answering</li>
                         <li>🔄 The exam will auto-submit when time expires</li>
+                        <li>⏱️ Late entries after 15 minutes will not be permitted</li>
                     </ul>
                 </div>
         </div>
