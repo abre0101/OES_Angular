@@ -30,5 +30,8 @@ if ($con->connect_error) {
 // Set charset
 $con->set_charset("utf8mb4");
 
+// Disable strict mode to allow '0000-00-00' dates
+$con->query("SET sql_mode = ''");
+
 return $con;
 ?>
