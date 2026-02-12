@@ -3,48 +3,58 @@ FROM php:8.2-fpm
 # Install mysqli and other required extensions
 RUN docker-php-ext-install mysqli pdo pdo_mysql
 
-# Install nginx
-RUN apt-get update && apt-get install -y nginx && rm -rf /var/lib/apt/lists/*
+# Install nginx and gettext for envsubst
+RUN apt-get update && apt-get install -y nginx gettext-base && rm -rf /var/lib/apt/lists/*
 
 # Copy application files
 COPY . /var/www/html/
-
-# Create nginx configuration
-RUN echo 'server {\n\
-    listen 80;\n\
-    server_name _;\n\
-    root /var/www/html;\n\
-    index index.php index.html;\n\
-\n\
-    location / {\n\
-        try_files $uri $uri/ /index.php?$query_string;\n\
-    }\n\
-\n\
-    location ~ \.php$ {\n\
-        fastcgi_pass 127.0.0.1:9000;\n\
-        fastcgi_index index.php;\n\
-        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;\n\
-        include fastcgi_params;\n\
-    }\n\
-\n\
-    location ~ /\.ht {\n\
-        deny all;\n\
-    }\n\
-}' > /etc/nginx/sites-available/default
 
 # Set proper permissions
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
 
 # Create start script
-RUN echo '#!/bin/bash\n\
-set -e\n\
-echo "Starting PHP-FPM..."\n\
-php-fpm -D\n\
-echo "Starting Nginx..."\n\
-nginx -g "daemon off;"' > /start.sh && chmod +x /start.sh
+COPY <<'EOF' /start.sh
+#!/bin/bash
+set -e
 
-# Expose port 80
-EXPOSE 80
+PORT=${PORT:-8080}
+echo "Configuring Nginx on port $PORT..."
+
+cat > /etc/nginx/sites-available/default <<NGINX
+server {
+    listen $PORT;
+    server_name _;
+    root /var/www/html;
+    index index.php index.html;
+
+    location / {
+        try_files \$uri \$uri/ /index.php?\$query_string;
+    }
+
+    location ~ \.php$ {
+        fastcgi_pass 127.0.0.1:9000;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
+        include fastcgi_params;
+    }
+
+    location ~ /\.ht {
+        deny all;
+    }
+}
+NGINX
+
+echo "Starting PHP-FPM..."
+php-fpm -D
+
+echo "Starting Nginx..."
+nginx -g "daemon off;"
+EOF
+
+RUN chmod +x /start.sh
+
+# Expose port
+EXPOSE 8080
 
 CMD ["/start.sh"]
