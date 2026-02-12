@@ -1,0 +1,8 @@
+[phases.setup]
+nixPkgs = ['php84', 'php84Extensions.mysqli', 'php84Extensions.pdo', 'php84Extensions.pdo_mysql']
+
+[phases.install]
+cmds = ['echo "PHP extensions configured"']
+
+[start]
+cmd = 'php -S 0.0.0.0:8080 -t .'
