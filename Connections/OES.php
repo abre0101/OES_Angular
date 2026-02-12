@@ -42,18 +42,27 @@ if (getenv('MYSQLHOST')) {
     $port_OES = 3306;
 }
 
-// Create connection
-$con = new mysqli($hostname_OES, $username_OES, $password_OES, $database_OES, $port_OES);
+// Create connection with error reporting
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-// Check connection
-if ($con->connect_error) {
-    // Log error for debugging (in production, log to file instead of displaying)
-    error_log("Database connection failed: " . $con->connect_error);
+try {
+    // Initialize connection
+    $con = mysqli_init();
+    
+    // Set connection options for MySQL 8 compatibility
+    $con->options(MYSQLI_OPT_CONNECT_TIMEOUT, 10);
+    
+    // Connect to database
+    $con->real_connect($hostname_OES, $username_OES, $password_OES, $database_OES, $port_OES);
+    
+    // Set charset to utf8mb4 for better Unicode support
+    $con->set_charset("utf8mb4");
+    
+} catch (mysqli_sql_exception $e) {
+    // Log error for debugging
+    error_log("Database connection failed: " . $e->getMessage());
     die("Connection failed. Please check database configuration.");
 }
-
-// Set charset to utf8mb4 for better Unicode support
-$con->set_charset("utf8mb4");
 // Return connection object
 return $con;
 ?>
