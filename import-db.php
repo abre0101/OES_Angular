@@ -16,39 +16,51 @@ if (!file_exists($sqlFile)) {
 echo "Found SQL file: $sqlFile\n";
 echo "File size: " . round(filesize($sqlFile) / 1024, 2) . " KB\n\n";
 
-// Read and execute SQL
+// Read SQL content
 $sql = file_get_contents($sqlFile);
 
-// Remove comments
-$sql = preg_replace('/--.*$/m', '', $sql);
-$sql = preg_replace('/\/\*.*?\*\//s', '', $sql);
-
-// Split into queries
-$queries = array_filter(array_map('trim', explode(';', $sql)));
-
-echo "Processing " . count($queries) . " SQL statements...\n\n";
+echo "Importing database...\n\n";
 
 $success = 0;
 $errors = 0;
 
 // Disable foreign key checks
 $con->query('SET FOREIGN_KEY_CHECKS=0');
+$con->query('SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO"');
+$con->query('SET time_zone = "+00:00"');
 
-foreach ($queries as $index => $query) {
-    if (empty($query) || strlen($query) < 5) continue;
-    
-    if ($con->query($query) === TRUE) {
-        $success++;
-        if ($success % 20 == 0) {
-            echo "✓ Processed $success queries...\n";
-            flush();
+// Execute the entire SQL file at once using multi_query
+if ($con->multi_query($sql)) {
+    do {
+        // Store first result set
+        if ($result = $con->store_result()) {
+            $result->free();
         }
-    } else {
-        $errors++;
-        if ($errors <= 5) {
-            echo "✗ Error in query " . ($index + 1) . ": " . $con->error . "\n";
+        
+        // Check for errors
+        if ($con->errno) {
+            $errors++;
+            if ($errors <= 10) {
+                echo "✗ Error: " . $con->error . "\n";
+            }
+        } else {
+            $success++;
+            if ($success % 20 == 0) {
+                echo "✓ Processed $success queries...\n";
+                flush();
+            }
         }
-    }
+        
+        // Move to next result
+        if (!$con->more_results()) {
+            break;
+        }
+    } while ($con->next_result());
+}
+
+// Check for final error
+if ($con->errno) {
+    echo "✗ Final error: " . $con->error . "\n";
 }
 
 // Re-enable foreign key checks
@@ -57,10 +69,13 @@ $con->query('SET FOREIGN_KEY_CHECKS=1');
 echo "\n" . str_repeat("=", 60) . "\n";
 echo "DATABASE IMPORT COMPLETED!\n";
 echo str_repeat("=", 60) . "\n";
-echo "✓ Successful queries: $success\n";
-echo "✗ Failed queries: $errors\n";
+echo "✓ Successful operations: $success\n";
+if ($errors > 0) {
+    echo "✗ Errors encountered: $errors\n";
+}
 
 echo "\n<strong>IMPORTANT: Delete this file (import-db.php) after import!</strong>\n";
+echo "\n<a href='/'>Go to Application</a>\n";
 echo "</pre>";
 
 $con->close();
