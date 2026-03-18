@@ -33,4 +33,8 @@ export class ViewStudentComponent implements OnInit {
         if (!this.results.length) return 0;
         return Math.round(this.results.reduce((s, r) => s + r.percentage, 0) / this.results.length);
     }
+
+    get passedCount(): number {
+        return this.results.filter(r => r.passed).length;
+    }
 }

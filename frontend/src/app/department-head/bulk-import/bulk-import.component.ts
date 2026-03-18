@@ -17,6 +17,8 @@ export class DhBulkImportComponent {
     messageType = '';
     error = '';
 
+    constructor(private api: ApiService) { }
+
     parseCSV() {
         this.error = '';
         const lines = this.csvText.trim().split('\n').filter(l => l.trim());
