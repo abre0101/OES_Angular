@@ -32,6 +32,10 @@ export class DhChangePasswordComponent {
     get strengthColor(): string { return ['', '#dc3545', '#ffc107', '#17a2b8', '#28a745'][this.strength] ?? ''; }
     get strengthWidth(): string { return `${this.strength * 25}%`; }
 
+    get hasUppercase(): boolean { return /[A-Z]/.test(this.form.new_password); }
+    get hasLowercase(): boolean { return /[a-z]/.test(this.form.new_password); }
+    get hasNumber(): boolean { return /[0-9]/.test(this.form.new_password); }
+
     submit() {
         this.error = ''; this.success = '';
         if (!this.form.old_password || !this.form.new_password) { this.error = 'All fields are required.'; return; }
