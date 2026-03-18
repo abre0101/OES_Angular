@@ -43,6 +43,9 @@ DATABASES = {}
 MONGO_URI = config('MONGO_URI', default='mongodb://localhost:27017')
 MONGO_DB_NAME = config('MONGO_DB_NAME', default='oes_db')
 
+import mongoengine
+mongoengine.connect(db=MONGO_DB_NAME, host=MONGO_URI)
+
 # JWT (plain PyJWT, no simplejwt)
 JWT_ACCESS_LIFETIME = timedelta(hours=8)
 JWT_REFRESH_LIFETIME = timedelta(days=7)
@@ -55,6 +58,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
+    'UNAUTHENTICATED_USER': None,
 }
 
 CORS_ALLOWED_ORIGINS = config(
