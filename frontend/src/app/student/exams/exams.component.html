@@ -1,0 +1,26 @@
+<div class="page-header">
+    <h1 class="page-title">📝 Available Exams</h1>
+</div>
+<div class="admin-content" style="padding-top:0;">
+    <div *ngIf="loading" class="empty-state">Loading...</div>
+    <div *ngIf="!loading" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.25rem;">
+        <div *ngFor="let e of exams" class="content-card">
+            <h3 style="font-weight:800;margin-bottom:.5rem;">{{ e.title }}</h3>
+            <p style="color:var(--text-secondary);font-size:.9rem;margin-bottom:.75rem;">{{ e.course_name }}</p>
+            <div
+                style="display:flex;gap:1rem;font-size:.85rem;color:var(--text-secondary);margin-bottom:1rem;flex-wrap:wrap;">
+                <span>⏱ {{ e.duration_minutes }} min</span>
+                <span>📊 {{ e.total_marks }} marks</span>
+                <span>❓ {{ e.question_count }} questions</span>
+            </div>
+            <span class="badge badge-info" style="margin-bottom:1rem;display:inline-block;">{{ e.status }}</span>
+            <div>
+                <a [routerLink]="['/student/exams', e.id, 'instructions']" class="btn btn-primary btn-sm">View
+                    Instructions →</a>
+            </div>
+        </div>
+        <div *ngIf="exams.length===0" style="grid-column:1/-1;" class="empty-state">
+            No exams available at the moment.
+        </div>
+    </div>
+</div>

@@ -1,0 +1,81 @@
+<div class="page-header">
+    <h1 class="page-title">👁️ Monitor Exams</h1>
+    <p class="page-subtitle">Real-time overview of all department exams</p>
+</div>
+<div class="admin-content" style="padding-top:0;">
+    <div *ngIf="loading" class="empty-state">Loading...</div>
+    <ng-container *ngIf="!loading">
+        <div class="stats-grid" style="margin-bottom:1.5rem;">
+            <div class="stat-card green">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">{{active.length}}</div>
+                        <div class="stat-label">Active Now</div>
+                    </div>
+                    <div class="stat-icon">🟢</div>
+                </div>
+            </div>
+            <div class="stat-card orange">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">{{pending.length}}</div>
+                        <div class="stat-label">Pending</div>
+                    </div>
+                    <div class="stat-icon">⏳</div>
+                </div>
+            </div>
+            <div class="stat-card blue">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">{{completed.length}}</div>
+                        <div class="stat-label">Completed</div>
+                    </div>
+                    <div class="stat-icon">✅</div>
+                </div>
+            </div>
+            <div class="stat-card purple">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">{{exams.length}}</div>
+                        <div class="stat-label">Total</div>
+                    </div>
+                    <div class="stat-icon">📝</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-card" style="padding:0;overflow:hidden;">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Exam</th>
+                        <th>Course</th>
+                        <th>Instructor</th>
+                        <th>Duration</th>
+                        <th>Questions</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let e of exams">
+                        <td style="font-weight:600;">{{ e.title }}</td>
+                        <td>{{ e.course_name }}</td>
+                        <td>{{ e.created_by_name }}</td>
+                        <td>{{ e.duration_minutes }} min</td>
+                        <td>{{ e.question_count }}</td>
+                        <td>
+                            <span class="badge" [class.badge-success]="e.status==='active'"
+                                [class.badge-warning]="e.status==='pending'" [class.badge-info]="e.status==='approved'"
+                                [class.badge-danger]="e.status==='rejected'">
+                                {{ e.status }}
+                            </span>
+                        </td>
+                    </tr>
+                    <tr *ngIf="exams.length===0">
+                        <td colspan="6" class="empty-state">No exams found.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </ng-container>
+</div>

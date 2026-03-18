@@ -1,0 +1,85 @@
+<div class="pub-page">
+    <div class="pub-container">
+        <div class="pub-page-header">
+            <h1>About Our System</h1>
+            <p>Transforming education through innovative digital examination solutions</p>
+        </div>
+
+        <section class="pub-section">
+            <p class="pub-intro">The Debre Markos University Online Examination System is a comprehensive
+                digital platform designed to modernize and streamline the examination process. Built with security,
+                efficiency, and user experience at its core, our system serves students, instructors, department heads,
+                and administrators with tailored interfaces and powerful features.</p>
+        </section>
+
+        <section class="pub-section">
+            <h2 class="pub-section-title">Our Mission & Vision</h2>
+            <div class="pub-cards-grid">
+                <div class="pub-card">
+                    <h3>🎯 Mission</h3>
+                    <p>To provide a secure, efficient, and accessible online examination platform that enhances academic
+                        assessment while maintaining the highest standards of integrity and fairness.</p>
+                </div>
+                <div class="pub-card">
+                    <h3>👁️ Vision</h3>
+                    <p>To be the leading digital examination system in Ethiopian higher education, setting benchmarks
+                        for innovation, reliability, and academic excellence.</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="pub-stats-banner">
+            <div class="pub-stats-grid">
+                <div class="pub-stat"><span class="pub-stat-num">1000+</span><span class="pub-stat-lbl">Active
+                        Students</span></div>
+                <div class="pub-stat"><span class="pub-stat-num">50+</span><span class="pub-stat-lbl">Faculty
+                        Members</span></div>
+                <div class="pub-stat"><span class="pub-stat-num">98%</span><span class="pub-stat-lbl">Success
+                        Rate</span></div>
+                <div class="pub-stat"><span class="pub-stat-num">24/7</span><span class="pub-stat-lbl">System
+                        Availability</span></div>
+            </div>
+        </div>
+
+        <section class="pub-section">
+            <h2 class="pub-section-title">System Features</h2>
+            <div class="pub-features-grid">
+                <div class="pub-feature">
+                    <h4>🔒 Advanced Security</h4>
+                    <p>Multi-layer security protocols to ensure exam integrity and prevent unauthorized access</p>
+                </div>
+                <div class="pub-feature">
+                    <h4>⚡ Real-Time Processing</h4>
+                    <p>Instant grading and result generation for objective assessments</p>
+                </div>
+                <div class="pub-feature">
+                    <h4>📱 Responsive Design</h4>
+                    <p>Seamless experience across all devices — desktop, tablet, and mobile</p>
+                </div>
+                <div class="pub-feature">
+                    <h4>👥 Role-Based Access</h4>
+                    <p>Customized interfaces for students, instructors, department heads, and admins</p>
+                </div>
+                <div class="pub-feature">
+                    <h4>📊 Analytics Dashboard</h4>
+                    <p>Comprehensive reporting tools for performance tracking and insights</p>
+                </div>
+                <div class="pub-feature">
+                    <h4>🌐 Cloud-Based</h4>
+                    <p>Accessible anytime, anywhere with reliable cloud infrastructure</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="pub-section">
+            <h2 class="pub-section-title">Development Team</h2>
+            <div class="pub-team-grid">
+                <div class="pub-team-card" *ngFor="let m of team">
+                    <div class="pub-avatar" [style.background]="m.color">{{ m.initials }}</div>
+                    <h3>{{ m.name }}</h3>
+                    <p>Developer</p>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>

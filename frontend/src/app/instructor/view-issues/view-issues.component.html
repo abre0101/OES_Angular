@@ -1,0 +1,41 @@
+<div class="page-header">
+    <h1 class="page-title">⚠️ Student Issues</h1>
+    <p class="page-subtitle">Technical issues reported by students in your courses</p>
+</div>
+<div class="admin-content" style="padding-top:0;">
+    <div *ngIf="loading" class="empty-state">Loading...</div>
+    <div *ngIf="!loading" class="content-card" style="padding:0;overflow:hidden;">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Reported By</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let i of issues">
+                    <td style="font-weight:600;">{{i.title}}</td>
+                    <td>{{i.reported_by_name}}</td>
+                    <td style="max-width:250px;color:var(--text-secondary);font-size:.85rem;">{{i.description}}</td>
+                    <td><span class="badge" [ngClass]="statusClass(i.status)">{{i.status}}</span></td>
+                    <td style="font-size:.85rem;color:var(--text-secondary);">{{i.created_at | date:'mediumDate'}}</td>
+                    <td>
+                        <select class="form-control" style="width:auto;padding:.3rem .5rem;font-size:.8rem;"
+                            (change)="updateStatus(i.id, $any($event.target).value)" [value]="i.status">
+                            <option value="open">Open</option>
+                            <option value="in_progress">In Progress</option>
+                            <option value="resolved">Resolved</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr *ngIf="issues.length===0">
+                    <td colspan="6" class="empty-state">No issues reported.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

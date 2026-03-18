@@ -1,0 +1,116 @@
+<div class="page-header">
+    <h1 class="page-title">📈 Reports & Analytics</h1>
+    <p class="page-subtitle">System-wide statistics and performance overview</p>
+</div>
+<div class="admin-content" style="padding-top:0;">
+    <div *ngIf="loading" class="empty-state">Loading...</div>
+    <ng-container *ngIf="!loading">
+        <div class="stats-grid">
+            <div class="stat-card blue">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">{{ stats.students }}</div>
+                        <div class="stat-label">Students</div>
+                    </div>
+                    <div class="stat-icon">👨‍🎓</div>
+                </div>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">{{ stats.instructors }}</div>
+                        <div class="stat-label">Instructors</div>
+                    </div>
+                    <div class="stat-icon">👨‍🏫</div>
+                </div>
+            </div>
+            <div class="stat-card orange">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">{{ stats.courses }}</div>
+                        <div class="stat-label">Courses</div>
+                    </div>
+                    <div class="stat-icon">📚</div>
+                </div>
+            </div>
+            <div class="stat-card red">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">{{ stats.pendingExams }}</div>
+                        <div class="stat-label">Pending Exams</div>
+                    </div>
+                    <div class="stat-icon">⏳</div>
+                </div>
+            </div>
+            <div class="stat-card purple">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">{{ stats.totalResults }}</div>
+                        <div class="stat-label">Exam Submissions</div>
+                    </div>
+                    <div class="stat-icon">📝</div>
+                </div>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">{{ passRate }}%</div>
+                        <div class="stat-label">Pass Rate</div>
+                    </div>
+                    <div class="stat-icon">✅</div>
+                </div>
+            </div>
+            <div class="stat-card blue">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">{{ stats.avgScore }}%</div>
+                        <div class="stat-label">Avg. Score</div>
+                    </div>
+                    <div class="stat-icon">📊</div>
+                </div>
+            </div>
+            <div class="stat-card orange">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">{{ stats.departments }}</div>
+                        <div class="stat-label">Departments</div>
+                    </div>
+                    <div class="stat-icon">🏢</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-card" style="margin-top:1.5rem;">
+            <div class="card-header">
+                <h2 class="card-title">📋 Recent Exam Results</h2>
+            </div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Exam</th>
+                        <th>Score</th>
+                        <th>%</th>
+                        <th>Result</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let r of results">
+                        <td style="font-weight:600;">{{ r.student_name }}</td>
+                        <td>{{ r.exam_title }}</td>
+                        <td>{{ r.score }}/{{ r.total_marks }}</td>
+                        <td>{{ r.percentage }}%</td>
+                        <td><span class="badge" [class.badge-success]="r.passed" [class.badge-danger]="!r.passed">{{
+                                r.passed ? 'PASS' : 'FAIL' }}</span></td>
+                        <td style="color:var(--text-secondary);font-size:.85rem;">{{ r.submitted_at | date:'mediumDate'
+                            }}</td>
+                    </tr>
+                    <tr *ngIf="results.length===0">
+                        <td colspan="6" class="empty-state">No results yet.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </ng-container>
+</div>

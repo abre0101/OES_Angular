@@ -1,0 +1,50 @@
+<div class="page-header">
+    <h2>Pending Approvals</h2>
+</div>
+<div class="page-body">
+    <!-- Review Modal -->
+    <div *ngIf="reviewingExam" class="card" style="margin-bottom:1.5rem;border:2px solid var(--accent);">
+        <h3 style="margin-bottom:0.75rem;">Review: {{ reviewingExam.title }}</h3>
+        <p style="color:#6b7280;margin-bottom:1rem;">Course: {{ reviewingExam.course_name }} | Questions: {{
+            reviewingExam.question_count }} | Duration: {{ reviewingExam.duration_minutes }} min</p>
+        <div class="form-group">
+            <label>Comment (optional)</label>
+            <textarea class="form-control" [(ngModel)]="comment" rows="3"
+                placeholder="Add a review comment..."></textarea>
+        </div>
+        <div style="display:flex;gap:0.75rem;">
+            <button class="btn btn-success" (click)="review('approve')">✅ Approve</button>
+            <button class="btn btn-danger" (click)="review('reject')">❌ Reject</button>
+            <button class="btn btn-outline" (click)="reviewingExam=null">Cancel</button>
+        </div>
+    </div>
+
+    <div *ngIf="loading">Loading...</div>
+    <div *ngIf="!loading" class="card" style="padding:0;overflow:hidden;">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Course</th>
+                    <th>Instructor</th>
+                    <th>Questions</th>
+                    <th>Submitted</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let e of exams">
+                    <td>{{ e.title }}</td>
+                    <td>{{ e.course_name }}</td>
+                    <td>{{ e.created_by_name }}</td>
+                    <td>{{ e.question_count }}</td>
+                    <td>{{ e.submitted_at | date:'short' }}</td>
+                    <td><button class="btn btn-sm btn-primary" (click)="openReview(e)">Review</button></td>
+                </tr>
+                <tr *ngIf="exams.length===0">
+                    <td colspan="6" style="text-align:center;color:#6b7280;">No pending approvals.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

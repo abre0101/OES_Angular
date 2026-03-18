@@ -1,0 +1,47 @@
+<div class="page-header">
+    <h1 class="page-title">📖 Review Answers</h1>
+    <a routerLink="/student/results" class="btn btn-secondary">← Back to Results</a>
+</div>
+<div class="admin-content" style="padding-top:0;max-width:800px;">
+    <div *ngIf="loading" class="empty-state">Loading...</div>
+    <ng-container *ngIf="!loading && result">
+        <div class="content-card" style="margin-bottom:1.5rem;">
+            <h2 style="font-weight:800;margin-bottom:.5rem;">{{ result.exam_title }}</h2>
+            <div style="display:flex;gap:2rem;flex-wrap:wrap;margin-top:.75rem;">
+                <div>Score: <strong>{{ result.score }}/{{ result.total_marks }}</strong></div>
+                <div>Percentage: <strong>{{ result.percentage }}%</strong></div>
+                <div>Result: <span class="badge" [class.badge-success]="result.passed"
+                        [class.badge-danger]="!result.passed">{{ result.passed ? 'PASS' : 'FAIL' }}</span></div>
+                <div>Date: <strong>{{ result.submitted_at | date:'medium' }}</strong></div>
+            </div>
+        </div>
+
+        <div *ngFor="let q of result.answers; let i = index" class="content-card" style="margin-bottom:1rem;"
+            [style.border-left]="q.is_correct ? '4px solid var(--success-color)' : '4px solid #dc3545'">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.75rem;">
+                <strong style="font-size:1rem;">Q{{ i + 1 }}. {{ q.question_text }}</strong>
+                <span class="badge" [class.badge-success]="q.is_correct" [class.badge-danger]="!q.is_correct">
+                    {{ q.is_correct ? '✓ Correct' : '✗ Wrong' }}
+                </span>
+            </div>
+            <div style="display:grid;gap:.4rem;font-size:.9rem;">
+                <div *ngFor="let opt of ['A','B','C','D']" style="padding:.4rem .75rem;border-radius:6px;"
+                    [style.background]="opt === q.correct_answer ? 'rgba(40,167,69,.12)' : (opt === q.selected_answer && !q.is_correct ? 'rgba(220,53,69,.1)' : 'transparent')"
+                    [style.font-weight]="opt === q.correct_answer ? '700' : '400'">
+                    <span>{{ opt }}.</span> {{ q['option_' + opt.toLowerCase()] }}
+                    <span *ngIf="opt === q.correct_answer" style="color:var(--success-color);margin-left:.5rem;">✓
+                        Correct</span>
+                    <span *ngIf="opt === q.selected_answer && !q.is_correct" style="color:#dc3545;margin-left:.5rem;">←
+                        Your answer</span>
+                </div>
+            </div>
+            <div *ngIf="q.explanation"
+                style="margin-top:.75rem;padding:.75rem;background:var(--bg-light);border-radius:6px;font-size:.85rem;color:var(--text-secondary);">
+                💡 {{ q.explanation }}
+            </div>
+        </div>
+
+        <div *ngIf="!result.answers?.length" class="empty-state">No answer details available.</div>
+    </ng-container>
+    <div *ngIf="!loading && !result" class="empty-state">Result not found.</div>
+</div>

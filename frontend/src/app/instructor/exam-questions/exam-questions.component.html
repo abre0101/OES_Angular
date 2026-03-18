@@ -1,0 +1,44 @@
+<div class="page-header">
+    <h2>Exam Questions</h2>
+</div>
+<div class="page-body">
+    <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+    <div class="card" style="margin-bottom:1.5rem;">
+        <h3 style="margin-bottom:1rem;">Add Question to Exam</h3>
+        <div style="display:flex;gap:1rem;align-items:flex-end;">
+            <div class="form-group" style="flex:1;margin:0;">
+                <label>Select Question</label>
+                <select class="form-control" [(ngModel)]="selectedQuestionId">
+                    <option [value]="null">-- Select --</option>
+                    <option *ngFor="let q of availableQuestions" [value]="q.id">{{ q.text | slice:0:80 }}</option>
+                </select>
+            </div>
+            <button class="btn btn-primary" (click)="addQuestion()">Add</button>
+        </div>
+    </div>
+
+    <div *ngIf="loading">Loading...</div>
+    <div *ngIf="!loading" class="card" style="padding:0;overflow:hidden;">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Question</th>
+                    <th>Type</th>
+                    <th>Points</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let eq of examQuestions; let i=index">
+                    <td>{{ i+1 }}</td>
+                    <td>{{ eq.question?.text | slice:0:100 }}</td>
+                    <td>{{ eq.question?.question_type }}</td>
+                    <td>{{ eq.points_override ?? eq.question?.points }}</td>
+                </tr>
+                <tr *ngIf="examQuestions.length===0">
+                    <td colspan="4" style="text-align:center;color:#6b7280;">No questions added yet.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

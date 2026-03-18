@@ -1,0 +1,97 @@
+<div class="page-header">
+    <h1 class="page-title">🏆 Results Overview</h1>
+    <p class="page-subtitle">Comprehensive view of student performance across all your courses</p>
+</div>
+<div class="admin-content" style="padding-top:0;">
+    <div *ngIf="loading" class="empty-state">Loading...</div>
+    <ng-container *ngIf="!loading">
+        <div class="stats-grid">
+            <div class="stat-card blue">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">{{stats.total}}</div>
+                        <div class="stat-label">Total Results</div>
+                    </div>
+                    <div class="stat-icon">📝</div>
+                </div>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">{{stats.unique}}</div>
+                        <div class="stat-label">Unique Students</div>
+                    </div>
+                    <div class="stat-icon">👨‍🎓</div>
+                </div>
+            </div>
+            <div class="stat-card orange">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">{{stats.avg}}%</div>
+                        <div class="stat-label">Average Score</div>
+                    </div>
+                    <div class="stat-icon">📈</div>
+                </div>
+            </div>
+            <div class="stat-card purple">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">{{stats.passRate}}%</div>
+                        <div class="stat-label">Pass Rate</div>
+                    </div>
+                    <div class="stat-icon">✅</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-card" style="margin-top:1.5rem;margin-bottom:1.5rem;">
+            <h3 style="font-weight:800;margin-bottom:1rem;">🔍 Filter Results</h3>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;">
+                <select class="form-control" [(ngModel)]="filterExam" (change)="applyFilter()">
+                    <option value="">All Exams</option>
+                    <option *ngFor="let e of exams" [value]="e.id">{{e.title}}</option>
+                </select>
+                <select class="form-control" [(ngModel)]="filterPass" (change)="applyFilter()">
+                    <option value="">All Status</option>
+                    <option value="pass">Pass</option>
+                    <option value="fail">Fail</option>
+                </select>
+                <input type="text" class="form-control" placeholder="Search student or exam..." [(ngModel)]="search"
+                    (input)="applyFilter()">
+            </div>
+        </div>
+
+        <div class="content-card" style="padding:0;overflow:hidden;">
+            <div style="padding:1rem 1.5rem;border-bottom:1px solid var(--border-color);">
+                <h3 style="font-weight:800;margin:0;">📋 Results ({{filtered.length}})</h3>
+            </div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Exam</th>
+                        <th>Score</th>
+                        <th>%</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let r of filtered">
+                        <td style="font-weight:600;">{{r.student_name}}</td>
+                        <td>{{r.exam_title}}</td>
+                        <td>{{r.score}}/{{r.total_marks}}</td>
+                        <td><span class="badge" [ngClass]="scoreClass(r.percentage)">{{r.percentage}}%</span></td>
+                        <td><span class="badge" [class.badge-success]="r.passed"
+                                [class.badge-danger]="!r.passed">{{r.passed?'PASS':'FAIL'}}</span></td>
+                        <td style="font-size:.85rem;color:var(--text-secondary);">{{r.submitted_at | date:'mediumDate'}}
+                        </td>
+                    </tr>
+                    <tr *ngIf="filtered.length===0">
+                        <td colspan="6" class="empty-state">No results match your filters.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </ng-container>
+</div>

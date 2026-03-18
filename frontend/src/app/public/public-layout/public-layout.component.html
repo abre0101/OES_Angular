@@ -1,0 +1,40 @@
+<div class="pub-wrapper">
+    <header class="pub-header">
+        <div class="pub-header-top">
+            <div class="pub-container">
+                <div class="pub-branding">
+                    <img src="assets/images/logo1.png" alt="DMU Logo" class="pub-logo"
+                        onerror="this.style.display='none'">
+                    <div class="pub-uni-info">
+                        <h1>Debre Markos University</h1>
+                        <p>Online Examination System</p>
+                    </div>
+                </div>
+                <div>
+                    <a *ngIf="auth.isLoggedIn()" [routerLink]="dashboardRoute" class="pub-btn-outline">← Dashboard</a>
+                    <a *ngIf="!auth.isLoggedIn()" routerLink="/login" class="pub-btn-outline">🔐 Login</a>
+                </div>
+            </div>
+        </div>
+        <nav class="pub-nav">
+            <div class="pub-container">
+                <ul class="pub-nav-menu">
+                    <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">🏠 Home</a>
+                    </li>
+                    <li><a routerLink="/about" routerLinkActive="active">ℹ️ About Us</a></li>
+                    <li><a routerLink="/help" routerLinkActive="active">❓ Help</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main class="pub-main">
+        <router-outlet />
+    </main>
+
+    <footer class="pub-footer">
+        <div class="pub-container">
+            <p>&copy; 2026 Debre Markos University. All rights reserved.</p>
+        </div>
+    </footer>
+</div>

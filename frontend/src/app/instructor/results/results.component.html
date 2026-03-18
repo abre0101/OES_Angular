@@ -1,0 +1,35 @@
+<div class="page-header">
+    <h1 class="page-title">📈 Exam Results</h1>
+</div>
+<div class="admin-content" style="padding-top:0;">
+    <div *ngIf="loading" class="empty-state">Loading...</div>
+    <div *ngIf="!loading" class="content-card" style="padding:0;overflow:hidden;">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Exam</th>
+                    <th>Score</th>
+                    <th>%</th>
+                    <th>Result</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let r of results">
+                    <td style="font-weight:600;">{{ r.student_name }}</td>
+                    <td>{{ r.exam_title }}</td>
+                    <td>{{ r.score }}/{{ r.total_marks }}</td>
+                    <td>{{ r.percentage }}%</td>
+                    <td><span class="badge" [class.badge-success]="r.passed" [class.badge-danger]="!r.passed">{{
+                            r.passed ? 'PASS' : 'FAIL' }}</span></td>
+                    <td style="color:var(--text-secondary);font-size:.85rem;">{{ r.submitted_at | date:'mediumDate' }}
+                    </td>
+                </tr>
+                <tr *ngIf="results.length===0">
+                    <td colspan="6" class="empty-state">No results yet.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

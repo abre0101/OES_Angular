@@ -1,0 +1,82 @@
+<div class="page-header">
+    <h1 class="page-title">📚 Course Details</h1>
+    <a routerLink="/department-head/courses" class="btn btn-secondary">← Back</a>
+</div>
+<div class="admin-content" style="padding-top:0;max-width:900px;">
+    <div *ngIf="loading" class="empty-state">Loading...</div>
+    <ng-container *ngIf="!loading && course">
+        <div class="content-card" style="margin-bottom:1.5rem;">
+            <div
+                style="display:flex;align-items:center;gap:1.5rem;margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border-color);">
+                <div
+                    style="width:80px;height:80px;border-radius:50%;background:var(--primary-color);color:white;display:flex;align-items:center;justify-content:center;font-size:2.5rem;flex-shrink:0;">
+                    📚</div>
+                <div>
+                    <h2 style="font-weight:800;margin:0 0 .25rem 0;">{{course.name}}</h2>
+                    <span class="badge badge-info" style="margin-right:.5rem;">{{course.code}}</span>
+                    <span class="badge" [class.badge-success]="course.is_active"
+                        [class.badge-danger]="!course.is_active">{{course.is_active ? 'Active' : 'Inactive'}}</span>
+                </div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1.5rem;">
+                <div>
+                    <div
+                        style="font-size:.8rem;font-weight:600;color:var(--text-secondary);text-transform:uppercase;margin-bottom:.3rem;">
+                        Credit Hours</div>
+                    <div style="font-weight:600;">{{course.credit_hours}}</div>
+                </div>
+                <div>
+                    <div
+                        style="font-size:.8rem;font-weight:600;color:var(--text-secondary);text-transform:uppercase;margin-bottom:.3rem;">
+                        Semester</div>
+                    <div>{{course.semester ?? '—'}}</div>
+                </div>
+                <div>
+                    <div
+                        style="font-size:.8rem;font-weight:600;color:var(--text-secondary);text-transform:uppercase;margin-bottom:.3rem;">
+                        Department</div>
+                    <div>{{course.department_name ?? '—'}}</div>
+                </div>
+            </div>
+            <div *ngIf="course.description"
+                style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border-color);color:var(--text-secondary);">
+                {{course.description}}
+            </div>
+        </div>
+
+        <div class="content-card" style="margin-bottom:1.5rem;">
+            <h3 style="font-weight:800;margin-bottom:1rem;">👨‍🏫 Assigned Instructors ({{instructors.length}})</h3>
+            <div *ngFor="let i of instructors"
+                style="display:flex;align-items:center;gap:1rem;padding:.75rem;background:var(--bg-light);border-radius:8px;margin-bottom:.5rem;">
+                <div
+                    style="width:40px;height:40px;border-radius:50%;background:var(--primary-color);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;">
+                    {{i.full_name?.[0]?.toUpperCase() ?? i.username?.[0]?.toUpperCase()}}
+                </div>
+                <div>
+                    <div style="font-weight:600;">{{i.full_name ?? i.username}}</div>
+                    <div style="font-size:.85rem;color:var(--text-secondary);">{{i.email}}</div>
+                </div>
+            </div>
+            <div *ngIf="instructors.length===0" style="color:var(--text-secondary);font-style:italic;">No instructors
+                assigned yet.</div>
+        </div>
+
+        <div class="content-card">
+            <h3 style="font-weight:800;margin-bottom:1rem;">👨‍🎓 Enrolled Students ({{students.length}})</h3>
+            <div *ngFor="let s of students"
+                style="display:flex;align-items:center;gap:1rem;padding:.75rem;background:var(--bg-light);border-radius:8px;margin-bottom:.5rem;">
+                <div
+                    style="width:40px;height:40px;border-radius:50%;background:var(--secondary-color,#28a745);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;">
+                    {{s.student_name?.[0]?.toUpperCase() ?? s.username?.[0]?.toUpperCase() ?? '?'}}
+                </div>
+                <div>
+                    <div style="font-weight:600;">{{s.student_name ?? s.username}}</div>
+                    <div style="font-size:.85rem;color:var(--text-secondary);">{{s.email ?? ''}}</div>
+                </div>
+            </div>
+            <div *ngIf="students.length===0" style="color:var(--text-secondary);font-style:italic;">No students enrolled
+                yet.</div>
+        </div>
+    </ng-container>
+    <div *ngIf="!loading && !course" class="empty-state">Course not found.</div>
+</div>

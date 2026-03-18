@@ -1,0 +1,49 @@
+<div class="page-header">
+    <h1 class="page-title">📥 Bulk Import</h1>
+    <p class="page-subtitle">Import multiple users at once using CSV format</p>
+</div>
+<div class="admin-content" style="padding-top:0;">
+    <div class="content-card">
+        <div class="form-group">
+            <label>User Type</label>
+            <select class="form-control" [(ngModel)]="role" style="max-width:300px;">
+                <option value="student">Students</option>
+                <option value="instructor">Instructors</option>
+                <option value="department_head">Department Heads</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>CSV Data</label>
+            <p style="font-size:.85rem;color:var(--text-secondary);margin-bottom:.5rem;">First row must be headers:
+                <code>{{ csvPlaceholder }}</code></p>
+            <textarea class="form-control" [(ngModel)]="csvText" rows="10"
+                [placeholder]="csvPlaceholder + '\njohn,john@dmu.edu.et,pass123,John,Doe,STU001,Medicine'"></textarea>
+        </div>
+        <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+        <button class="btn btn-primary btn-lg" (click)="import()" [disabled]="loading || !csvText.trim()">
+            {{ loading ? 'Importing...' : '📥 Import Users' }}
+        </button>
+    </div>
+
+    <div *ngIf="result" class="content-card" style="margin-top:1.5rem;">
+        <h3 style="margin-bottom:1rem;font-weight:800;">Import Results</h3>
+        <div class="alert alert-success">✅ Successfully imported: <strong>{{ result.created }}</strong> users</div>
+        <div *ngIf="result.errors?.length > 0">
+            <div class="alert alert-danger">❌ Failed: {{ result.errors.length }} rows</div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Errors</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let e of result.errors">
+                        <td>{{ e.user }}</td>
+                        <td style="color:var(--danger-color);font-size:.85rem;">{{ e.errors | json }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

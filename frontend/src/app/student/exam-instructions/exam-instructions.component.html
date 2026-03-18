@@ -1,0 +1,46 @@
+<div class="page-header">
+    <h1 class="page-title">📋 Exam Instructions</h1>
+</div>
+<div class="admin-content" style="padding-top:0;max-width:700px;">
+    <div *ngIf="loading" class="empty-state">Loading...</div>
+    <ng-container *ngIf="!loading && exam">
+        <div class="content-card" style="margin-bottom:1.5rem;">
+            <h2 style="font-weight:800;margin-bottom:.5rem;">{{ exam.title }}</h2>
+            <p style="color:var(--text-secondary);">{{ exam.course_name }}</p>
+            <div style="display:flex;gap:2rem;margin-top:1rem;flex-wrap:wrap;">
+                <div><strong>⏱ Duration:</strong> {{ exam.duration_minutes }} minutes</div>
+                <div><strong>📊 Total Marks:</strong> {{ exam.total_marks }}</div>
+                <div><strong>❓ Questions:</strong> {{ exam.question_count }}</div>
+                <div><strong>✅ Pass Mark:</strong> {{ exam.pass_mark ?? 50 }}%</div>
+            </div>
+        </div>
+
+        <div class="content-card" style="margin-bottom:1.5rem;">
+            <h3 style="font-weight:800;margin-bottom:1rem;">📌 Instructions</h3>
+            <ul style="color:var(--text-secondary);line-height:2;padding-left:1.25rem;">
+                <li>Read each question carefully before answering.</li>
+                <li>You have <strong>{{ exam.duration_minutes }} minutes</strong> to complete the exam.</li>
+                <li>The exam will auto-submit when time runs out.</li>
+                <li>Do not refresh or close the browser during the exam.</li>
+                <li>Each question carries equal marks unless stated otherwise.</li>
+                <li>You can navigate between questions freely.</li>
+                <li>Ensure a stable internet connection before starting.</li>
+            </ul>
+        </div>
+
+        <div class="content-card"
+            style="background:rgba(220,53,69,.05);border-left:4px solid #dc3545;margin-bottom:1.5rem;">
+            <h3 style="font-weight:800;margin-bottom:.75rem;color:#dc3545;">⚠️ Academic Integrity</h3>
+            <p style="color:var(--text-secondary);font-size:.9rem;">
+                By starting this exam you confirm that all answers are your own work. Any form of cheating or plagiarism
+                will result in disqualification.
+            </p>
+        </div>
+
+        <a [routerLink]="['/student/exams', examId, 'take']" class="btn btn-primary"
+            style="width:100%;text-align:center;padding:1rem;font-size:1.1rem;">
+            🚀 Start Exam Now
+        </a>
+    </ng-container>
+    <div *ngIf="!loading && !exam" class="empty-state">Exam not found.</div>
+</div>

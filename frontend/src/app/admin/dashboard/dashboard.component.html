@@ -1,0 +1,141 @@
+<div class="page-header">
+    <h1 class="page-title">📊 Dashboard</h1>
+    <p class="page-subtitle">Welcome back, {{ username }}! Here's what's happening today.</p>
+</div>
+
+<div *ngIf="loading" class="empty-state">Loading...</div>
+
+<ng-container *ngIf="!loading">
+    <!-- Stats -->
+    <div class="stats-grid">
+        <div class="stat-card blue">
+            <div class="stat-header">
+                <div>
+                    <div class="stat-value">{{ stats.students }}</div>
+                    <div class="stat-label">Total Students</div>
+                </div>
+                <div class="stat-icon">👨‍🎓</div>
+            </div>
+            <div class="stat-footer">{{ stats.activeStudents }} active</div>
+        </div>
+        <div class="stat-card green">
+            <div class="stat-header">
+                <div>
+                    <div class="stat-value">{{ stats.instructors }}</div>
+                    <div class="stat-label">Total Instructors</div>
+                </div>
+                <div class="stat-icon">👨‍🏫</div>
+            </div>
+            <div class="stat-footer">{{ stats.instructors }} active</div>
+        </div>
+        <div class="stat-card orange">
+            <div class="stat-header">
+                <div>
+                    <div class="stat-value">{{ stats.courses }}</div>
+                    <div class="stat-label">Total Courses</div>
+                </div>
+                <div class="stat-icon">📚</div>
+            </div>
+            <div class="stat-footer">{{ stats.departments }} departments</div>
+        </div>
+        <div class="stat-card red">
+            <div class="stat-header">
+                <div>
+                    <div class="stat-value">{{ stats.pendingExams }}</div>
+                    <div class="stat-label">Pending Approvals</div>
+                </div>
+                <div class="stat-icon">⏳</div>
+            </div>
+            <div class="stat-footer">{{ stats.totalExams }} total exams</div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+        <a routerLink="/admin/students" class="action-btn">
+            <span class="action-icon">➕</span>
+            <span class="action-label">Add Student</span>
+        </a>
+        <a routerLink="/admin/instructors" class="action-btn">
+            <span class="action-icon">👨‍🏫</span>
+            <span class="action-label">Add Instructor</span>
+        </a>
+        <a routerLink="/admin/courses" class="action-btn">
+            <span class="action-icon">📚</span>
+            <span class="action-label">Add Course</span>
+        </a>
+        <a routerLink="/admin/departments" class="action-btn">
+            <span class="action-icon">🏢</span>
+            <span class="action-label">Add Department</span>
+        </a>
+        <a routerLink="/admin/issues" class="action-btn">
+            <span class="action-icon">⚠️</span>
+            <span class="action-label">Issues</span>
+        </a>
+    </div>
+
+    <!-- Recent Data -->
+    <div class="content-grid">
+        <div class="content-card">
+            <div class="card-header">
+                <h2 class="card-title">📝 Recent Students</h2>
+                <a routerLink="/admin/students" class="card-link">View All →</a>
+            </div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Username</th>
+                        <th>Department</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let u of recentStudents">
+                        <td style="font-weight:600;">{{ u.full_name }}</td>
+                        <td style="color:var(--text-secondary);">{{ u.username }}</td>
+                        <td style="color:var(--text-secondary);">{{ u.department || '—' }}</td>
+                        <td><span class="badge" [class.badge-success]="u.is_active"
+                                [class.badge-danger]="!u.is_active">{{ u.is_active ? 'Active' : 'Inactive' }}</span>
+                        </td>
+                    </tr>
+                    <tr *ngIf="recentStudents.length===0">
+                        <td colspan="4" class="empty-state">No students yet</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="content-card">
+            <div class="card-header">
+                <h2 class="card-title">⚠️ Recent Issues</h2>
+                <a routerLink="/admin/issues" class="card-link">View All →</a>
+            </div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Reported By</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let i of recentIssues">
+                        <td style="font-weight:600;">{{ i.title }}</td>
+                        <td style="color:var(--text-secondary);">{{ i.reported_by_name }}</td>
+                        <td>
+                            <span class="badge" [class.badge-danger]="i.status==='open'"
+                                [class.badge-warning]="i.status==='in_progress'"
+                                [class.badge-success]="i.status==='resolved'">
+                                {{ i.status }}
+                            </span>
+                        </td>
+                    </tr>
+                    <tr *ngIf="recentIssues.length===0">
+                        <td colspan="3" class="empty-state">No issues reported</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</ng-container>

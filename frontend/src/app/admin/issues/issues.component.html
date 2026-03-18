@@ -1,0 +1,44 @@
+<div class="page-header">
+    <h2>Technical Issues</h2>
+</div>
+<div class="page-body">
+    <div *ngIf="loading">Loading...</div>
+    <div *ngIf="!loading" class="card" style="padding:0;overflow:hidden;">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Reported By</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let i of issues">
+                    <td>{{ i.title }}</td>
+                    <td>{{ i.reported_by_name }}</td>
+                    <td>
+                        <span class="badge" [class.badge-danger]="i.status==='open'"
+                            [class.badge-warning]="i.status==='in_progress'"
+                            [class.badge-success]="i.status==='resolved'">
+                            {{ i.status }}
+                        </span>
+                    </td>
+                    <td>{{ i.created_at | date:'short' }}</td>
+                    <td>
+                        <select class="form-control" style="width:auto;padding:0.3rem 0.5rem;font-size:0.8rem;"
+                            (change)="updateStatus(i.id, $any($event.target).value)" [value]="i.status">
+                            <option value="open">Open</option>
+                            <option value="in_progress">In Progress</option>
+                            <option value="resolved">Resolved</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr *ngIf="issues.length===0">
+                    <td colspan="5" style="text-align:center;color:#6b7280;">No issues reported.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

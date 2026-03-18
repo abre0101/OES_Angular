@@ -1,0 +1,124 @@
+<div class="page-header">
+    <h1 class="page-title">👤 Student Profile</h1>
+    <a routerLink="/department-head/students" class="btn btn-secondary">← Back</a>
+</div>
+<div class="admin-content" style="padding-top:0;max-width:900px;">
+    <div *ngIf="loading" class="empty-state">Loading...</div>
+    <ng-container *ngIf="!loading && student">
+        <div class="content-card" style="margin-bottom:1.5rem;">
+            <div
+                style="display:flex;align-items:center;gap:1.5rem;margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border-color);">
+                <div
+                    style="width:80px;height:80px;border-radius:50%;background:var(--primary-color);color:white;display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:700;flex-shrink:0;">
+                    {{student.full_name?.[0]?.toUpperCase() ?? student.username?.[0]?.toUpperCase()}}
+                </div>
+                <div>
+                    <h2 style="font-weight:800;margin:0 0 .25rem 0;">{{student.full_name ?? student.username}}</h2>
+                    <p style="color:var(--text-secondary);margin:0;">{{student.department_name}}</p>
+                    <span class="badge" [class.badge-success]="student.is_active"
+                        [class.badge-danger]="!student.is_active" style="margin-top:.5rem;display:inline-block;">
+                        {{student.is_active ? 'Active' : 'Inactive'}}
+                    </span>
+                </div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;">
+                <div>
+                    <div
+                        style="font-size:.8rem;font-weight:600;color:var(--text-secondary);text-transform:uppercase;margin-bottom:.3rem;">
+                        Username</div>
+                    <div style="font-weight:600;">{{student.username}}</div>
+                </div>
+                <div>
+                    <div
+                        style="font-size:.8rem;font-weight:600;color:var(--text-secondary);text-transform:uppercase;margin-bottom:.3rem;">
+                        Email</div>
+                    <div>{{student.email ?? '—'}}</div>
+                </div>
+                <div>
+                    <div
+                        style="font-size:.8rem;font-weight:600;color:var(--text-secondary);text-transform:uppercase;margin-bottom:.3rem;">
+                        Phone</div>
+                    <div>{{student.phone ?? '—'}}</div>
+                </div>
+                <div>
+                    <div
+                        style="font-size:.8rem;font-weight:600;color:var(--text-secondary);text-transform:uppercase;margin-bottom:.3rem;">
+                        Gender</div>
+                    <div>{{student.gender ?? '—'}}</div>
+                </div>
+                <div>
+                    <div
+                        style="font-size:.8rem;font-weight:600;color:var(--text-secondary);text-transform:uppercase;margin-bottom:.3rem;">
+                        Academic Year</div>
+                    <div>{{student.academic_year ?? '—'}}</div>
+                </div>
+                <div>
+                    <div
+                        style="font-size:.8rem;font-weight:600;color:var(--text-secondary);text-transform:uppercase;margin-bottom:.3rem;">
+                        Semester</div>
+                    <div>{{student.semester ?? '—'}}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-card" style="margin-bottom:1.5rem;">
+            <h3 style="font-weight:800;margin-bottom:1rem;">📊 Exam Performance</h3>
+            <div class="stats-grid" style="margin-bottom:1rem;">
+                <div class="stat-card blue">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-value">{{results.length}}</div>
+                            <div class="stat-label">Exams Taken</div>
+                        </div>
+                        <div class="stat-icon">📝</div>
+                    </div>
+                </div>
+                <div class="stat-card green">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-value">{{avgScore}}%</div>
+                            <div class="stat-label">Avg Score</div>
+                        </div>
+                        <div class="stat-icon">📈</div>
+                    </div>
+                </div>
+                <div class="stat-card orange">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-value">{{results | slice:0:100 | json | includes:'true' ? '' :
+                                ''}}{{results.filter(r=>r.passed).length}}</div>
+                            <div class="stat-label">Passed</div>
+                        </div>
+                        <div class="stat-icon">✅</div>
+                    </div>
+                </div>
+            </div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Exam</th>
+                        <th>Score</th>
+                        <th>%</th>
+                        <th>Result</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let r of results">
+                        <td>{{r.exam_title}}</td>
+                        <td>{{r.score}}/{{r.total_marks}}</td>
+                        <td>{{r.percentage}}%</td>
+                        <td><span class="badge" [class.badge-success]="r.passed"
+                                [class.badge-danger]="!r.passed">{{r.passed?'PASS':'FAIL'}}</span></td>
+                        <td style="font-size:.85rem;color:var(--text-secondary);">{{r.submitted_at | date:'mediumDate'}}
+                        </td>
+                    </tr>
+                    <tr *ngIf="results.length===0">
+                        <td colspan="5" class="empty-state">No exam results yet.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </ng-container>
+    <div *ngIf="!loading && !student" class="empty-state">Student not found.</div>
+</div>

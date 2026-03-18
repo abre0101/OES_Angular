@@ -1,0 +1,92 @@
+<div class="page-header">
+    <h1 class="page-title">📋 Exam Details</h1>
+    <a routerLink="/department-head/exams" class="btn btn-secondary">← Back</a>
+</div>
+<div class="admin-content" style="padding-top:0;max-width:900px;">
+    <div *ngIf="loading" class="empty-state">Loading...</div>
+    <ng-container *ngIf="!loading && exam">
+        <div *ngIf="message" class="content-card" style="margin-bottom:1rem;"
+            [style.border-left]="messageType==='success' ? '4px solid var(--success-color)' : '4px solid #dc3545'"
+            [style.color]="messageType==='success' ? 'inherit' : '#dc3545'">
+            {{message}}
+        </div>
+
+        <div class="content-card" style="margin-bottom:1.5rem;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.5rem;">
+                <div>
+                    <h2 style="font-weight:800;margin:0 0 .5rem 0;">{{exam.title}}</h2>
+                    <p style="color:var(--text-secondary);margin:0;">{{exam.course_name}}</p>
+                </div>
+                <span class="badge" [class.badge-warning]="exam.status==='pending'"
+                    [class.badge-success]="exam.status==='approved'" [class.badge-danger]="exam.status==='rejected'"
+                    [class.badge-info]="exam.status==='active'" style="font-size:.9rem;padding:.5rem 1rem;">
+                    {{exam.status | titlecase}}
+                </span>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;">
+                <div>
+                    <div
+                        style="font-size:.8rem;font-weight:600;color:var(--text-secondary);text-transform:uppercase;margin-bottom:.3rem;">
+                        Duration</div>
+                    <div style="font-weight:600;">{{exam.duration_minutes}} min</div>
+                </div>
+                <div>
+                    <div
+                        style="font-size:.8rem;font-weight:600;color:var(--text-secondary);text-transform:uppercase;margin-bottom:.3rem;">
+                        Total Marks</div>
+                    <div style="font-weight:600;">{{exam.total_marks}}</div>
+                </div>
+                <div>
+                    <div
+                        style="font-size:.8rem;font-weight:600;color:var(--text-secondary);text-transform:uppercase;margin-bottom:.3rem;">
+                        Questions</div>
+                    <div style="font-weight:600;">{{exam.question_count ?? questions.length}}</div>
+                </div>
+                <div>
+                    <div
+                        style="font-size:.8rem;font-weight:600;color:var(--text-secondary);text-transform:uppercase;margin-bottom:.3rem;">
+                        Instructor</div>
+                    <div>{{exam.created_by_name ?? '—'}}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-card" style="margin-bottom:1.5rem;padding:0;overflow:hidden;">
+            <div style="padding:1.25rem 1.5rem;border-bottom:1px solid var(--border-color);">
+                <h3 style="font-weight:800;margin:0;">📝 Questions ({{questions.length}})</h3>
+            </div>
+            <div style="padding:1.5rem;">
+                <div *ngFor="let q of questions; let i=index"
+                    style="padding:1rem;border-left:4px solid var(--primary-color);margin-bottom:1rem;background:var(--bg-light);border-radius:0 8px 8px 0;">
+                    <div style="font-weight:700;margin-bottom:.75rem;color:var(--primary-color);">Q{{i+1}}.
+                        {{q.question_text}}</div>
+                    <div style="display:grid;gap:.3rem;font-size:.9rem;">
+                        <div *ngFor="let opt of ['A','B','C','D']" style="padding:.4rem .75rem;border-radius:6px;"
+                            [style.background]="opt===q.correct_answer ? 'rgba(40,167,69,.12)' : 'transparent'"
+                            [style.font-weight]="opt===q.correct_answer ? '700' : '400'">
+                            <span>{{opt}}.</span> {{q['option_'+opt.toLowerCase()]}}
+                            <span *ngIf="opt===q.correct_answer"
+                                style="color:var(--success-color);margin-left:.5rem;">✓</span>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="questions.length===0" class="empty-state">No questions added yet.</div>
+            </div>
+        </div>
+
+        <div *ngIf="exam.status==='pending'" class="content-card">
+            <h3 style="font-weight:800;margin-bottom:1rem;">🎯 Review Actions</h3>
+            <div class="form-group" style="margin-bottom:1rem;">
+                <label>Comment / Feedback (required for rejection)</label>
+                <textarea class="form-control" rows="3" [(ngModel)]="comment"
+                    placeholder="Add feedback for the instructor..."></textarea>
+            </div>
+            <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
+                <button class="btn btn-success" (click)="review('approve')" [disabled]="reviewing">✓ Approve
+                    Exam</button>
+                <button class="btn btn-danger" (click)="review('reject')" [disabled]="reviewing">✗ Reject Exam</button>
+            </div>
+        </div>
+    </ng-container>
+    <div *ngIf="!loading && !exam" class="empty-state">Exam not found.</div>
+</div>

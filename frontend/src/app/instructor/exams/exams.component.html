@@ -1,0 +1,70 @@
+<div class="page-header" style="display:flex;justify-content:space-between;align-items:center;">
+    <h2>My Exams</h2>
+    <button class="btn btn-primary" (click)="openCreate()">+ Create Exam</button>
+</div>
+<div class="page-body">
+    <div *ngIf="showForm" class="card" style="margin-bottom:1.5rem;">
+        <h3 style="margin-bottom:1rem;">{{ editing ? 'Edit' : 'Create' }} Exam</h3>
+        <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+            <div class="form-group" style="grid-column:1/-1;"><label>Title</label><input class="form-control"
+                    [(ngModel)]="form.title" /></div>
+            <div class="form-group">
+                <label>Course</label>
+                <select class="form-control" [(ngModel)]="form.course">
+                    <option *ngFor="let c of courses" [value]="c.id">{{ c.name }}</option>
+                </select>
+            </div>
+            <div class="form-group"><label>Duration (minutes)</label><input class="form-control" type="number"
+                    [(ngModel)]="form.duration_minutes" /></div>
+            <div class="form-group"><label>Total Marks</label><input class="form-control" type="number"
+                    [(ngModel)]="form.total_marks" /></div>
+            <div class="form-group"><label>Pass Marks</label><input class="form-control" type="number"
+                    [(ngModel)]="form.pass_marks" /></div>
+            <div class="form-group" style="grid-column:1/-1;"><label>Instructions</label><textarea class="form-control"
+                    [(ngModel)]="form.instructions" rows="3"></textarea></div>
+        </div>
+        <div style="display:flex;gap:0.75rem;margin-top:0.5rem;">
+            <button class="btn btn-primary" (click)="save()">Save</button>
+            <button class="btn btn-outline" (click)="showForm=false">Cancel</button>
+        </div>
+    </div>
+
+    <div *ngIf="loading">Loading...</div>
+    <div *ngIf="!loading" class="card" style="padding:0;overflow:hidden;">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Course</th>
+                    <th>Duration</th>
+                    <th>Status</th>
+                    <th>Questions</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let e of exams">
+                    <td>{{ e.title }}</td>
+                    <td>{{ e.course_name }}</td>
+                    <td>{{ e.duration_minutes }} min</td>
+                    <td><span class="badge" [ngClass]="statusBadge(e.status)">{{ e.status }}</span></td>
+                    <td>{{ e.question_count }}</td>
+                    <td style="display:flex;gap:0.4rem;flex-wrap:wrap;">
+                        <a [routerLink]="['/instructor/exams', e.id, 'questions']"
+                            class="btn btn-sm btn-outline">Questions</a>
+                        <button class="btn btn-sm btn-outline" (click)="openEdit(e)"
+                            *ngIf="e.status==='draft'||e.status==='rejected'">Edit</button>
+                        <button class="btn btn-sm btn-success" (click)="submitForApproval(e.id)"
+                            *ngIf="e.status==='draft'||e.status==='rejected'">Submit</button>
+                        <button class="btn btn-sm btn-danger" (click)="delete(e.id)"
+                            *ngIf="e.status==='draft'">Delete</button>
+                    </td>
+                </tr>
+                <tr *ngIf="exams.length===0">
+                    <td colspan="6" style="text-align:center;color:#6b7280;">No exams yet.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

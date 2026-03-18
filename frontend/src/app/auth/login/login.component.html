@@ -1,0 +1,31 @@
+<div class="login-page">
+    <div class="login-card">
+        <div class="login-header">
+            <img src="assets/images/logo1.png" alt="DMU Logo" class="login-logo" onerror="this.style.display='none'" />
+            <h1>Debre Markos University</h1>
+            <p>Online Examination System</p>
+        </div>
+
+        <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+            <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input id="username" type="text" class="form-control" [(ngModel)]="username" name="username"
+                    placeholder="Enter your username" autocomplete="username" required />
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input id="password" type="password" class="form-control" [(ngModel)]="password" name="password"
+                    placeholder="Enter your password" autocomplete="current-password" required />
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg w-full" [disabled]="loading">
+                🔐 {{ loading ? 'Signing in...' : 'Sign In' }}
+            </button>
+        </form>
+
+        <a routerLink="/forgot-password" class="forgot-link">🔑 Forgot Your Password?</a>
+    </div>
+</div>

@@ -1,0 +1,141 @@
+<div class="page-header">
+    <h1 class="page-title">⚙️ System Settings</h1>
+    <p class="page-subtitle">Configure and manage your examination system</p>
+</div>
+<div class="admin-content" style="padding-top:0;">
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.5rem;">
+
+        <div class="content-card">
+            <h3 style="font-weight:800;margin-bottom:1rem;color:var(--primary-color);">🔧 General</h3>
+            <div
+                style="display:flex;justify-content:space-between;padding:.75rem 0;border-bottom:1px solid var(--border-color);">
+                <span>System Name</span><strong>OES</strong>
+            </div>
+            <div
+                style="display:flex;justify-content:space-between;padding:.75rem 0;border-bottom:1px solid var(--border-color);">
+                <span>Institution</span><strong>Debre Markos University</strong>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:.75rem 0;">
+                <span>Academic Year</span><strong>2025/2026</strong>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <h3 style="font-weight:800;margin-bottom:1rem;color:var(--primary-color);">💾 Database</h3>
+            <div
+                style="display:flex;justify-content:space-between;align-items:center;padding:.75rem 0;border-bottom:1px solid var(--border-color);">
+                <span>Status</span><span class="badge badge-success">Connected</span>
+            </div>
+            <div
+                style="display:flex;justify-content:space-between;align-items:center;padding:.75rem 0;border-bottom:1px solid var(--border-color);">
+                <span>Auto Backup</span>
+                <div (click)="toggle('autoBackup')" [class.active]="toggles['autoBackup']" class="toggle-switch"></div>
+            </div>
+            <div style="margin-top:1rem;">
+                <a routerLink="/admin/database-backup" class="btn btn-primary btn-sm">Manage Backups →</a>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <h3 style="font-weight:800;margin-bottom:1rem;color:var(--primary-color);">🔒 Security</h3>
+            <div
+                style="display:flex;justify-content:space-between;padding:.75rem 0;border-bottom:1px solid var(--border-color);">
+                <span>Session Timeout</span><strong>30 minutes</strong>
+            </div>
+            <div
+                style="display:flex;justify-content:space-between;padding:.75rem 0;border-bottom:1px solid var(--border-color);">
+                <span>Password Policy</span><strong>Strong</strong>
+            </div>
+            <div style="margin-top:1rem;">
+                <a routerLink="/admin/security-logs" class="btn btn-primary btn-sm">View Security Logs →</a>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <h3 style="font-weight:800;margin-bottom:1rem;color:var(--primary-color);">📧 Email</h3>
+            <div
+                style="display:flex;justify-content:space-between;align-items:center;padding:.75rem 0;border-bottom:1px solid var(--border-color);">
+                <span>Email Notifications</span>
+                <div (click)="toggle('emailNotifications')" [class.active]="toggles['emailNotifications']"
+                    class="toggle-switch"></div>
+            </div>
+            <div
+                style="display:flex;justify-content:space-between;padding:.75rem 0;border-bottom:1px solid var(--border-color);">
+                <span>SMTP Status</span><span class="badge badge-success">Configured</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:.75rem 0;">
+                <span>From Email</span><strong>noreply&#64;dmu.edu</strong>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <h3 style="font-weight:800;margin-bottom:1rem;color:var(--primary-color);">📝 Examination</h3>
+            <div
+                style="display:flex;justify-content:space-between;align-items:center;padding:.75rem 0;border-bottom:1px solid var(--border-color);">
+                <span>Auto Submit</span>
+                <div (click)="toggle('autoSubmit')" [class.active]="toggles['autoSubmit']" class="toggle-switch"></div>
+            </div>
+            <div
+                style="display:flex;justify-content:space-between;align-items:center;padding:.75rem 0;border-bottom:1px solid var(--border-color);">
+                <span>Shuffle Questions</span>
+                <div (click)="toggle('shuffleQuestions')" [class.active]="toggles['shuffleQuestions']"
+                    class="toggle-switch"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:.75rem 0;">
+                <span>Show Results Immediately</span>
+                <div (click)="toggle('showResults')" [class.active]="toggles['showResults']" class="toggle-switch">
+                </div>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <h3 style="font-weight:800;margin-bottom:1rem;color:var(--primary-color);">🛠️ Maintenance</h3>
+            <div
+                style="display:flex;justify-content:space-between;align-items:center;padding:.75rem 0;border-bottom:1px solid var(--border-color);">
+                <span>Maintenance Mode</span>
+                <div (click)="toggle('maintenanceMode')" [class.active]="toggles['maintenanceMode']"
+                    class="toggle-switch"></div>
+            </div>
+            <div
+                style="display:flex;justify-content:space-between;padding:.75rem 0;border-bottom:1px solid var(--border-color);">
+                <span>System Version</span><strong>v2.0.0</strong>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:.75rem 0;">
+                <span>Cache</span><strong>Enabled</strong>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .toggle-switch {
+        position: relative;
+        width: 46px;
+        height: 24px;
+        background: #ccc;
+        border-radius: 24px;
+        cursor: pointer;
+        transition: background .3s;
+        flex-shrink: 0;
+    }
+
+    .toggle-switch.active {
+        background: var(--success-color, #28a745);
+    }
+
+    .toggle-switch::after {
+        content: '';
+        position: absolute;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: white;
+        top: 3px;
+        left: 3px;
+        transition: left .3s;
+    }
+
+    .toggle-switch.active::after {
+        left: 25px;
+    }
+</style>

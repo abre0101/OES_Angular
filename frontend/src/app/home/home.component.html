@@ -1,0 +1,145 @@
+<!-- Header -->
+<header class="site-header">
+    <div class="header-top">
+        <div class="container">
+            <div class="university-branding">
+                <div class="university-logo">
+                    <img src="assets/images/logo1.png" alt="DMU Logo" style="width:70px;height:70px;object-fit:contain;"
+                        onerror="this.style.display='none'" />
+                </div>
+                <div class="university-info">
+                    <h1>Debre Markos University</h1>
+                    <p>Online Examination System</p>
+                </div>
+            </div>
+            <div class="header-cta">
+                <a routerLink="/login" class="btn btn-outline-white btn-sm">🔐 Login</a>
+            </div>
+        </div>
+    </div>
+    <nav class="main-nav">
+        <div class="container">
+            <ul class="nav-menu">
+                <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">🏠 Home</a>
+                </li>
+                <li><a routerLink="/about" routerLinkActive="active">ℹ️ About Us</a></li>
+                <li><a routerLink="/help" routerLinkActive="active">❓ Help</a></li>
+                <li><a routerLink="/faqs" routerLinkActive="active">📚 FAQs</a></li>
+                <li><a routerLink="/contact" routerLinkActive="active">📞 Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<!-- Hero Carousel -->
+<section class="hero-carousel-section">
+    <div class="carousel-container">
+        <div *ngFor="let slide of slides; let i = index" class="carousel-slide" [class.active]="i === currentSlide">
+            <img [src]="slide.img" [alt]="slide.caption" class="carousel-bg-img"
+                onerror="this.src='assets/images/exam.webp'" />
+            <div class="carousel-overlay">
+                <div class="container">
+                    <div class="carousel-caption">
+                        <h2>{{ slide.caption }}</h2>
+                        <p>{{ slide.sub }}</p>
+                        <a [routerLink]="slide.link" class="btn btn-hero">{{ slide.btn }}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-btn prev" (click)="prevSlide()">❮</button>
+        <button class="carousel-btn next" (click)="nextSlide()">❯</button>
+        <div class="carousel-dots">
+            <span *ngFor="let s of slides; let i = index" class="dot" [class.active]="i === currentSlide"
+                (click)="goTo(i)"></span>
+        </div>
+    </div>
+</section>
+
+<!-- Stats -->
+<section class="stats-section">
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">👨‍🎓</div>
+                <span class="stat-number">1000+</span>
+                <span class="stat-label">Active Students</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">👨‍🏫</div>
+                <span class="stat-number">50+</span>
+                <span class="stat-label">Instructors</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📈</div>
+                <span class="stat-number">98%</span>
+                <span class="stat-label">Success Rate</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🕐</div>
+                <span class="stat-number">24/7</span>
+                <span class="stat-label">Availability</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features -->
+<section class="features-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Key Features</h2>
+            <p>Everything you need for a seamless examination experience</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <span class="feature-icon">📝</span>
+                <h3>Online Examinations</h3>
+                <p>Take exams securely from anywhere with auto-submit and timer functionality.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">📊</span>
+                <h3>Instant Results</h3>
+                <p>Get your results immediately after submission with detailed answer review.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">✅</span>
+                <h3>Approval Workflow</h3>
+                <p>Structured exam approval process ensuring quality and academic integrity.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🔒</span>
+                <h3>Secure Platform</h3>
+                <p>Role-based access control and JWT authentication keep your data safe.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Login Section -->
+<section id="login" class="login-section">
+    <div class="container">
+        <div class="login-card-home">
+            <img src="assets/images/logo1.png" alt="DMU Logo"
+                style="width:90px;height:90px;object-fit:contain;border-radius:14px;margin:0 auto 1.25rem;display:block;box-shadow:0 4px 15px rgba(30,58,138,0.2);"
+                onerror="this.style.display='none'" />
+            <h2>Ready to Get Started?</h2>
+            <p>Access your portal to take exams, view results, and manage your profile</p>
+            <div class="login-buttons">
+                <a routerLink="/login" class="btn btn-student">
+                    <span>👨‍🎓</span> Student Login
+                </a>
+                <a routerLink="/login" class="btn btn-staff">
+                    <span>👨‍💼</span> Staff Login
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="site-footer">
+    <div class="container">
+        <p>&copy; 2026 Debre Markos University. All rights reserved.</p>
+    </div>
+</footer>

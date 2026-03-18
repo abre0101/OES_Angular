@@ -1,0 +1,97 @@
+<div class="page-header">
+    <h1 class="page-title">👤 My Profile</h1>
+    <p class="page-subtitle">Manage your account information</p>
+</div>
+<div class="admin-content"
+    style="padding-top:0;display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start;">
+
+    <!-- Profile Info -->
+    <div class="content-card">
+        <div class="card-header" style="margin-bottom:1.5rem;">
+            <h2 class="card-title">Account Information</h2>
+            <button class="btn btn-sm btn-outline" (click)="editMode=!editMode">{{ editMode ? 'Cancel' : '✏️ Edit'
+                }}</button>
+        </div>
+        <div *ngIf="success" class="alert alert-success">{{ success }}</div>
+        <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+        <div *ngIf="loading" class="empty-state">Loading...</div>
+
+        <ng-container *ngIf="!loading">
+            <!-- View Mode -->
+            <div *ngIf="!editMode">
+                <div style="text-align:center;margin-bottom:2rem;">
+                    <div
+                        style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#1e3a8a,#3b82f6);display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:900;color:white;margin:0 auto 1rem;">
+                        {{ user.first_name?.[0] || user.username?.[0] | uppercase }}
+                    </div>
+                    <h3 style="font-weight:800;font-size:1.25rem;">{{ user.full_name || user.username }}</h3>
+                    <span class="badge badge-info" style="margin-top:.5rem;">{{ user.role | titlecase }}</span>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:.75rem;">
+                    <div
+                        style="display:flex;justify-content:space-between;padding:.75rem 0;border-bottom:1px solid var(--border-color);">
+                        <span style="font-weight:700;color:var(--text-secondary);">Username</span><span
+                            style="font-weight:600;">{{ user.username }}</span>
+                    </div>
+                    <div
+                        style="display:flex;justify-content:space-between;padding:.75rem 0;border-bottom:1px solid var(--border-color);">
+                        <span style="font-weight:700;color:var(--text-secondary);">Email</span><span
+                            style="font-weight:600;">{{ user.email }}</span>
+                    </div>
+                    <div
+                        style="display:flex;justify-content:space-between;padding:.75rem 0;border-bottom:1px solid var(--border-color);">
+                        <span style="font-weight:700;color:var(--text-secondary);">Department</span><span
+                            style="font-weight:600;">{{ user.department || '—' }}</span>
+                    </div>
+                    <div
+                        style="display:flex;justify-content:space-between;padding:.75rem 0;border-bottom:1px solid var(--border-color);">
+                        <span style="font-weight:700;color:var(--text-secondary);">Phone</span><span
+                            style="font-weight:600;">{{ user.phone || '—' }}</span>
+                    </div>
+                    <div *ngIf="user.student_id"
+                        style="display:flex;justify-content:space-between;padding:.75rem 0;border-bottom:1px solid var(--border-color);">
+                        <span style="font-weight:700;color:var(--text-secondary);">Student ID</span><span
+                            style="font-weight:600;">{{ user.student_id }}</span>
+                    </div>
+                    <div *ngIf="user.employee_id" style="display:flex;justify-content:space-between;padding:.75rem 0;">
+                        <span style="font-weight:700;color:var(--text-secondary);">Employee ID</span><span
+                            style="font-weight:600;">{{ user.employee_id }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit Mode -->
+            <div *ngIf="editMode">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+                    <div class="form-group"><label>First Name</label><input class="form-control"
+                            [(ngModel)]="form.first_name" /></div>
+                    <div class="form-group"><label>Last Name</label><input class="form-control"
+                            [(ngModel)]="form.last_name" /></div>
+                    <div class="form-group" style="grid-column:1/-1;"><label>Email</label><input class="form-control"
+                            type="email" [(ngModel)]="form.email" /></div>
+                    <div class="form-group"><label>Phone</label><input class="form-control" [(ngModel)]="form.phone" />
+                    </div>
+                    <div class="form-group"><label>Department</label><input class="form-control"
+                            [(ngModel)]="form.department" /></div>
+                </div>
+                <button class="btn btn-primary" (click)="saveProfile()" [disabled]="saving">{{ saving ? 'Saving...' :
+                    'Save Changes' }}</button>
+            </div>
+        </ng-container>
+    </div>
+
+    <!-- Change Password -->
+    <div class="content-card">
+        <h2 class="card-title" style="margin-bottom:1.5rem;">🔒 Change Password</h2>
+        <div *ngIf="pwSuccess" class="alert alert-success">{{ pwSuccess }}</div>
+        <div *ngIf="pwError" class="alert alert-danger">{{ pwError }}</div>
+        <div class="form-group"><label>Current Password</label><input class="form-control" type="password"
+                [(ngModel)]="pwForm.old_password" /></div>
+        <div class="form-group"><label>New Password</label><input class="form-control" type="password"
+                [(ngModel)]="pwForm.new_password" /></div>
+        <div class="form-group"><label>Confirm New Password</label><input class="form-control" type="password"
+                [(ngModel)]="pwForm.confirm" /></div>
+        <button class="btn btn-primary" (click)="changePassword()" [disabled]="savingPw">{{ savingPw ? 'Updating...' :
+            'Update Password' }}</button>
+    </div>
+</div>

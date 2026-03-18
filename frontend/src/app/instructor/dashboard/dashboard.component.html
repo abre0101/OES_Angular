@@ -1,0 +1,51 @@
+<div class="page-header">
+    <h1 class="page-title">📊 Instructor Dashboard</h1>
+</div>
+<div class="admin-content" style="padding-top:0;">
+    <div *ngIf="loading" class="empty-state">Loading...</div>
+    <ng-container *ngIf="!loading">
+        <div class="stats-grid">
+            <div class="stat-card blue">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">{{ stats.exams }}</div>
+                        <div class="stat-label">My Exams</div>
+                    </div>
+                    <div class="stat-icon">📝</div>
+                </div>
+            </div>
+            <div class="stat-card orange">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">{{ stats.pending }}</div>
+                        <div class="stat-label">Pending Approval</div>
+                    </div>
+                    <div class="stat-icon">⏳</div>
+                </div>
+            </div>
+            <div class="stat-card purple">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">{{ stats.questions }}</div>
+                        <div class="stat-label">Questions</div>
+                    </div>
+                    <div class="stat-icon">❓</div>
+                </div>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">{{ stats.courses }}</div>
+                        <div class="stat-label">My Courses</div>
+                    </div>
+                    <div class="stat-icon">📚</div>
+                </div>
+            </div>
+        </div>
+        <div style="display:flex;gap:1rem;margin-top:1.5rem;flex-wrap:wrap;">
+            <a routerLink="/instructor/exams" class="btn btn-primary">Manage Exams →</a>
+            <a routerLink="/instructor/questions" class="btn btn-secondary">Manage Questions →</a>
+            <a routerLink="/instructor/results-overview" class="btn btn-secondary">View Results →</a>
+        </div>
+    </ng-container>
+</div>

@@ -1,0 +1,159 @@
+.pub-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.pub-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.pub-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 4px solid #d4af37;
+}
+
+.pub-header-top {
+    background: linear-gradient(135deg, #1a2b4a 0%, #2c5364 100%);
+    padding: 1.25rem 0;
+}
+
+.pub-header-top .pub-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+}
+
+.pub-branding {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.pub-logo {
+    width: 72px;
+    height: 72px;
+    object-fit: contain;
+}
+
+.pub-uni-info h1 {
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: #fff;
+    line-height: 1.2;
+    margin: 0;
+}
+
+.pub-uni-info p {
+    font-size: 1rem;
+    color: #ffd700;
+    font-weight: 700;
+    margin: .25rem 0 0;
+}
+
+.pub-btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .65rem 1.25rem;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: .9rem;
+    border: 2px solid rgba(255, 255, 255, .6);
+    color: white;
+    background: transparent;
+    text-decoration: none;
+    transition: all .3s;
+}
+
+.pub-btn-outline:hover {
+    background: white;
+    color: #1a2b4a;
+}
+
+.pub-nav {
+    background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
+}
+
+.pub-nav-menu {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+}
+
+.pub-nav-menu li a {
+    display: block;
+    padding: .9rem 2rem;
+    color: #1a2b4a;
+    text-decoration: none;
+    font-weight: 700;
+    transition: all .3s;
+    position: relative;
+}
+
+.pub-nav-menu li a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 3px;
+    background: #1a2b4a;
+    transition: all .3s;
+    transform: translateX(-50%);
+}
+
+.pub-nav-menu li a:hover,
+.pub-nav-menu li a.active {
+    background: rgba(26, 43, 74, .15);
+}
+
+.pub-nav-menu li a:hover::after,
+.pub-nav-menu li a.active::after {
+    width: 80%;
+}
+
+.pub-main {
+    flex: 1;
+    background: #fff;
+}
+
+.pub-footer {
+    background: linear-gradient(135deg, #1a2b4a 0%, #2c5364 100%);
+    color: white;
+    padding: 1.75rem 0;
+    text-align: center;
+    border-top: 4px solid #d4af37;
+}
+
+.pub-footer p {
+    margin: 0;
+    color: rgba(255, 255, 255, .85);
+    font-size: .9rem;
+}
+
+@media(max-width:768px) {
+    .pub-header-top .pub-container {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .pub-branding {
+        flex-direction: column;
+    }
+
+    .pub-uni-info h1 {
+        font-size: 1.1rem;
+    }
+
+    .pub-nav-menu {
+        flex-wrap: wrap;
+    }
+}

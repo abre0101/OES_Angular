@@ -1,0 +1,42 @@
+<div class="page-header">
+    <h1 class="page-title">🔍 Search</h1>
+    <p class="page-subtitle">Search across students, courses, and exams</p>
+</div>
+<div class="admin-content" style="padding-top:0;max-width:800px;">
+    <div class="content-card" style="margin-bottom:1.5rem;">
+        <input type="text" class="form-control" placeholder="Search students, courses, exams..." [(ngModel)]="query"
+            (input)="onInput()" style="font-size:1.1rem;padding:1rem;">
+    </div>
+    <div *ngIf="loading" class="empty-state">Searching...</div>
+    <ng-container *ngIf="!loading && results">
+        <div *ngIf="!hasResults" class="empty-state">No results for "{{ query }}".</div>
+        <ng-container *ngIf="results?.students?.length">
+            <div class="content-card" style="margin-bottom:1rem;">
+                <h3 style="font-weight:800;margin-bottom:1rem;">👨‍🎓 Students</h3>
+                <div *ngFor="let s of results.students"
+                    style="padding:.6rem 0;border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;">
+                    <span>{{ s.full_name ?? s.username }}</span>
+                    <span class="badge badge-info">{{ s.department_name }}</span>
+                </div>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="results?.courses?.length">
+            <div class="content-card" style="margin-bottom:1rem;">
+                <h3 style="font-weight:800;margin-bottom:1rem;">📚 Courses</h3>
+                <div *ngFor="let c of results.courses"
+                    style="padding:.6rem 0;border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;">
+                    <span>{{ c.name }}</span><span class="badge badge-info">{{ c.code }}</span>
+                </div>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="results?.exams?.length">
+            <div class="content-card">
+                <h3 style="font-weight:800;margin-bottom:1rem;">📝 Exams</h3>
+                <div *ngFor="let e of results.exams"
+                    style="padding:.6rem 0;border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;">
+                    <span>{{ e.title }}</span><span class="badge badge-info">{{ e.status }}</span>
+                </div>
+            </div>
+        </ng-container>
+    </ng-container>
+</div>

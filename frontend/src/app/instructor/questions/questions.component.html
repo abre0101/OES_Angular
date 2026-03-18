@@ -1,0 +1,78 @@
+<div class="page-header" style="display:flex;justify-content:space-between;align-items:center;">
+    <h2>Question Bank</h2>
+    <button class="btn btn-primary" (click)="openCreate()">+ Add Question</button>
+</div>
+<div class="page-body">
+    <div *ngIf="showForm" class="card" style="margin-bottom:1.5rem;">
+        <h3 style="margin-bottom:1rem;">{{ editing ? 'Edit' : 'Add' }} Question</h3>
+        <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+            <div class="form-group" style="grid-column:1/-1;"><label>Question Text</label><textarea class="form-control"
+                    [(ngModel)]="form.text" rows="3"></textarea></div>
+            <div class="form-group">
+                <label>Course</label>
+                <select class="form-control" [(ngModel)]="form.course">
+                    <option *ngFor="let c of courses" [value]="c.id">{{ c.name }}</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Type</label>
+                <select class="form-control" [(ngModel)]="form.question_type">
+                    <option value="mcq">Multiple Choice</option>
+                    <option value="true_false">True/False</option>
+                    <option value="short_answer">Short Answer</option>
+                </select>
+            </div>
+            <div class="form-group"><label>Topic</label><input class="form-control" [(ngModel)]="form.topic" /></div>
+            <div class="form-group"><label>Points</label><input class="form-control" type="number"
+                    [(ngModel)]="form.points" /></div>
+            <ng-container *ngIf="form.question_type==='mcq'">
+                <div class="form-group"><label>Option A</label><input class="form-control"
+                        [(ngModel)]="form.option_a" /></div>
+                <div class="form-group"><label>Option B</label><input class="form-control"
+                        [(ngModel)]="form.option_b" /></div>
+                <div class="form-group"><label>Option C</label><input class="form-control"
+                        [(ngModel)]="form.option_c" /></div>
+                <div class="form-group"><label>Option D</label><input class="form-control"
+                        [(ngModel)]="form.option_d" /></div>
+            </ng-container>
+            <div class="form-group" style="grid-column:1/-1;"><label>Correct Answer</label><input class="form-control"
+                    [(ngModel)]="form.correct_answer" /></div>
+        </div>
+        <div style="display:flex;gap:0.75rem;margin-top:0.5rem;">
+            <button class="btn btn-primary" (click)="save()">Save</button>
+            <button class="btn btn-outline" (click)="showForm=false">Cancel</button>
+        </div>
+    </div>
+
+    <div *ngIf="loading">Loading...</div>
+    <div *ngIf="!loading" class="card" style="padding:0;overflow:hidden;">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Question</th>
+                    <th>Type</th>
+                    <th>Topic</th>
+                    <th>Points</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let q of questions">
+                    <td>{{ q.text | slice:0:80 }}</td>
+                    <td>{{ q.question_type }}</td>
+                    <td>{{ q.topic }}</td>
+                    <td>{{ q.points }}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline" (click)="openEdit(q)">Edit</button>
+                        <button class="btn btn-sm btn-danger" style="margin-left:0.5rem;"
+                            (click)="delete(q.id)">Delete</button>
+                    </td>
+                </tr>
+                <tr *ngIf="questions.length===0">
+                    <td colspan="5" style="text-align:center;color:#6b7280;">No questions yet.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

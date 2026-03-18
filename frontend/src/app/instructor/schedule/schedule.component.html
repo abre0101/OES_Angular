@@ -1,0 +1,60 @@
+<div class="page-header">
+    <h1 class="page-title">📅 Exam Schedule</h1>
+    <button class="btn btn-primary" (click)="showForm=!showForm">{{ showForm ? 'Cancel' : '+ New Schedule' }}</button>
+</div>
+<div class="admin-content" style="padding-top:0;">
+    <div *ngIf="showForm" class="content-card" style="margin-bottom:1.5rem;">
+        <h3 style="font-weight:800;margin-bottom:1rem;">Create Schedule</h3>
+        <div *ngIf="error" style="color:#dc3545;margin-bottom:.75rem;">{{ error }}</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;">
+            <div class="form-group">
+                <label>Exam</label>
+                <select class="form-control" [(ngModel)]="form.exam">
+                    <option value="">Select exam...</option>
+                    <option *ngFor="let e of exams" [value]="e.id">{{ e.title }}</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Start Time</label>
+                <input type="datetime-local" class="form-control" [(ngModel)]="form.start_time">
+            </div>
+            <div class="form-group">
+                <label>End Time</label>
+                <input type="datetime-local" class="form-control" [(ngModel)]="form.end_time">
+            </div>
+            <div class="form-group">
+                <label>Location</label>
+                <input type="text" class="form-control" placeholder="Room / Hall..." [(ngModel)]="form.location">
+            </div>
+        </div>
+        <button class="btn btn-primary" (click)="save()" [disabled]="saving">{{ saving ? 'Saving...' : 'Save Schedule'
+            }}</button>
+    </div>
+
+    <div *ngIf="loading" class="empty-state">Loading...</div>
+    <div *ngIf="!loading" class="content-card" style="padding:0;overflow:hidden;">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Exam</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Location</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let s of schedules">
+                    <td style="font-weight:600;">{{ s.exam_title ?? s.exam }}</td>
+                    <td>{{ s.start_time | date:'medium' }}</td>
+                    <td>{{ s.end_time | date:'medium' }}</td>
+                    <td>{{ s.location ?? '—' }}</td>
+                    <td><button class="btn btn-danger btn-sm" (click)="delete(s.id)">Delete</button></td>
+                </tr>
+                <tr *ngIf="schedules.length===0">
+                    <td colspan="5" class="empty-state">No schedules yet.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

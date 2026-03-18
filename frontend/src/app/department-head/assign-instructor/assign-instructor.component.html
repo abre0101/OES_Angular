@@ -1,0 +1,30 @@
+<div class="page-header">
+    <h1 class="page-title">👨‍🏫 Assign Instructor</h1>
+</div>
+<div class="admin-content" style="padding-top:0;max-width:700px;">
+    <div class="content-card">
+        <div *ngIf="success" class="alert alert-success">{{ success }}</div>
+        <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+        <div class="form-group">
+            <label>Instructor</label>
+            <select class="form-control" [(ngModel)]="form.instructor_id">
+                <option value="">-- Select Instructor --</option>
+                <option *ngFor="let i of instructors" [value]="i.id">{{ i.full_name }} ({{ i.username }})</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Course</label>
+            <select class="form-control" [(ngModel)]="form.course_id">
+                <option value="">-- Select Course --</option>
+                <option *ngFor="let c of courses" [value]="c.id">{{ c.code }} - {{ c.name }}</option>
+            </select>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+            <div class="form-group"><label>Academic Year</label><input class="form-control"
+                    [(ngModel)]="form.academic_year" placeholder="e.g. 2025/2026" /></div>
+            <div class="form-group"><label>Semester</label><input class="form-control" [(ngModel)]="form.semester"
+                    placeholder="e.g. Semester 1" /></div>
+        </div>
+        <button class="btn btn-primary" (click)="assign()" [disabled]="loading">Assign Instructor</button>
+    </div>
+</div>

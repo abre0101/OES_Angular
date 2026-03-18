@@ -1,0 +1,28 @@
+<div class="page-header">
+    <h1 class="page-title">🔔 Notifications</h1>
+</div>
+<div class="admin-content" style="padding-top:0;max-width:700px;">
+    <div *ngIf="loading" class="empty-state">Loading...</div>
+    <ng-container *ngIf="!loading">
+        <div *ngFor="let e of activeExams" class="content-card"
+            style="margin-bottom:1rem;border-left:4px solid var(--success-color);">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div>
+                    <div style="font-weight:800;">📝 New Exam Available</div>
+                    <div style="color:var(--text-secondary);font-size:.9rem;margin-top:.25rem;">{{ e.title }} — {{
+                        e.course_name }}</div>
+                </div>
+                <a [routerLink]="['/student/exams', e.id, 'instructions']" class="btn btn-primary btn-sm">View →</a>
+            </div>
+        </div>
+        <div *ngFor="let i of resolvedIssues" class="content-card"
+            style="margin-bottom:1rem;border-left:4px solid var(--success-color);">
+            <div style="font-weight:800;">✅ Issue Resolved</div>
+            <div style="color:var(--text-secondary);font-size:.9rem;margin-top:.25rem;">Your issue "{{ i.title }}" has
+                been resolved.</div>
+        </div>
+        <div *ngIf="activeExams.length===0 && resolvedIssues.length===0" class="content-card empty-state">
+            No new notifications.
+        </div>
+    </ng-container>
+</div>

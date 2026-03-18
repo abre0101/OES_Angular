@@ -1,0 +1,64 @@
+<div *ngIf="loading" style="display:flex;align-items:center;justify-content:center;min-height:100vh;">Loading exam...
+</div>
+
+<div *ngIf="error && !started"
+    style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:1rem;">
+    <div class="alert alert-danger">{{ error }}</div>
+    <a routerLink="/student/exams" class="btn btn-outline">Back to Exams</a>
+</div>
+
+<div *ngIf="started && !loading" class="exam-wrapper">
+    <!-- Header bar -->
+    <div class="exam-header">
+        <div>
+            <strong>{{ exam.title }}</strong>
+            <span style="margin-left:1rem;color:#6b7280;font-size:0.9rem;">{{ exam.course_name }}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:1.5rem;">
+            <span style="font-size:0.9rem;color:#6b7280;">{{ answeredCount }}/{{ questions.length }} answered</span>
+            <div class="timer" [class.timer-warning]="timeLeft < 300">⏱ {{ timeDisplay }}</div>
+        </div>
+    </div>
+
+    <!-- Questions -->
+    <div class="exam-body">
+        <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+        <div *ngFor="let q of questions; let i=index" class="question-card">
+            <div class="question-number">Question {{ i + 1 }} <span style="font-size:0.8rem;color:#6b7280;">({{ q.points
+                    }} pts)</span></div>
+            <div class="question-text">{{ q.text }}</div>
+
+            <!-- MCQ -->
+            <div *ngIf="q.question_type === 'mcq'" class="options">
+                <label *ngFor="let opt of ['A','B','C','D']" class="option-label"
+                    [class.selected]="answers[q.id] === opt.toLowerCase()">
+                    <input type="radio" [name]="'q'+q.id" [value]="opt.toLowerCase()" [(ngModel)]="answers[q.id]" />
+                    <span class="option-key">{{ opt }}</span>
+                    <span>{{ q['option_' + opt.toLowerCase()] }}</span>
+                </label>
+            </div>
+
+            <!-- True/False -->
+            <div *ngIf="q.question_type === 'true_false'" class="options">
+                <label class="option-label" [class.selected]="answers[q.id]==='true'">
+                    <input type="radio" [name]="'q'+q.id" value="true" [(ngModel)]="answers[q.id]" /> True
+                </label>
+                <label class="option-label" [class.selected]="answers[q.id]==='false'">
+                    <input type="radio" [name]="'q'+q.id" value="false" [(ngModel)]="answers[q.id]" /> False
+                </label>
+            </div>
+
+            <!-- Short Answer -->
+            <div *ngIf="q.question_type === 'short_answer'">
+                <input class="form-control" [(ngModel)]="answers[q.id]" placeholder="Your answer..." />
+            </div>
+        </div>
+
+        <div style="margin-top:2rem;text-align:center;">
+            <button class="btn btn-primary btn-lg" (click)="submit()" [disabled]="submitting">
+                {{ submitting ? 'Submitting...' : 'Submit Exam' }}
+            </button>
+        </div>
+    </div>
+</div>

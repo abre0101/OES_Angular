@@ -6,30 +6,40 @@
 *~
 .DS_Store
 
-# Dreamweaver files
-_notes/
-_mmServerScripts/
+# OS files
+Thumbs.db
+desktop.ini
 
-# Temporary files
+# Temporary / log files
 *.tmp
 *.bak
 *.log
 
+# Sensitive files
+.env
+config.php
+
+# Node
+node_modules/
+frontend/.angular/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+env/
+
+# Django
+backend/media/
+backend/staticfiles/
+
 # Database backups
 *.sql.backup
-database/backups/
 backups/
-
-# Sensitive files (if any)
-config.php
-.env
-
-# Node modules (if using npm)
-node_modules/
-
-# Composer (if using)
-vendor/
-
-# OS files
-Thumbs.db
-desktop.ini

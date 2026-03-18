@@ -1,0 +1,42 @@
+<div class="page-header">
+    <h1 class="page-title">📊 Department Head Dashboard</h1>
+</div>
+<div class="admin-content" style="padding-top:0;">
+    <div *ngIf="loading" class="empty-state">Loading...</div>
+    <ng-container *ngIf="!loading">
+        <div class="stats-grid">
+            <div class="stat-card orange">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">{{ pending }}</div>
+                        <div class="stat-label">Pending Approvals</div>
+                    </div>
+                    <div class="stat-icon">⏳</div>
+                </div>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">{{ approved }}</div>
+                        <div class="stat-label">Approved Exams</div>
+                    </div>
+                    <div class="stat-icon">✅</div>
+                </div>
+            </div>
+            <div class="stat-card blue">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">{{ total }}</div>
+                        <div class="stat-label">Total Exams</div>
+                    </div>
+                    <div class="stat-icon">📝</div>
+                </div>
+            </div>
+        </div>
+        <div style="display:flex;gap:1rem;margin-top:1.5rem;flex-wrap:wrap;">
+            <a routerLink="/department-head/approvals" class="btn btn-primary">Review Pending →</a>
+            <a routerLink="/department-head/performance-reports" class="btn btn-secondary">Performance Reports →</a>
+            <a routerLink="/department-head/monitor-exams" class="btn btn-secondary">Monitor Exams →</a>
+        </div>
+    </ng-container>
+</div>

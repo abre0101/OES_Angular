@@ -1,0 +1,57 @@
+<div class="page-header">
+    <h1 class="page-title">📥 Bulk Import Students</h1>
+    <p class="page-subtitle">Import multiple students via CSV</p>
+</div>
+<div class="admin-content" style="padding-top:0;max-width:900px;">
+    <div *ngIf="message" class="content-card" style="margin-bottom:1rem;border-left:4px solid"
+        [style.border-color]="messageType==='success' ? 'var(--success-color)' : '#dc3545'">
+        {{ message }}
+    </div>
+
+    <div class="content-card" style="margin-bottom:1.5rem;">
+        <h3 style="font-weight:800;margin-bottom:.75rem;">CSV Format</h3>
+        <p style="color:var(--text-secondary);font-size:.9rem;margin-bottom:.75rem;">
+            Paste CSV with headers: <code>username, email, full_name, password, department_id</code>
+        </p>
+        <pre style="background:var(--bg-light);padding:1rem;border-radius:6px;font-size:.85rem;overflow-x:auto;">username,email,full_name,password,department_id
+john.doe,john&#64;dmu.edu,John Doe,Pass1234,1
+jane.smith,jane&#64;dmu.edu,Jane Smith,Pass1234,1</pre>
+    </div>
+
+    <div class="content-card" style="margin-bottom:1.5rem;">
+        <div class="form-group">
+            <label>Paste CSV Data</label>
+            <textarea class="form-control" rows="8" [(ngModel)]="csvText" placeholder="Paste CSV here..."></textarea>
+        </div>
+        <div *ngIf="error" style="color:#dc3545;margin-bottom:.75rem;">{{ error }}</div>
+        <button class="btn btn-primary" (click)="parseCSV()">Preview</button>
+    </div>
+
+    <div *ngIf="preview.length" class="content-card" style="padding:0;overflow:hidden;">
+        <div
+            style="padding:1rem 1.5rem;border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;align-items:center;">
+            <h3 style="font-weight:800;margin:0;">Preview ({{ preview.length }} rows)</h3>
+            <button class="btn btn-success" (click)="import()" [disabled]="importing">
+                {{ importing ? 'Importing...' : '📥 Import All' }}
+            </button>
+        </div>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Full Name</th>
+                    <th>Dept ID</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let r of preview">
+                    <td>{{ r.username }}</td>
+                    <td>{{ r.email }}</td>
+                    <td>{{ r.full_name }}</td>
+                    <td>{{ r.department_id }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

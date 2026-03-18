@@ -1,0 +1,91 @@
+<div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar admin-theme" [class.minimized]="minimized()">
+        <div class="sidebar-header">
+            <div class="sidebar-brand-wrapper">
+                <div class="brand-logo">
+                    <img src="assets/images/logo1.png" alt="DMU Logo"
+                        style="width:60px;height:60px;object-fit:contain;border-radius:10px;"
+                        onerror="this.style.display='none'" />
+                </div>
+                <div class="brand-text" *ngIf="!minimized()">
+                    <h2 class="brand-title">{{ title }}</h2>
+                    <span class="brand-subtitle">{{ subtitle }}</span>
+                </div>
+            </div>
+            <button class="sidebar-toggle-btn" (click)="toggleMinimize()" title="Toggle Sidebar">
+                {{ minimized() ? '▶' : '◀' }}
+            </button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ng-container *ngFor="let item of navItems; let i = index">
+                <div class="sidebar-divider" *ngIf="i > 0 && i % 3 === 0"></div>
+                <a class="sidebar-nav-item" [routerLink]="item.route" routerLinkActive="active"
+                    [attr.data-tooltip]="item.label">
+                    <span class="sidebar-nav-icon">{{ item.icon }}</span>
+                    <span *ngIf="!minimized()">{{ item.label }}</span>
+                </a>
+            </ng-container>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="sidebar-user" *ngIf="!minimized()">
+                <div class="sidebar-user-avatar">{{ avatarLetter }}</div>
+                <div class="sidebar-user-info">
+                    <div class="sidebar-user-name">{{ auth.currentUser()?.full_name || auth.currentUser()?.username }}
+                    </div>
+                    <div class="sidebar-user-role">{{ auth.currentUser()?.role | titlecase }}</div>
+                </div>
+            </div>
+            <div class="sidebar-user" *ngIf="minimized()">
+                <div class="sidebar-user-avatar">{{ avatarLetter }}</div>
+            </div>
+            <button class="btn btn-danger btn-block" (click)="logout()">
+                <span class="sidebar-nav-icon">🚪</span>
+                <span *ngIf="!minimized()">Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="admin-main-content" [style.margin-left]="minimized() ? '70px' : '260px'">
+        <!-- Header -->
+        <header class="admin-header">
+            <div class="header-left">
+                <div class="header-breadcrumb">
+                    <span class="breadcrumb-item">{{ title }}</span>
+                    <span class="breadcrumb-separator">/</span>
+                    <span class="breadcrumb-item active">{{ pageTitle }}</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="header-profile" (click)="toggleProfile()" [class.active]="profileOpen()">
+                    <div class="header-profile-avatar">{{ avatarLetter }}</div>
+                    <div class="header-profile-info">
+                        <div class="header-profile-name">{{ auth.currentUser()?.username }}</div>
+                        <div class="header-profile-role">{{ auth.currentUser()?.role | titlecase }}</div>
+                    </div>
+                    <span style="color:rgba(255,255,255,0.7);font-size:0.8rem;margin-left:0.25rem;">▼</span>
+
+                    <div class="profile-dropdown" *ngIf="profileOpen()">
+                        <div class="dropdown-item" style="cursor:default;">
+                            <span class="dropdown-icon">👤</span>
+                            <span>{{ auth.currentUser()?.full_name }}</span>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="dropdown-item logout" (click)="logout()" style="cursor:pointer;">
+                            <span class="dropdown-icon">🚪</span>
+                            <span>Logout</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <div class="admin-content">
+            <router-outlet />
+        </div>
+    </div>
+</div>

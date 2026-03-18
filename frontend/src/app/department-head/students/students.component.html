@@ -1,0 +1,35 @@
+<div class="page-header" style="display:flex;justify-content:space-between;align-items:center;">
+    <div>
+        <h1 class="page-title">👨‍🎓 Student Management</h1>
+    </div>
+    <input class="form-control" style="max-width:280px;" [(ngModel)]="search" placeholder="🔍 Search students..." />
+</div>
+<div class="admin-content" style="padding-top:0;">
+    <div *ngIf="loading" class="empty-state">Loading...</div>
+    <div *ngIf="!loading" class="content-card" style="padding:0;overflow:hidden;">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Username</th>
+                    <th>Student ID</th>
+                    <th>Department</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let s of filtered">
+                    <td style="font-weight:600;">{{ s.full_name }}</td>
+                    <td>{{ s.username }}</td>
+                    <td>{{ s.student_id || '—' }}</td>
+                    <td style="color:var(--text-secondary);">{{ s.department || '—' }}</td>
+                    <td><span class="badge" [class.badge-success]="s.is_active" [class.badge-danger]="!s.is_active">{{
+                            s.is_active ? 'Active' : 'Inactive' }}</span></td>
+                </tr>
+                <tr *ngIf="filtered.length===0">
+                    <td colspan="5" class="empty-state">No students found.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

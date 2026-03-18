@@ -1,0 +1,61 @@
+<div class="page-header">
+    <h1 class="page-title">🏷️ Topics</h1>
+    <button class="btn btn-primary" (click)="openForm()">+ Add Topic</button>
+</div>
+<div class="admin-content" style="padding-top:0;">
+    <div *ngIf="showForm" class="content-card" style="margin-bottom:1.5rem;">
+        <h3 style="font-weight:800;margin-bottom:1rem;">{{ editing ? 'Edit' : 'Add' }} Topic</h3>
+        <div *ngIf="error" style="color:#dc3545;margin-bottom:.75rem;">{{ error }}</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;">
+            <div class="form-group">
+                <label>Course</label>
+                <select class="form-control" [(ngModel)]="form.course">
+                    <option value="">Select course...</option>
+                    <option *ngFor="let c of courses" [value]="c.id">{{ c.name }}</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Topic Name</label>
+                <input class="form-control" [(ngModel)]="form.name" placeholder="e.g. Chapter 1: Introduction">
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <input class="form-control" [(ngModel)]="form.description">
+            </div>
+        </div>
+        <div style="display:flex;gap:.75rem;margin-top:1rem;">
+            <button class="btn btn-primary" (click)="save()" [disabled]="saving">{{ saving ? 'Saving...' : 'Save'
+                }}</button>
+            <button class="btn btn-secondary" (click)="showForm=false">Cancel</button>
+        </div>
+    </div>
+
+    <div *ngIf="loading" class="empty-state">Loading...</div>
+    <div *ngIf="!loading" class="content-card" style="padding:0;overflow:hidden;">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Topic</th>
+                    <th>Course</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let t of topics">
+                    <td style="font-weight:600;">{{ t.name }}</td>
+                    <td>{{ t.course_name ?? t.course }}</td>
+                    <td style="color:var(--text-secondary);">{{ t.description ?? '—' }}</td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" (click)="openForm(t)">Edit</button>
+                        <button class="btn btn-danger btn-sm" (click)="delete(t.id)"
+                            style="margin-left:.5rem;">Delete</button>
+                    </td>
+                </tr>
+                <tr *ngIf="topics.length===0">
+                    <td colspan="4" class="empty-state">No topics yet.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
