@@ -1,124 +1,117 @@
-<div class="page-header">
-    <h1 class="page-title">👋 Welcome, {{ user.first_name || user.username }}!</h1>
-    <p class="page-subtitle">Ready to take your exams? Access your dashboard below.</p>
+<!-- Welcome Banner -->
+<div class="welcome-banner fade-in-up">
+    <div class="welcome-text">
+        <h1>👋 Welcome back, {{ user.first_name || user.username }}!</h1>
+        <p>Ready to take your exams? Here's your overview for today.</p>
+    </div>
+    <div class="welcome-badge">🎓 Student Portal</div>
 </div>
 
-<div *ngIf="loading" class="empty-state">Loading...</div>
+<div *ngIf="loading" class="glass-card empty-state" style="margin-top:1.5rem;">
+    <i class="fas fa-spinner fa-spin"></i> Loading your dashboard...
+</div>
 
 <ng-container *ngIf="!loading">
-    <!-- Stats -->
-    <div class="stats-grid">
-        <div class="stat-card blue">
-            <div class="stat-header">
-                <div>
-                    <div class="stat-value">{{ availableExams }}</div>
-                    <div class="stat-label">Available Exams</div>
-                </div>
-                <div class="stat-icon">📚</div>
-            </div>
+    <!-- Stat Cards -->
+    <div class="stats-grid fade-in-up" style="animation-delay:0.1s">
+        <div class="stat-card">
+            <div class="stat-icon-wrap blue">📚</div>
+            <div class="stat-value">{{ availableExams }}</div>
+            <div class="stat-label">Available Exams</div>
         </div>
-        <div class="stat-card green">
-            <div class="stat-header">
-                <div>
-                    <div class="stat-value">{{ completedExams }}</div>
-                    <div class="stat-label">Completed Exams</div>
-                </div>
-                <div class="stat-icon">✅</div>
-            </div>
+        <div class="stat-card">
+            <div class="stat-icon-wrap green">✅</div>
+            <div class="stat-value">{{ completedExams }}</div>
+            <div class="stat-label">Completed Exams</div>
         </div>
-        <div class="stat-card orange">
-            <div class="stat-header">
-                <div>
-                    <div class="stat-value">{{ avgScore }}%</div>
-                    <div class="stat-label">Average Score</div>
-                </div>
-                <div class="stat-icon">📊</div>
-            </div>
+        <div class="stat-card">
+            <div class="stat-icon-wrap gold">📊</div>
+            <div class="stat-value">{{ avgScore }}%</div>
+            <div class="stat-label">Average Score</div>
         </div>
-        <div class="stat-card purple">
-            <div class="stat-header">
-                <div>
-                    <div class="stat-value">{{ user.department || '—' }}</div>
-                    <div class="stat-label">Department</div>
-                </div>
-                <div class="stat-icon">🏛️</div>
-            </div>
+        <div class="stat-card">
+            <div class="stat-icon-wrap teal">🏛️</div>
+            <div class="stat-value dept-val">{{ user.department || '—' }}</div>
+            <div class="stat-label">Department</div>
         </div>
     </div>
 
     <!-- Quick Actions -->
-    <div class="content-card" style="margin-bottom:1.5rem;">
-        <h2 style="font-weight:800;font-size:1.25rem;margin-bottom:1.25rem;">⚡ Quick Actions</h2>
-        <div class="quick-actions">
-            <a routerLink="/student/exams" class="action-btn"><span class="action-icon">📝</span><span
-                    class="action-label">Take Exam</span></a>
-            <a routerLink="/student/results" class="action-btn"><span class="action-icon">📈</span><span
-                    class="action-label">View Results</span></a>
-            <a routerLink="/student/practice" class="action-btn"><span class="action-icon">🎯</span><span
-                    class="action-label">Practice</span></a>
-            <a routerLink="/student/schedule" class="action-btn"><span class="action-icon">📅</span><span
-                    class="action-label">Schedule</span></a>
-            <a routerLink="/student/profile" class="action-btn"><span class="action-icon">👤</span><span
-                    class="action-label">My Profile</span></a>
-            <a routerLink="/student/issues" class="action-btn"><span class="action-icon">⚠️</span><span
-                    class="action-label">Report Issue</span></a>
+    <div class="glass-card fade-in-up" style="animation-delay:0.2s;margin-bottom:1.5rem;">
+        <h2 class="section-title">⚡ Quick Actions</h2>
+        <div class="actions-grid">
+            <a routerLink="/student/exams" class="action-card">
+                <span class="action-icon">📝</span>
+                <span class="action-title">Take Exam</span>
+                <span class="action-desc">Start an available exam</span>
+            </a>
+            <a routerLink="/student/results" class="action-card">
+                <span class="action-icon">📈</span>
+                <span class="action-title">View Results</span>
+                <span class="action-desc">Check your scores</span>
+            </a>
+            <a routerLink="/student/practice" class="action-card">
+                <span class="action-icon">🎯</span>
+                <span class="action-title">Practice</span>
+                <span class="action-desc">Sharpen your skills</span>
+            </a>
+            <a routerLink="/student/schedule" class="action-card">
+                <span class="action-icon">📅</span>
+                <span class="action-title">Schedule</span>
+                <span class="action-desc">Upcoming exam dates</span>
+            </a>
+            <a routerLink="/student/profile" class="action-card">
+                <span class="action-icon">👤</span>
+                <span class="action-title">My Profile</span>
+                <span class="action-desc">Update your info</span>
+            </a>
+            <a routerLink="/student/issues" class="action-card">
+                <span class="action-icon">⚠️</span>
+                <span class="action-title">Report Issue</span>
+                <span class="action-desc">Get support</span>
+            </a>
         </div>
     </div>
 
     <!-- Info + Announcements -->
-    <div class="content-grid">
-        <div class="content-card">
-            <div class="card-header">
-                <h2 class="card-title">👨‍🎓 Student Information</h2>
+    <div class="two-col fade-in-up" style="animation-delay:0.3s">
+        <!-- Student Info -->
+        <div class="glass-card">
+            <div class="card-dark-header">
+                <span>👨‍🎓 Student Information</span>
             </div>
-            <div style="display:flex;flex-direction:column;gap:.5rem;margin-top:.5rem;">
-                <div
-                    style="display:flex;justify-content:space-between;padding:.75rem 0;border-bottom:1px solid var(--border-color);">
-                    <span style="font-weight:700;color:var(--text-secondary);">Username</span><span
-                        style="font-weight:600;">{{ user.username }}</span>
-                </div>
-                <div
-                    style="display:flex;justify-content:space-between;padding:.75rem 0;border-bottom:1px solid var(--border-color);">
-                    <span style="font-weight:700;color:var(--text-secondary);">Full Name</span><span
-                        style="font-weight:600;">{{ user.full_name }}</span>
-                </div>
-                <div
-                    style="display:flex;justify-content:space-between;padding:.75rem 0;border-bottom:1px solid var(--border-color);">
-                    <span style="font-weight:700;color:var(--text-secondary);">Student ID</span><span
-                        style="font-weight:600;">{{ user.student_id || '—' }}</span>
-                </div>
-                <div
-                    style="display:flex;justify-content:space-between;padding:.75rem 0;border-bottom:1px solid var(--border-color);">
-                    <span style="font-weight:700;color:var(--text-secondary);">Department</span><span
-                        style="font-weight:600;">{{ user.department || '—' }}</span>
-                </div>
-                <div style="display:flex;justify-content:space-between;padding:.75rem 0;">
-                    <span style="font-weight:700;color:var(--text-secondary);">Email</span><span
-                        style="font-weight:600;">{{ user.email }}</span>
-                </div>
+            <div class="info-list">
+                <div class="info-row"><span class="info-label">Username</span><span class="info-value">{{ user.username
+                        }}</span></div>
+                <div class="info-row"><span class="info-label">Full Name</span><span class="info-value">{{
+                        user.full_name }}</span></div>
+                <div class="info-row"><span class="info-label">Student ID</span><span class="info-value">{{
+                        user.student_id || '—' }}</span></div>
+                <div class="info-row"><span class="info-label">Department</span><span class="info-value">{{
+                        user.department || '—' }}</span></div>
+                <div class="info-row last"><span class="info-label">Email</span><span class="info-value">{{ user.email
+                        }}</span></div>
             </div>
         </div>
 
-        <div class="content-card">
-            <div class="card-header">
-                <h2 class="card-title">📢 Announcements</h2>
+        <!-- Announcements -->
+        <div class="glass-card">
+            <div class="card-dark-header">
+                <span>📢 Announcements</span>
             </div>
-            <div style="display:flex;flex-direction:column;gap:1rem;margin-top:.5rem;">
-                <div
-                    style="display:flex;gap:1rem;padding:1rem;background:rgba(212,175,55,0.05);border-radius:12px;border-left:4px solid #d4af37;">
-                    <span style="font-size:1.75rem;">📅</span>
+            <div class="announcements">
+                <div class="announcement gold">
+                    <span class="ann-icon">📅</span>
                     <div>
-                        <div style="font-weight:700;">Exam Schedule Updated</div>
-                        <div style="color:var(--text-secondary);font-size:.85rem;">Check the schedule page for new dates
-                        </div>
+                        <div class="ann-title">Exam Schedule Updated</div>
+                        <div class="ann-desc">Check the schedule page for new dates</div>
                     </div>
                 </div>
-                <div
-                    style="display:flex;gap:1rem;padding:1rem;background:rgba(16,185,129,0.05);border-radius:12px;border-left:4px solid var(--success-color);">
-                    <span style="font-size:1.75rem;">✅</span>
+                <div class="announcement green">
+                    <span class="ann-icon">✅</span>
                     <div>
-                        <div style="font-weight:700;">System Ready</div>
-                        <div style="color:var(--text-secondary);font-size:.85rem;">All systems operational</div>
+                        <div class="ann-title">System Ready</div>
+                        <div class="ann-desc">All systems operational</div>
                     </div>
                 </div>
             </div>

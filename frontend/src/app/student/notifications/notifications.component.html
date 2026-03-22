@@ -1,28 +1,91 @@
-<div class="page-header">
-    <h1 class="page-title">🔔 Notifications</h1>
+<!-- Page Header -->
+<div class="notif-header fade-in-up">
+    <div>
+        <h1 class="page-title">🔔 Notifications</h1>
+        <p class="page-sub">Stay up to date with your exams and updates</p>
+    </div>
+    <button class="btn-mark-all" (click)="markAllRead()">
+        <i class="fas fa-check-double"></i> Mark All Read
+    </button>
 </div>
-<div class="admin-content" style="padding-top:0;max-width:700px;">
-    <div *ngIf="loading" class="empty-state">Loading...</div>
-    <ng-container *ngIf="!loading">
-        <div *ngFor="let e of activeExams" class="content-card"
-            style="margin-bottom:1rem;border-left:4px solid var(--success-color);">
-            <div style="display:flex;justify-content:space-between;align-items:center;">
-                <div>
-                    <div style="font-weight:800;">📝 New Exam Available</div>
-                    <div style="color:var(--text-secondary);font-size:.9rem;margin-top:.25rem;">{{ e.title }} — {{
-                        e.course_name }}</div>
+
+<!-- Stat Row -->
+<div class="notif-stats fade-in-up" style="animation-delay:0.1s">
+    <div class="notif-stat">
+        <span class="ns-value">{{ unreadCount }}</span>
+        <span class="ns-label">Unread</span>
+    </div>
+    <div class="notif-stat-divider"></div>
+    <div class="notif-stat">
+        <span class="ns-value">{{ totalCount }}</span>
+        <span class="ns-label">Total</span>
+    </div>
+</div>
+
+<div *ngIf="loading" class="glass-card empty-state fade-in-up">
+    <i class="fas fa-spinner fa-spin"></i> Loading notifications...
+</div>
+
+<ng-container *ngIf="!loading">
+    <!-- Notification List -->
+    <div class="notif-list fade-in-up" style="animation-delay:0.2s">
+
+        <div *ngFor="let e of activeExams" class="notif-item" [class.unread]="!e._read">
+            <div class="notif-icon-wrap exam">📝</div>
+            <div class="notif-body">
+                <div class="notif-top">
+                    <span class="notif-title">New Exam Available</span>
+                    <span class="notif-badge exam">Exam</span>
                 </div>
-                <a [routerLink]="['/student/exams', e.id, 'instructions']" class="btn btn-primary btn-sm">View →</a>
+                <div class="notif-desc">{{ e.title }} — {{ e.course_name }}</div>
+                <div class="notif-time"><i class="fas fa-clock"></i> Just now</div>
+            </div>
+            <div class="notif-actions">
+                <a [routerLink]="['/student/exams', e.id, 'instructions']" class="btn-notif-action">View →</a>
+                <button class="btn-mark-read" (click)="markRead(e)" *ngIf="!e._read">Mark Read</button>
             </div>
         </div>
-        <div *ngFor="let i of resolvedIssues" class="content-card"
-            style="margin-bottom:1rem;border-left:4px solid var(--success-color);">
-            <div style="font-weight:800;">✅ Issue Resolved</div>
-            <div style="color:var(--text-secondary);font-size:.9rem;margin-top:.25rem;">Your issue "{{ i.title }}" has
-                been resolved.</div>
+
+        <div *ngFor="let i of resolvedIssues" class="notif-item" [class.unread]="!i._read">
+            <div class="notif-icon-wrap success">✅</div>
+            <div class="notif-body">
+                <div class="notif-top">
+                    <span class="notif-title">Issue Resolved</span>
+                    <span class="notif-badge success">Update</span>
+                </div>
+                <div class="notif-desc">Your issue "{{ i.title }}" has been resolved.</div>
+                <div class="notif-time"><i class="fas fa-clock"></i> Recently</div>
+            </div>
+            <div class="notif-actions">
+                <button class="btn-mark-read" (click)="markRead(i)" *ngIf="!i._read">Mark Read</button>
+            </div>
         </div>
-        <div *ngIf="activeExams.length===0 && resolvedIssues.length===0" class="content-card empty-state">
-            No new notifications.
+
+        <div *ngIf="activeExams.length === 0 && resolvedIssues.length === 0" class="glass-card empty-state">
+            🎉 You're all caught up! No new notifications.
         </div>
-    </ng-container>
-</div>
+    </div>
+
+    <!-- Preferences -->
+    <div class="glass-card fade-in-up" style="animation-delay:0.3s;margin-top:1.5rem;">
+        <div class="card-dark-header">⚙️ Notification Preferences</div>
+        <div class="prefs-list">
+            <label class="pref-item">
+                <input type="checkbox" [(ngModel)]="prefs.newExams" />
+                <span class="pref-label">New exam available</span>
+            </label>
+            <label class="pref-item">
+                <input type="checkbox" [(ngModel)]="prefs.results" />
+                <span class="pref-label">Results published</span>
+            </label>
+            <label class="pref-item">
+                <input type="checkbox" [(ngModel)]="prefs.issueUpdates" />
+                <span class="pref-label">Issue status updates</span>
+            </label>
+            <label class="pref-item">
+                <input type="checkbox" [(ngModel)]="prefs.reminders" />
+                <span class="pref-label">Exam reminders</span>
+            </label>
+        </div>
+    </div>
+</ng-container>

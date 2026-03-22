@@ -9,7 +9,8 @@ import { forkJoin } from 'rxjs';
   selector: 'app-student-dashboard',
   standalone: true,
   imports: [CommonModule, RouterModule],
-  templateUrl: './dashboard.component.html'
+  templateUrl: './dashboard.component.html',
+  styleUrl: './dashboard.component.css'
 })
 export class StudentDashboardComponent implements OnInit {
   availableExams = 0;

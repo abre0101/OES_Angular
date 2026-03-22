@@ -1,0 +1,325 @@
+/* ── Page Header ── */
+.notif-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding: 1.75rem 2rem;
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(12px);
+    border: 1.5px solid rgba(212, 175, 55, 0.35);
+    border-radius: 18px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+}
+
+.page-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 0.25rem;
+}
+
+.page-sub {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+}
+
+.btn-mark-all {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(212, 175, 55, 0.15);
+    border: 1.5px solid #d4af37;
+    color: #d4af37;
+    padding: 0.6rem 1.25rem;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.2s;
+}
+
+.btn-mark-all:hover {
+    background: #d4af37;
+    color: #1a2b4a;
+}
+
+/* ── Stat Row ── */
+.notif-stats {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    padding: 1.25rem 2rem;
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: 14px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    border: 1.5px solid rgba(212, 175, 55, 0.2);
+}
+
+.notif-stat {
+    text-align: center;
+}
+
+.ns-value {
+    display: block;
+    font-size: 2rem;
+    font-weight: 900;
+    color: #1a2b4a;
+    font-family: 'Poppins', sans-serif;
+}
+
+.ns-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.notif-stat-divider {
+    width: 1px;
+    height: 40px;
+    background: rgba(212, 175, 55, 0.3);
+}
+
+/* ── Notification List ── */
+.notif-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.notif-item {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 1.25rem 1.5rem;
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: 14px;
+    border: 1.5px solid rgba(212, 175, 55, 0.15);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.25s;
+}
+
+.notif-item:hover {
+    transform: translateX(4px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.notif-item.unread {
+    border-left: 4px solid #d4af37;
+    background: rgba(255, 255, 255, 1);
+}
+
+.notif-icon-wrap {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.notif-icon-wrap.exam {
+    background: rgba(59, 130, 246, 0.12);
+}
+
+.notif-icon-wrap.success {
+    background: rgba(16, 185, 129, 0.12);
+}
+
+.notif-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.notif-top {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.25rem;
+}
+
+.notif-title {
+    font-weight: 800;
+    color: #1a2b4a;
+    font-size: 0.95rem;
+    font-family: 'Poppins', sans-serif;
+}
+
+.notif-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.2rem 0.65rem;
+    border-radius: 50px;
+}
+
+.notif-badge.exam {
+    background: rgba(59, 130, 246, 0.12);
+    color: #2563eb;
+}
+
+.notif-badge.success {
+    background: rgba(16, 185, 129, 0.12);
+    color: #059669;
+}
+
+.notif-desc {
+    color: #64748b;
+    font-size: 0.87rem;
+    margin-bottom: 0.35rem;
+}
+
+.notif-time {
+    color: #94a3b8;
+    font-size: 0.78rem;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.notif-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-end;
+    flex-shrink: 0;
+}
+
+.btn-notif-action {
+    background: linear-gradient(135deg, #1a2b4a, #2c4a7a);
+    color: #fff;
+    padding: 0.4rem 1rem;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-decoration: none;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.2s;
+}
+
+.btn-notif-action:hover {
+    background: #d4af37;
+    color: #1a2b4a;
+}
+
+.btn-mark-read {
+    background: transparent;
+    border: 1.5px solid rgba(212, 175, 55, 0.4);
+    color: #d4af37;
+    padding: 0.3rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.2s;
+}
+
+.btn-mark-read:hover {
+    background: #d4af37;
+    color: #1a2b4a;
+}
+
+/* ── Glass Card ── */
+.glass-card {
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+    border: 1.5px solid rgba(212, 175, 55, 0.2);
+    overflow: hidden;
+}
+
+/* ── Card Dark Header ── */
+.card-dark-header {
+    background: linear-gradient(135deg, #1a2b4a, #2c4a7a);
+    color: #fff;
+    padding: 1rem 1.75rem;
+    font-weight: 800;
+    font-size: 1rem;
+    font-family: 'Poppins', sans-serif;
+    border-bottom: 3px solid #d4af37;
+}
+
+/* ── Preferences ── */
+.prefs-list {
+    padding: 1.25rem 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.pref-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+}
+
+.pref-item:last-child {
+    border-bottom: none;
+}
+
+.pref-item input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #d4af37;
+    cursor: pointer;
+}
+
+.pref-label {
+    font-weight: 600;
+    color: #1a2b4a;
+    font-size: 0.9rem;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* ── Empty State ── */
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 1rem;
+}
+
+/* ── Animation ── */
+.fade-in-up {
+    animation: fadeInUp 0.8s ease both;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+    .notif-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+
+    .notif-item {
+        flex-wrap: wrap;
+    }
+
+    .notif-actions {
+        flex-direction: row;
+        width: 100%;
+    }
+}

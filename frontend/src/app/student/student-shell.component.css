@@ -1,0 +1,272 @@
+/* ── Background ── */
+.student-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+}
+
+.bg-overlay {
+    position: absolute;
+    inset: 0;
+    background: url('/assets/campus.jpg') center/cover no-repeat;
+    opacity: 0.35;
+}
+
+/* ── Header ── */
+.student-header {
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.85rem 2rem;
+    background: rgba(26, 43, 74, 0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.header-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.brand-icon {
+    font-size: 2rem;
+}
+
+.brand-name {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 800;
+    font-size: 1rem;
+    color: #fff;
+    letter-spacing: 0.5px;
+}
+
+.brand-sub {
+    font-size: 0.75rem;
+    color: #d4af37;
+    font-weight: 500;
+}
+
+/* ── User Dropdown ── */
+.user-dropdown-wrapper {
+    position: relative;
+}
+
+.user-avatar-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1.5px solid rgba(212, 175, 55, 0.4);
+    border-radius: 50px;
+    padding: 0.4rem 1rem 0.4rem 0.4rem;
+    cursor: pointer;
+    transition: all 0.25s;
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+}
+
+.user-avatar-btn:hover {
+    background: rgba(212, 175, 55, 0.15);
+    border-color: #d4af37;
+}
+
+.avatar-circle {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #d4af37, #b8960c);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 0.95rem;
+    color: #1a2b4a;
+    flex-shrink: 0;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.user-name {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.user-role {
+    font-size: 0.7rem;
+    color: #d4af37;
+    font-weight: 600;
+}
+
+.dropdown-arrow {
+    font-size: 0.7rem;
+    color: #d4af37;
+    transition: transform 0.25s;
+}
+
+.dropdown-arrow.rotated {
+    transform: rotate(180deg);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 200px;
+    background: rgba(26, 43, 74, 0.98);
+    backdrop-filter: blur(16px);
+    border: 1.5px solid rgba(212, 175, 55, 0.3);
+    border-radius: 14px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-8px) scale(0.97);
+    pointer-events: none;
+    transition: all 0.2s ease;
+    z-index: 300;
+}
+
+.dropdown-menu.open {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: all;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.9rem;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    text-decoration: none;
+    background: none;
+    border: none;
+    width: 100%;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.dropdown-item:hover {
+    background: rgba(212, 175, 55, 0.12);
+    color: #d4af37;
+}
+
+.dropdown-item.danger:hover {
+    background: rgba(239, 68, 68, 0.12);
+    color: #ef4444;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background: rgba(212, 175, 55, 0.2);
+    margin: 0.25rem 0;
+}
+
+/* ── Gold Nav Bar ── */
+.student-nav {
+    background: linear-gradient(90deg, #d4af37, #c9a227, #d4af37);
+    box-shadow: 0 4px 16px rgba(212, 175, 55, 0.4);
+    position: sticky;
+    top: 69px;
+    z-index: 100;
+}
+
+.nav-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 2rem;
+    gap: 0.25rem;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1.25rem;
+    color: #1a2b4a;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: all 0.2s;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+}
+
+.nav-link:hover {
+    background: rgba(26, 43, 74, 0.1);
+}
+
+.nav-link.active {
+    border-bottom-color: #1a2b4a;
+    background: rgba(26, 43, 74, 0.12);
+}
+
+/* ── Main Content ── */
+.student-main {
+    min-height: calc(100vh - 200px);
+    padding: 2rem 0;
+}
+
+.student-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* ── Footer ── */
+.student-footer {
+    background: rgba(15, 32, 39, 0.95);
+    border-top: 3px solid #d4af37;
+    text-align: center;
+    padding: 1.25rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.85rem;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+    .student-header {
+        padding: 0.75rem 1rem;
+    }
+
+    .brand-sub {
+        display: none;
+    }
+
+    .user-info {
+        display: none;
+    }
+
+    .nav-inner {
+        padding: 0 0.5rem;
+        gap: 0;
+        overflow-x: auto;
+    }
+
+    .nav-link {
+        padding: 0.75rem 0.85rem;
+        font-size: 0.8rem;
+    }
+
+    .student-content {
+        padding: 0 1rem;
+    }
+}

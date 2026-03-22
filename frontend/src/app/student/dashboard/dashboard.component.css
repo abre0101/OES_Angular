@@ -1,0 +1,336 @@
+/* ── Welcome Banner ── */
+.welcome-banner {
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(12px);
+    border: 1.5px solid rgba(212, 175, 55, 0.35);
+    border-radius: 18px;
+    padding: 2rem 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.75rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+}
+
+.welcome-banner h1 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 0.4rem;
+}
+
+.welcome-banner p {
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 0.95rem;
+}
+
+.welcome-badge {
+    background: linear-gradient(135deg, #d4af37, #b8960c);
+    color: #1a2b4a;
+    font-weight: 800;
+    font-size: 0.85rem;
+    padding: 0.5rem 1.25rem;
+    border-radius: 50px;
+    white-space: nowrap;
+}
+
+/* ── Stat Cards ── */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
+    margin-bottom: 1.75rem;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(12px);
+    border-radius: 16px;
+    padding: 1.75rem 1.5rem;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    border: 1.5px solid rgba(212, 175, 55, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.3);
+}
+
+.stat-icon-wrap {
+    font-size: 2rem;
+    width: 60px;
+    height: 60px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+.stat-icon-wrap.blue {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+
+.stat-icon-wrap.green {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.stat-icon-wrap.gold {
+    background: linear-gradient(135deg, #d4af37, #b8960c);
+}
+
+.stat-icon-wrap.teal {
+    background: linear-gradient(135deg, #14b8a6, #0d9488);
+}
+
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: #1a2b4a;
+    line-height: 1;
+    font-family: 'Poppins', sans-serif;
+}
+
+.dept-val {
+    font-size: 1.1rem;
+    margin-top: 0.25rem;
+}
+
+.stat-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 0.5rem;
+}
+
+/* ── Glass Card ── */
+.glass-card {
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(12px);
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+    border: 1.5px solid rgba(212, 175, 55, 0.2);
+    overflow: hidden;
+}
+
+.section-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #1a2b4a;
+    padding: 1.5rem 1.75rem 1rem;
+    border-bottom: 2px solid rgba(212, 175, 55, 0.25);
+}
+
+/* ── Quick Actions ── */
+.actions-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1rem;
+    padding: 1.25rem 1.75rem 1.75rem;
+}
+
+.action-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 1.25rem 0.75rem;
+    border-radius: 14px;
+    border: 2px solid rgba(212, 175, 55, 0.2);
+    text-decoration: none;
+    background: rgba(26, 43, 74, 0.03);
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.action-card:hover {
+    transform: translateY(-8px);
+    background: linear-gradient(135deg, #1a2b4a, #2c4a7a);
+    border-color: #d4af37;
+    box-shadow: 0 8px 24px rgba(26, 43, 74, 0.35);
+}
+
+.action-card:hover .action-title,
+.action-card:hover .action-desc {
+    color: #fff;
+}
+
+.action-icon {
+    font-size: 2rem;
+}
+
+.action-title {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #1a2b4a;
+    transition: color 0.3s;
+}
+
+.action-desc {
+    font-size: 0.72rem;
+    color: #64748b;
+    transition: color 0.3s;
+}
+
+/* ── Card Dark Header ── */
+.card-dark-header {
+    background: linear-gradient(135deg, #1a2b4a, #2c4a7a);
+    color: #fff;
+    padding: 1rem 1.75rem;
+    font-weight: 800;
+    font-size: 1rem;
+    font-family: 'Poppins', sans-serif;
+    border-bottom: 3px solid #d4af37;
+}
+
+/* ── Info List ── */
+.info-list {
+    padding: 0.5rem 1.75rem 1.25rem;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.info-row.last {
+    border-bottom: none;
+}
+
+.info-label {
+    font-weight: 700;
+    color: #64748b;
+    font-size: 0.88rem;
+}
+
+.info-value {
+    font-weight: 600;
+    color: #1a2b4a;
+    font-size: 0.9rem;
+}
+
+/* ── Announcements ── */
+.announcements {
+    padding: 1rem 1.75rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.announcement {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    padding: 1rem 1.25rem;
+    border-radius: 12px;
+    border-left: 4px solid;
+}
+
+.announcement.gold {
+    background: rgba(212, 175, 55, 0.07);
+    border-color: #d4af37;
+}
+
+.announcement.green {
+    background: rgba(16, 185, 129, 0.07);
+    border-color: #10b981;
+}
+
+.ann-icon {
+    font-size: 1.6rem;
+    flex-shrink: 0;
+}
+
+.ann-title {
+    font-weight: 700;
+    color: #1a2b4a;
+    font-size: 0.95rem;
+}
+
+.ann-desc {
+    color: #64748b;
+    font-size: 0.82rem;
+    margin-top: 0.2rem;
+}
+
+/* ── Two Column ── */
+.two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+/* ── Empty State ── */
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 1rem;
+}
+
+/* ── Animation ── */
+.fade-in-up {
+    animation: fadeInUp 0.8s ease both;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ── Responsive ── */
+@media (max-width: 1100px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .actions-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .welcome-banner {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+
+    .welcome-banner h1 {
+        font-size: 1.3rem;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .actions-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .two-col {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}

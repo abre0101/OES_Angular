@@ -1,0 +1,70 @@
+<!-- Background -->
+<div class="student-bg">
+    <div class="bg-overlay"></div>
+</div>
+
+<!-- Sticky Header -->
+<header class="student-header">
+    <div class="header-brand">
+        <span class="brand-icon">🎓</span>
+        <div>
+            <div class="brand-name">Debre Markos University</div>
+            <div class="brand-sub">Online Examination System</div>
+        </div>
+    </div>
+    <div class="user-dropdown-wrapper">
+        <button class="user-avatar-btn" (click)="toggleDropdown()">
+            <div class="avatar-circle">{{ avatarInitials }}</div>
+            <div class="user-info">
+                <span class="user-name">{{ user.full_name || user.username }}</span>
+                <span class="user-role">Student</span>
+            </div>
+            <i class="fas fa-chevron-down dropdown-arrow" [class.rotated]="dropdownOpen()"></i>
+        </button>
+        <div class="dropdown-menu" [class.open]="dropdownOpen()">
+            <a routerLink="/student/profile" class="dropdown-item" (click)="dropdownOpen.set(false)">
+                <i class="fas fa-user"></i> My Profile
+            </a>
+            <a routerLink="/student/notifications" class="dropdown-item" (click)="dropdownOpen.set(false)">
+                <i class="fas fa-bell"></i> Notifications
+            </a>
+            <div class="dropdown-divider"></div>
+            <button class="dropdown-item danger" (click)="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </div>
+</header>
+
+<!-- Gold Nav Bar -->
+<nav class="student-nav">
+    <div class="nav-inner">
+        <a routerLink="/student/dashboard" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-home"></i> Dashboard
+        </a>
+        <a routerLink="/student/exams" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-file-alt"></i> Take Exam
+        </a>
+        <a routerLink="/student/results" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-chart-bar"></i> Results
+        </a>
+        <a routerLink="/student/practice" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-dumbbell"></i> Practice
+        </a>
+        <a routerLink="/student/profile" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-user-circle"></i> Profile
+        </a>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<main class="student-main">
+    <div class="student-content">
+        <router-outlet />
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="student-footer">
+    <p>© 2025 Debre Markos University — Online Examination System</p>
+</footer>
