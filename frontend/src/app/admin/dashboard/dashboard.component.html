@@ -1,141 +1,183 @@
-<div class="page-header">
-    <h1 class="page-title">📊 Dashboard</h1>
-    <p class="page-subtitle">Welcome back, {{ username }}! Here's what's happening today.</p>
+<!-- Welcome Banner -->
+<div class="welcome-banner">
+    <div class="wb-text">
+        <h1>Good day, {{ username }} 👋</h1>
+        <p>Here's what's happening across the system today.</p>
+    </div>
+    <div class="wb-badge">
+        <i class="fas fa-shield-alt"></i> Administrator
+    </div>
 </div>
 
-<div *ngIf="loading" class="empty-state">Loading...</div>
+<div *ngIf="loading" class="loading-state">
+    <i class="fas fa-spinner fa-spin"></i> Loading dashboard...
+</div>
 
 <ng-container *ngIf="!loading">
-    <!-- Stats -->
-    <div class="stats-grid">
+
+    <!-- Stat Cards -->
+    <div class="stats-row">
         <div class="stat-card blue">
-            <div class="stat-header">
-                <div>
-                    <div class="stat-value">{{ stats.students }}</div>
-                    <div class="stat-label">Total Students</div>
-                </div>
-                <div class="stat-icon">👨‍🎓</div>
+            <div class="sc-icon"><i class="fas fa-user-graduate"></i></div>
+            <div class="sc-body">
+                <div class="sc-value">{{ stats.students }}</div>
+                <div class="sc-label">Total Students</div>
+                <div class="sc-sub">{{ stats.activeStudents }} active</div>
             </div>
-            <div class="stat-footer">{{ stats.activeStudents }} active</div>
+            <a routerLink="/admin/students" class="sc-link">View <i class="fas fa-arrow-right"></i></a>
         </div>
-        <div class="stat-card green">
-            <div class="stat-header">
-                <div>
-                    <div class="stat-value">{{ stats.instructors }}</div>
-                    <div class="stat-label">Total Instructors</div>
-                </div>
-                <div class="stat-icon">👨‍🏫</div>
+        <div class="stat-card teal">
+            <div class="sc-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+            <div class="sc-body">
+                <div class="sc-value">{{ stats.instructors }}</div>
+                <div class="sc-label">Instructors</div>
+                <div class="sc-sub">{{ stats.instructors }} active</div>
             </div>
-            <div class="stat-footer">{{ stats.instructors }} active</div>
+            <a routerLink="/admin/instructors" class="sc-link">View <i class="fas fa-arrow-right"></i></a>
         </div>
-        <div class="stat-card orange">
-            <div class="stat-header">
-                <div>
-                    <div class="stat-value">{{ stats.courses }}</div>
-                    <div class="stat-label">Total Courses</div>
-                </div>
-                <div class="stat-icon">📚</div>
+        <div class="stat-card gold">
+            <div class="sc-icon"><i class="fas fa-book-open"></i></div>
+            <div class="sc-body">
+                <div class="sc-value">{{ stats.courses }}</div>
+                <div class="sc-label">Courses</div>
+                <div class="sc-sub">{{ stats.departments }} departments</div>
             </div>
-            <div class="stat-footer">{{ stats.departments }} departments</div>
+            <a routerLink="/admin/courses" class="sc-link">View <i class="fas fa-arrow-right"></i></a>
         </div>
         <div class="stat-card red">
-            <div class="stat-header">
-                <div>
-                    <div class="stat-value">{{ stats.pendingExams }}</div>
-                    <div class="stat-label">Pending Approvals</div>
-                </div>
-                <div class="stat-icon">⏳</div>
+            <div class="sc-icon"><i class="fas fa-clock"></i></div>
+            <div class="sc-body">
+                <div class="sc-value">{{ stats.pendingExams }}</div>
+                <div class="sc-label">Pending Approvals</div>
+                <div class="sc-sub">{{ stats.totalExams }} total exams</div>
             </div>
-            <div class="stat-footer">{{ stats.totalExams }} total exams</div>
+            <a routerLink="/admin/issues" class="sc-link">View <i class="fas fa-arrow-right"></i></a>
         </div>
     </div>
 
     <!-- Quick Actions -->
-    <div class="quick-actions">
-        <a routerLink="/admin/students" class="action-btn">
-            <span class="action-icon">➕</span>
-            <span class="action-label">Add Student</span>
-        </a>
-        <a routerLink="/admin/instructors" class="action-btn">
-            <span class="action-icon">👨‍🏫</span>
-            <span class="action-label">Add Instructor</span>
-        </a>
-        <a routerLink="/admin/courses" class="action-btn">
-            <span class="action-icon">📚</span>
-            <span class="action-label">Add Course</span>
-        </a>
-        <a routerLink="/admin/departments" class="action-btn">
-            <span class="action-icon">🏢</span>
-            <span class="action-label">Add Department</span>
-        </a>
-        <a routerLink="/admin/issues" class="action-btn">
-            <span class="action-icon">⚠️</span>
-            <span class="action-label">Issues</span>
-        </a>
+    <div class="section-card">
+        <div class="section-header">
+            <h2><i class="fas fa-bolt"></i> Quick Actions</h2>
+        </div>
+        <div class="actions-grid">
+            <a routerLink="/admin/students" class="action-tile">
+                <div class="at-icon blue"><i class="fas fa-user-plus"></i></div>
+                <span>Add Student</span>
+            </a>
+            <a routerLink="/admin/instructors" class="action-tile">
+                <div class="at-icon teal"><i class="fas fa-chalkboard-teacher"></i></div>
+                <span>Add Instructor</span>
+            </a>
+            <a routerLink="/admin/courses" class="action-tile">
+                <div class="at-icon gold"><i class="fas fa-book"></i></div>
+                <span>Add Course</span>
+            </a>
+            <a routerLink="/admin/departments" class="action-tile">
+                <div class="at-icon purple"><i class="fas fa-building"></i></div>
+                <span>Add Department</span>
+            </a>
+            <a routerLink="/admin/bulk-import" class="action-tile">
+                <div class="at-icon green"><i class="fas fa-file-import"></i></div>
+                <span>Bulk Import</span>
+            </a>
+            <a routerLink="/admin/reports" class="action-tile">
+                <div class="at-icon orange"><i class="fas fa-chart-bar"></i></div>
+                <span>Reports</span>
+            </a>
+            <a routerLink="/admin/security-logs" class="action-tile">
+                <div class="at-icon red"><i class="fas fa-shield-alt"></i></div>
+                <span>Security Logs</span>
+            </a>
+            <a routerLink="/admin/settings" class="action-tile">
+                <div class="at-icon slate"><i class="fas fa-cog"></i></div>
+                <span>Settings</span>
+            </a>
+        </div>
     </div>
 
-    <!-- Recent Data -->
-    <div class="content-grid">
-        <div class="content-card">
-            <div class="card-header">
-                <h2 class="card-title">📝 Recent Students</h2>
-                <a routerLink="/admin/students" class="card-link">View All →</a>
+    <!-- Tables Row -->
+    <div class="tables-row">
+
+        <!-- Recent Students -->
+        <div class="section-card">
+            <div class="section-header">
+                <h2><i class="fas fa-user-graduate"></i> Recent Students</h2>
+                <a routerLink="/admin/students" class="view-all">View all <i class="fas fa-arrow-right"></i></a>
             </div>
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Username</th>
-                        <th>Department</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let u of recentStudents">
-                        <td style="font-weight:600;">{{ u.full_name }}</td>
-                        <td style="color:var(--text-secondary);">{{ u.username }}</td>
-                        <td style="color:var(--text-secondary);">{{ u.department || '—' }}</td>
-                        <td><span class="badge" [class.badge-success]="u.is_active"
-                                [class.badge-danger]="!u.is_active">{{ u.is_active ? 'Active' : 'Inactive' }}</span>
-                        </td>
-                    </tr>
-                    <tr *ngIf="recentStudents.length===0">
-                        <td colspan="4" class="empty-state">No students yet</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="table-wrap">
+                <table class="pro-table">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Department</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let u of recentStudents">
+                            <td>
+                                <div class="user-cell">
+                                    <div class="uc-avatar">{{ u.first_name?.[0] || u.username?.[0] | uppercase }}</div>
+                                    <div>
+                                        <div class="uc-name">{{ u.full_name || u.username }}</div>
+                                        <div class="uc-sub">{{ u.username }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="dept-tag">{{ u.department || '—' }}</span></td>
+                            <td>
+                                <span class="status-pill" [class.active]="u.is_active" [class.inactive]="!u.is_active">
+                                    <span class="pill-dot"></span>
+                                    {{ u.is_active ? 'Active' : 'Inactive' }}
+                                </span>
+                            </td>
+                        </tr>
+                        <tr *ngIf="recentStudents.length === 0">
+                            <td colspan="3" class="empty-row">No students yet</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-        <div class="content-card">
-            <div class="card-header">
-                <h2 class="card-title">⚠️ Recent Issues</h2>
-                <a routerLink="/admin/issues" class="card-link">View All →</a>
+        <!-- Recent Issues -->
+        <div class="section-card">
+            <div class="section-header">
+                <h2><i class="fas fa-exclamation-triangle"></i> Recent Issues</h2>
+                <a routerLink="/admin/issues" class="view-all">View all <i class="fas fa-arrow-right"></i></a>
             </div>
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Title</th>
-                        <th>Reported By</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let i of recentIssues">
-                        <td style="font-weight:600;">{{ i.title }}</td>
-                        <td style="color:var(--text-secondary);">{{ i.reported_by_name }}</td>
-                        <td>
-                            <span class="badge" [class.badge-danger]="i.status==='open'"
-                                [class.badge-warning]="i.status==='in_progress'"
-                                [class.badge-success]="i.status==='resolved'">
-                                {{ i.status }}
-                            </span>
-                        </td>
-                    </tr>
-                    <tr *ngIf="recentIssues.length===0">
-                        <td colspan="3" class="empty-state">No issues reported</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="table-wrap">
+                <table class="pro-table">
+                    <thead>
+                        <tr>
+                            <th>Issue</th>
+                            <th>Reported By</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let i of recentIssues">
+                            <td class="issue-title">{{ i.title }}</td>
+                            <td><span class="uc-sub">{{ i.reported_by_name }}</span></td>
+                            <td>
+                                <span class="status-pill" [class.open]="i.status==='open'"
+                                    [class.progress]="i.status==='in_progress'" [class.active]="i.status==='resolved'">
+                                    <span class="pill-dot"></span>
+                                    {{ i.status | titlecase }}
+                                </span>
+                            </td>
+                        </tr>
+                        <tr *ngIf="recentIssues.length === 0">
+                            <td colspan="3" class="empty-row">
+                                <i class="fas fa-check-circle" style="color:#10b981;margin-right:.5rem;"></i>
+                                No open issues
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
+
     </div>
 </ng-container>

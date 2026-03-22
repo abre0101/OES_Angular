@@ -568,7 +568,7 @@ a {
 .admin-content {
     padding: 2.5rem;
     flex: 1;
-    background: var(--bg-light);
+    background: #f0f4f8;
 }
 
 .page-header {

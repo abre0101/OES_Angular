@@ -1,91 +1,96 @@
 <div class="admin-layout">
-    <!-- Sidebar -->
-    <aside class="admin-sidebar admin-theme" [class.minimized]="minimized()">
-        <div class="sidebar-header">
-            <div class="sidebar-brand-wrapper">
-                <div class="brand-logo">
-                    <img src="assets/images/logo1.png" alt="DMU Logo"
-                        style="width:60px;height:60px;object-fit:contain;border-radius:10px;"
-                        onerror="this.style.display='none'" />
-                </div>
-                <div class="brand-text" *ngIf="!minimized()">
-                    <h2 class="brand-title">{{ title }}</h2>
-                    <span class="brand-subtitle">{{ subtitle }}</span>
-                </div>
+
+    <!-- ── Sidebar ── -->
+    <aside class="sidebar" [class.collapsed]="minimized()">
+
+        <!-- Brand -->
+        <div class="sidebar-brand">
+            <div class="brand-logo">
+                <img src="assets/images/logo1.png" alt="DMU"
+                    onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+                <span class="brand-logo-fallback">🎓</span>
             </div>
-            <button class="sidebar-toggle-btn" (click)="toggleMinimize()" title="Toggle Sidebar">
-                {{ minimized() ? '▶' : '◀' }}
+            <div class="brand-text" *ngIf="!minimized()">
+                <span class="brand-name">DMU</span>
+                <span class="brand-sub">{{ title }}</span>
+            </div>
+            <button class="collapse-btn" (click)="toggleMinimize()" [title]="minimized() ? 'Expand' : 'Collapse'">
+                <i class="fas" [class.fa-chevron-left]="!minimized()" [class.fa-chevron-right]="minimized()"></i>
             </button>
         </div>
 
+        <!-- Nav -->
         <nav class="sidebar-nav">
-            <ng-container *ngFor="let item of navItems; let i = index">
-                <div class="sidebar-divider" *ngIf="i > 0 && i % 3 === 0"></div>
-                <a class="sidebar-nav-item" [routerLink]="item.route" routerLinkActive="active"
-                    [attr.data-tooltip]="item.label">
-                    <span class="sidebar-nav-icon">{{ item.icon }}</span>
-                    <span *ngIf="!minimized()">{{ item.label }}</span>
-                </a>
-            </ng-container>
+            <a *ngFor="let item of navItems" class="nav-item" [routerLink]="item.route" routerLinkActive="active"
+                [attr.data-label]="item.label">
+                <span class="nav-icon">{{ item.icon }}</span>
+                <span class="nav-label" *ngIf="!minimized()">{{ item.label }}</span>
+            </a>
         </nav>
 
+        <!-- Footer -->
         <div class="sidebar-footer">
-            <div class="sidebar-user" *ngIf="!minimized()">
-                <div class="sidebar-user-avatar">{{ avatarLetter }}</div>
-                <div class="sidebar-user-info">
-                    <div class="sidebar-user-name">{{ auth.currentUser()?.full_name || auth.currentUser()?.username }}
-                    </div>
-                    <div class="sidebar-user-role">{{ auth.currentUser()?.role | titlecase }}</div>
+            <div class="user-chip" *ngIf="!minimized()">
+                <div class="user-avatar">{{ avatarLetter }}</div>
+                <div class="user-info">
+                    <span class="user-name">{{ auth.currentUser()?.username }}</span>
+                    <span class="user-role">{{ auth.currentUser()?.role | titlecase }}</span>
                 </div>
             </div>
-            <div class="sidebar-user" *ngIf="minimized()">
-                <div class="sidebar-user-avatar">{{ avatarLetter }}</div>
-            </div>
-            <button class="btn btn-danger btn-block" (click)="logout()">
-                <span class="sidebar-nav-icon">🚪</span>
+            <div class="user-avatar solo" *ngIf="minimized()">{{ avatarLetter }}</div>
+            <button class="logout-btn" (click)="logout()" [title]="minimized() ? 'Logout' : ''">
+                <i class="fas fa-sign-out-alt"></i>
                 <span *ngIf="!minimized()">Logout</span>
             </button>
         </div>
     </aside>
 
-    <!-- Main Content -->
-    <div class="admin-main-content" [style.margin-left]="minimized() ? '70px' : '260px'">
-        <!-- Header -->
-        <header class="admin-header">
-            <div class="header-left">
-                <div class="header-breadcrumb">
-                    <span class="breadcrumb-item">{{ title }}</span>
-                    <span class="breadcrumb-separator">/</span>
-                    <span class="breadcrumb-item active">{{ pageTitle }}</span>
+    <!-- ── Main ── -->
+    <div class="main-wrap" [class.expanded]="minimized()">
+
+        <!-- Top Bar -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <div class="page-breadcrumb">
+                    <span class="bc-root">{{ title }}</span>
+                    <i class="fas fa-chevron-right bc-sep"></i>
+                    <span class="bc-current">{{ pageTitle }}</span>
                 </div>
             </div>
-            <div class="header-right">
-                <div class="header-profile" (click)="toggleProfile()" [class.active]="profileOpen()">
-                    <div class="header-profile-avatar">{{ avatarLetter }}</div>
-                    <div class="header-profile-info">
-                        <div class="header-profile-name">{{ auth.currentUser()?.username }}</div>
-                        <div class="header-profile-role">{{ auth.currentUser()?.role | titlecase }}</div>
+            <div class="topbar-right">
+                <div class="topbar-profile" (click)="toggleProfile()">
+                    <div class="tp-avatar">{{ avatarLetter }}</div>
+                    <div class="tp-info">
+                        <span class="tp-name">{{ auth.currentUser()?.full_name || auth.currentUser()?.username }}</span>
+                        <span class="tp-role">{{ auth.currentUser()?.role | titlecase }}</span>
                     </div>
-                    <span style="color:rgba(255,255,255,0.7);font-size:0.8rem;margin-left:0.25rem;">▼</span>
+                    <i class="fas fa-chevron-down tp-arrow" [class.open]="profileOpen()"></i>
 
                     <div class="profile-dropdown" *ngIf="profileOpen()">
-                        <div class="dropdown-item" style="cursor:default;">
-                            <span class="dropdown-icon">👤</span>
-                            <span>{{ auth.currentUser()?.full_name }}</span>
+                        <div class="pd-user">
+                            <div class="pd-avatar">{{ avatarLetter }}</div>
+                            <div>
+                                <div class="pd-name">{{ auth.currentUser()?.full_name || auth.currentUser()?.username }}
+                                </div>
+                                <div class="pd-role">{{ auth.currentUser()?.role | titlecase }}</div>
+                            </div>
                         </div>
-                        <div class="dropdown-divider"></div>
-                        <div class="dropdown-item logout" (click)="logout()" style="cursor:pointer;">
-                            <span class="dropdown-icon">🚪</span>
-                            <span>Logout</span>
-                        </div>
+                        <div class="pd-divider"></div>
+                        <a routerLink="/admin/profile" class="pd-item" (click)="profileOpen.set(false)">
+                            <i class="fas fa-user"></i> My Profile
+                        </a>
+                        <div class="pd-divider"></div>
+                        <button class="pd-item danger" (click)="logout()">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
                     </div>
                 </div>
             </div>
         </header>
 
-        <!-- Page Content -->
-        <div class="admin-content">
+        <!-- Content -->
+        <main class="page-content">
             <router-outlet />
-        </div>
+        </main>
     </div>
 </div>

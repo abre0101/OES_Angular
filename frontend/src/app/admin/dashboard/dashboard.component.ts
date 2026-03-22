@@ -10,7 +10,8 @@ import { catchError } from 'rxjs/operators';
     selector: 'app-admin-dashboard',
     standalone: true,
     imports: [CommonModule, RouterModule],
-    templateUrl: './dashboard.component.html'
+    templateUrl: './dashboard.component.html',
+    styleUrl: './dashboard.component.css'
 })
 export class AdminDashboardComponent implements OnInit {
     stats = { students: 0, activeStudents: 0, instructors: 0, courses: 0, departments: 0, pendingExams: 0, totalExams: 0 };
