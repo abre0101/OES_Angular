@@ -127,13 +127,13 @@
     color: #d4af37;
 }
 
-.lo gin-logo {
-    width: 90px;
-    height: 90px;
+.login-logo {
+    width: 72px;
+    height: 72px;
     object-fit: contain;
-    border-radius: 14px;
-    margin: 0 auto 0.75rem;
+    border-radius: 10px;
+    margin: 0 auto 0.5rem;
     display: block;
     box-shadow: 0 4px 15px rgba(30, 58, 138, 0.2);
-    border: 3px solid rgba(30, 58, 138, 0.15);
+    border: 2px solid rgba(30, 58, 138, 0.15);
 }

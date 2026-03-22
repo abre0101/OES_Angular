@@ -20,6 +20,8 @@ class LoginView(APIView):
             return Response(s.errors, status=400)
 
         user = User.objects(username=s.validated_data['username']).first()
+        if not user:
+            user = User.objects(email=s.validated_data['username']).first()
         if not user or not user.check_password(s.validated_data['password']):
             return Response({'error': 'Invalid username or password'}, status=401)
         if not user.is_active:
