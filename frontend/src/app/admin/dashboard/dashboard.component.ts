@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { AuthService } from '../../core/services/auth.service';
-import { forkJoin } from 'rxjs';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Component({
     selector: 'app-admin-dashboard',
@@ -23,12 +24,12 @@ export class AdminDashboardComponent implements OnInit {
     ngOnInit() {
         this.username = this.auth.currentUser()?.username ?? 'Admin';
         forkJoin({
-            students: this.api.getUsers('student'),
-            instructors: this.api.getUsers('instructor'),
-            courses: this.api.getCourses(),
-            departments: this.api.getDepartments(),
-            exams: this.api.getExams(),
-            issues: this.api.getIssues(),
+            students: this.api.getUsers('student').pipe(catchError(() => of([]))),
+            instructors: this.api.getUsers('instructor').pipe(catchError(() => of([]))),
+            courses: this.api.getCourses().pipe(catchError(() => of([]))),
+            departments: this.api.getDepartments().pipe(catchError(() => of([]))),
+            exams: this.api.getExams().pipe(catchError(() => of([]))),
+            issues: this.api.getIssues().pipe(catchError(() => of([]))),
         }).subscribe({
             next: data => {
                 this.stats.students = data.students.length;
